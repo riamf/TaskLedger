@@ -1,0 +1,14 @@
+//
+//  HomeCalendarViewMode.swift
+//  TaskLedger
+//
+//  Created by Pawel Kowalczuk on 01/10/2025.
+//
+import Foundation
+import SwiftData
+import SwiftUI
+
+final class HomeCalendarViewModel: ObservableObject {
+    @Query var tasks: [Task]
+}
+
