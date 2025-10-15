@@ -25,7 +25,7 @@ struct TaskLedgerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeCalendarView()
+            DayView()
         }
         .modelContainer(sharedModelContainer)
     }

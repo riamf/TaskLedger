@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeCalendarView: View {
+    @State var showAddTaskView = false
     private let calendar = Calendar(identifier: .gregorian)
     private let daysInWeek = 7
 
@@ -42,6 +43,17 @@ struct HomeCalendarView: View {
         monthFormatter.dateFormat = "MMMM yyyy"
 
         return VStack(spacing: 16) {
+            HStack(spacing: 16) {
+                HStack(spacing: 16) {
+                    Spacer()
+                    Button {
+                        showAddTaskView.toggle()
+                    } label: {
+                        Image("add_task")
+                            .tint(.black)
+                    }
+                }
+            }
             Text(monthFormatter.string(from: today))
                 .font(.title2)
                 .bold()
@@ -68,7 +80,9 @@ struct HomeCalendarView: View {
                             .background(isToday ? Color.blue : Color.gray.opacity(0.2))
                             .foregroundColor(isToday ? .white : .primary)
                             .clipShape(Circle())
-                            .border(.red, width: 2.0)
+                            .overlay(
+                                    Circle().stroke(Color.blue, lineWidth: 2)
+                                )
                     }
                 }
             }
@@ -77,5 +91,8 @@ struct HomeCalendarView: View {
         .padding(.top, 32)
         .padding(.leading, 16)
         .padding(.trailing, 16)
+        .sheet(isPresented: $showAddTaskView) {
+            AddTaskView()
+        }
     }
 }
