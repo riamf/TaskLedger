@@ -12,7 +12,7 @@ import SwiftData
 struct TaskLedgerApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Task.self,
+            EventTask.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

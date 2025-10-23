@@ -28,7 +28,7 @@ struct DaysCalculator {
     }
     
     static func dayName(from number: Int) -> String {
-        guard number < Calendar.current.shortWeekdaySymbols.count, number > 0 else {
+        guard number < Calendar.current.shortWeekdaySymbols.count, number >= 0 else {
             return ""
         }
         return Calendar.current.shortWeekdaySymbols[number]
@@ -38,18 +38,26 @@ struct DaysCalculator {
 
 struct DayView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query var tasks: [Task]
-    @State var filteredTasks: [Task] = []
+    @Query var tasks: [EventTask]
+    @State var filteredTasks: [EventTask] = []
     @ObservedObject var viewModel = DayViewViewModel(currentDate: Date())
     @State var showAddTaskView = false
     @State var showAlertView = false
+    @State var showCalendarView = false
+    @State var showTasksListView = false
     
     var body: some View {
         VStack {
             HStack(spacing: 16) {
+                Button {
+                    showTasksListView.toggle()
+                } label: {
+                    Image(systemName: "list.bullet")
+                        .tint(.black)
+                }.padding(.horizontal, 16)
                 Spacer()
                 Button {
-                    
+                    showCalendarView.toggle()
                 } label: {
                     Image(systemName: "calendar")
                         .tint(.black)
@@ -68,24 +76,46 @@ struct DayView: View {
                         ForEach(tasks, id: \.id) { task in
                             if task.days.contains(DaysCalculator.todayNumber()) {
                                 HStack {
-                                    VStack {
+                                    VStack(alignment: .leading) {
                                         Text(task.name)
                                             .padding(.horizontal, 4)
+                                            .padding(.vertical, 2)
                                         HStack {
                                             ForEach(task.days, id: \.self) { day in
                                                 Text(DaysCalculator.dayName(from: day))
                                                     .font(.caption)
-                                                    .padding(4)
-                                                
                                             }
                                         }
+                                        .padding(.horizontal, 4)
                                     }
                                     Spacer()
                                     Button {
+                                        if task.isExistingToday {
+                                            do {
+                                                task.removeTodayEvent()
+                                                try modelContext.save()
+                                            } catch {
+                                                showAlertView.toggle()
+                                                task.addTodayEvent()
+                                            }
+                                        } else {
+                                            do {
+                                                task.addTodayEvent()
+                                                try modelContext.save()
+                                            } catch {
+                                                task.removeTodayEvent()
+                                                showAlertView.toggle()
+                                            }
+                                        }
                                         
                                     } label: {
-//                                        Image(systemName: "checkmark.circle")
-                                        Image(systemName: "circle")
+                                        if task.isExistingToday {
+                                            Image(systemName: "checkmark.circle")
+                                                .tint(.black)
+                                        } else {
+                                            Image(systemName: "circle")
+                                                .tint(.black)
+                                        }
                                     }
                                 }
                             }
@@ -125,6 +155,12 @@ struct DayView: View {
             Spacer()
         }.sheet(isPresented: $showAddTaskView) {
             AddTaskView()
+        }
+        .sheet(isPresented: $showTasksListView) {
+            TasksListView()
+        }
+        .sheet(isPresented: $showCalendarView) {
+            HomeCalendarView()
         }
         .alert(isPresented: $showAlertView) {
             Alert(

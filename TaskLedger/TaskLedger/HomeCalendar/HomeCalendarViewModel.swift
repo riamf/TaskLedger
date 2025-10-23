@@ -9,6 +9,6 @@ import SwiftData
 import SwiftUI
 
 final class HomeCalendarViewModel: ObservableObject {
-    @Query var tasks: [Task]
+    @Query var tasks: [EventTask]
 }
 

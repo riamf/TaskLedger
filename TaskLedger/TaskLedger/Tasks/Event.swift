@@ -12,9 +12,10 @@ class Event {
     @Attribute(.unique) var id: String = UUID().uuidString
     var date: Date
     var amount: Double
-    var task: Task
+    @Relationship(inverse: \EventTask.events)
+    var task: EventTask?
     
-    init(date: Date, amount: Double = 0.0, task: Task) {
+    init(date: Date, amount: Double = 0.0, task: EventTask) {
         self.date = date
         self.amount = amount
         self.task = task

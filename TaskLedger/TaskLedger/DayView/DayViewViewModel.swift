@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 class DayViewViewModel: ObservableObject {
-    @Query var tasks: [Task]
+    @Query var tasks: [EventTask]
     var currentDate: Date {
         didSet {
             dayString = dayDateFormatter.string(from: currentDate)

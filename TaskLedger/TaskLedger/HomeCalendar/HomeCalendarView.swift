@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct HomeCalendarView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @State var showAddTaskView = false
+    
     private let calendar = Calendar(identifier: .gregorian)
     private let daysInWeek = 7
 
@@ -45,13 +48,8 @@ struct HomeCalendarView: View {
         return VStack(spacing: 16) {
             HStack(spacing: 16) {
                 HStack(spacing: 16) {
+                    CloseModalView(dismiss: dismiss)
                     Spacer()
-                    Button {
-                        showAddTaskView.toggle()
-                    } label: {
-                        Image("add_task")
-                            .tint(.black)
-                    }
                 }
             }
             Text(monthFormatter.string(from: today))

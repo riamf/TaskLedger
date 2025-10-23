@@ -21,8 +21,6 @@ struct AddTaskView: View {
     @State private var timeMinutes: Int = 0
     @State private var timeSeconds: Int = 0
     
-    
-    
     @State var days: [Int] = []
     @State var notes: String = ""
     @State var saveAlert = false
@@ -120,12 +118,12 @@ struct AddTaskView: View {
                         .padding(.horizontal, 16)
                     Spacer()
                     Button {
-                        let task = Task(
+                        let task = EventTask(
                             timestamp: Date(),
                             name: inputTaskName,
                             taskType: taskType,
                             amount: amount,
-                            days: daysSelected.map { dayNames.firstIndex(of: $0) ?? 0 },
+                            days: daysSelected.compactMap { dayNames.firstIndex(of: $0) },
                             notes: notes
                         )
                         modelContext.insert(task)

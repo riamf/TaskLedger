@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class Task: Identifiable {
+class EventTask: Identifiable {
     @Attribute(.unique) var id: String = UUID().uuidString
     var timestamp: Date
     var name: String
@@ -18,7 +18,7 @@ class Task: Identifiable {
     var amount: Double
     var days: [Int]
     var notes: String
-    @Relationship(inverse: \Event.task)
+    @Relationship()
     var events: [Event]
     var taskType: TaskType {
         get { TaskType(rawValue: taskTypeRaw) ?? .counter }
@@ -29,6 +29,13 @@ class Task: Identifiable {
     var isExistingToday: Bool {
         let today = DaysCalculator.compDateFormatter.string(from: Date())
         return events.contains(where: { event in
+            DaysCalculator.compDateFormatter.string(from: event.date) == today
+        })
+    }
+    
+    var todayEvent: Event? {
+        let today = DaysCalculator.compDateFormatter.string(from: Date())
+        return events.first(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
         })
     }
@@ -48,6 +55,23 @@ class Task: Identifiable {
             self.days = days
             self.notes = notes
             self.events = events
+    }
+    
+    @discardableResult
+    func removeTodayEvent() -> Event? {
+        let today = DaysCalculator.compDateFormatter.string(from: Date())
+        let toReturn = todayEvent
+        events.removeAll(where: { event in
+            DaysCalculator.compDateFormatter.string(from: event.date) == today
+        })
+        return toReturn
+    }
+    
+    @discardableResult
+    func addTodayEvent(amount: Double = 0.0) -> Event {
+        let event = Event(date: Date(), amount: amount, task: self)
+        events.append(event)
+        return event
     }
 }
 
