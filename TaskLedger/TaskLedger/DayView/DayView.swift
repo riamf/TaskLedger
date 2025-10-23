@@ -147,8 +147,8 @@ struct DayView: View {
                             .clipShape(Circle())
                             .tint(.white)
                             .background(Circle().fill(.blue).frame(width: 56, height: 56))
-                            .padding(.trailing, 64)
-                            .padding(.bottom, 64)
+                            .padding(.trailing, 32)
+                            .padding(.bottom, 32)
                         }
                     }
             }

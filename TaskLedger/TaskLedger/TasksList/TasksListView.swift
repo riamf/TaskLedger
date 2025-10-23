@@ -30,19 +30,33 @@ struct TasksListView: View {
                     .foregroundStyle(.gray)
                 Spacer()
             } else {
+                Text("All available Tasks")
+                    .font(.headline)
+                Spacer()
                 List {
                     ForEach(tasks) { task in
-                        VStack(alignment: .leading) {
-                            Text(task.name)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 2)
-                            HStack {
-                                ForEach(task.days, id: \.self) { day in
-                                    Text(DaysCalculator.dayName(from: day))
-                                        .font(.caption)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(task.name)
+                                    .padding(.horizontal, 4)
+                                    .padding(.vertical, 2)
+                                HStack {
+                                    ForEach(task.days, id: \.self) { day in
+                                        Text(DaysCalculator.dayName(from: day))
+                                            .font(.caption)
+                                    }
                                 }
+                                .padding(.horizontal, 4)
                             }
-                            .padding(.horizontal, 4)
+                            Spacer()
+                            Button() {
+                                
+                            } label: {
+                                HStack {
+                                    Text("Edit")
+                                    Image(systemName: "pencil")
+                                }.tint(.black)
+                            }
                         }
                     }.onDelete { indexSet in
                         indexSet.forEach { index in
