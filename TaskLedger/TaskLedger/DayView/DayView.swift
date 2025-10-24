@@ -160,7 +160,7 @@ struct DayView: View {
             TasksListView()
         }
         .sheet(isPresented: $showCalendarView) {
-            HomeCalendarView()
+            CalendarView()
         }
         .alert(isPresented: $showAlertView) {
             Alert(
