@@ -19,7 +19,7 @@ class EventTask: Identifiable {
     var days: [Int]
     var notes: String
     @Relationship()
-    var events: [Event]
+    var events: [EventMark]
     var taskType: TaskType {
         get { TaskType(rawValue: taskTypeRaw) ?? .counter }
         set { taskTypeRaw = newValue.rawValue }
@@ -33,7 +33,7 @@ class EventTask: Identifiable {
         })
     }
     
-    var todayEvent: Event? {
+    var todayEvent: EventMark? {
         let today = DaysCalculator.compDateFormatter.string(from: Date())
         return events.first(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
@@ -47,7 +47,7 @@ class EventTask: Identifiable {
         amount: Double = 0.0,
         days: [Int] = [],
         notes: String = "",
-        events: [Event] = []) {
+        events: [EventMark] = []) {
             self.timestamp = timestamp
             self.name = name
             self.taskTypeRaw = taskType.rawValue
@@ -58,7 +58,7 @@ class EventTask: Identifiable {
     }
     
     @discardableResult
-    func removeTodayEvent() -> Event? {
+    func removeTodayEvent() -> EventMark? {
         let today = DaysCalculator.compDateFormatter.string(from: Date())
         let toReturn = todayEvent
         events.removeAll(where: { event in
@@ -68,8 +68,8 @@ class EventTask: Identifiable {
     }
     
     @discardableResult
-    func addTodayEvent(amount: Double = 0.0) -> Event {
-        let event = Event(date: Date(), amount: amount, task: self)
+    func addTodayEvent(amount: Double = 0.0) -> EventMark {
+        let event = EventMark(date: Date(), amount: amount, task: self)
         events.append(event)
         return event
     }

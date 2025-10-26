@@ -9,6 +9,13 @@ import SwiftData
 import SwiftUI
 
 final class HomeCalendarViewModel: ObservableObject {
-    @Query var tasks: [EventTask]
+  @Query var tasks: [EventTask]
+  
+  func sameMonthPredicate(for task: EventTask) -> Predicate<EventMark> {
+    let idk = task.id
+    return #Predicate<EventMark> {
+      $0.task?.id == idk
+    }
+  }
 }
 

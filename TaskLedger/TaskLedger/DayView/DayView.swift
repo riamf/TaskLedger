@@ -9,33 +9,6 @@ import Foundation
 import SwiftUI
 import SwiftData
 
-struct DaysCalculator {
-    private static let dayFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "EEEE"
-        return df
-    }()
-    
-    static let compDateFormatter = {
-       let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        return df
-    }()
-    
-    static func todayNumber() -> Int {
-         let dayName = dayFormatter.string(from: Date())
-        return Calendar.current.weekdaySymbols.firstIndex(of: dayName) ?? -1
-    }
-    
-    static func dayName(from number: Int) -> String {
-        guard number < Calendar.current.shortWeekdaySymbols.count, number >= 0 else {
-            return ""
-        }
-        return Calendar.current.shortWeekdaySymbols[number]
-    }
-        
-}
-
 struct DayView: View {
     @Environment(\.modelContext) private var modelContext
     @Query var tasks: [EventTask]

@@ -1,10 +1,11 @@
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
   @Environment(\.dismiss) private var dismiss
-  
   @State var showAddTaskView = false
   
+  private var viewModel = HomeCalendarViewModel()
   private let calendar = Calendar(identifier: .gregorian)
   private let daysInWeek = 7
   
@@ -83,13 +84,15 @@ struct CalendarView: View {
       .padding(.top, 32)
       .padding(.leading, 16)
       .padding(.trailing, 16)
-      .sheet(isPresented: $showAddTaskView) {
-        AddTaskView()
+      List {
+        ForEach(viewModel.tasks, id: \.id) { task in
+          if task.taskType == .counter {
+          }
+        }
       }
     }
+    .sheet(isPresented: $showAddTaskView) {
+      AddTaskView()
+    }
   }
-}
-
-#Preview {
-  CalendarView()
 }
