@@ -68,8 +68,8 @@ class EventTask: Identifiable {
     }
     
     @discardableResult
-    func addTodayEvent(amount: Double = 0.0) -> EventMark {
-        let event = EventMark(date: Date(), amount: amount, task: self)
+    func addTodayEvent(amount: Double? = nil) -> EventMark {
+      let event = EventMark(date: Date(), amount: amount ?? self.amount, task: self)
         events.append(event)
         return event
     }
@@ -108,3 +108,33 @@ enum TaskType: String, CaseIterable {
         }
     }
 }
+
+extension EventTask {
+  func getMonthSummaryTasks(month: String, year: String) -> String {
+    let monthEvents = events.filter {
+      $0.year == year && $0.month == month
+    }
+    if taskType == .counter {
+      let counterSum = monthEvents.count
+      return "\(counterSum) times"
+    }
+    if taskType == .cost {
+      var costSum = 0.0
+      monthEvents.forEach { costSum += $0.amount }
+      return "\(costSum) spend"
+    }
+    if taskType == .income {
+      var incomSum = 0.0
+      monthEvents.forEach { incomSum += $0.amount }
+      return "\(incomSum) earned"
+    }
+    if taskType == .time {
+      var amountTime = 0.0
+      monthEvents.forEach { amountTime += $0.amount }
+      return "\(amountTime) time spend"
+    }
+    return ""
+  }
+}
+
+

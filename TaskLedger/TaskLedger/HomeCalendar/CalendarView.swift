@@ -4,10 +4,18 @@ import SwiftData
 struct CalendarView: View {
   @Environment(\.dismiss) private var dismiss
   @State var showAddTaskView = false
+  @State var calendarDay: Date = Date()
   
-  private var viewModel = HomeCalendarViewModel()
+  private var viewModel: CalendarViewModel
+  private let modelContext: ModelContext
   private let calendar = Calendar(identifier: .gregorian)
   private let daysInWeek = 7
+  private var month: String {
+    DaysCalculator.monthFormatter.string(from: calendarDay)
+  }
+  private var year: String {
+    DaysCalculator.yearFormatter.string(from: calendarDay)
+  }
   
   // Short weekday names starting from Monday
   private var weekdaySymbols: [String] {
@@ -18,9 +26,8 @@ struct CalendarView: View {
   }
   
   private var days: [Date] {
-    let today = Date()
-    let range = calendar.range(of: .day, in: .month, for: today)!
-    let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: today))!
+    let range = calendar.range(of: .day, in: .month, for: calendarDay)!
+    let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: calendarDay))!
     var days: [Date] = []
     for day in range {
       if let date = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) {
@@ -30,6 +37,11 @@ struct CalendarView: View {
     let firstWeekday = calendar.component(.weekday, from: startOfMonth)
     let leadingEmpty = (firstWeekday + 5) % 7
     return Array(repeating: Date.distantPast, count: leadingEmpty) + days
+  }
+  
+  init(modelContext: ModelContext) {
+    self.modelContext = modelContext
+    self.viewModel = CalendarViewModel(modelContext: modelContext)
   }
   
   var body: some View {
@@ -79,20 +91,24 @@ struct CalendarView: View {
             }
           }
         }
+//        List {
+          ForEach(viewModel.tasks, id: \.id) { task in
+            VStack {
+              HStack {
+                Text(task.name)
+                  .tint(.black)
+                Spacer()
+                Text(task.getMonthSummaryTasks(month: month, year: year))
+                  .tint(.black)
+              }
+            }
+//          }
+        }
       }
       .frame(maxHeight: .infinity, alignment: .top)
       .padding(.top, 32)
       .padding(.leading, 16)
       .padding(.trailing, 16)
-      List {
-        ForEach(viewModel.tasks, id: \.id) { task in
-          if task.taskType == .counter {
-          }
-        }
-      }
-    }
-    .sheet(isPresented: $showAddTaskView) {
-      AddTaskView()
     }
   }
 }
