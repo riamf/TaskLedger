@@ -9,22 +9,41 @@ import SwiftUI
 import SwiftData
 
 class DayViewViewModel: ObservableObject {
-    @Query var tasks: [EventTask]
-    var currentDate: Date {
-        didSet {
-            dayString = dayDateFormatter.string(from: currentDate)
-        }
+  var currentDate: Date {
+    didSet {
+      dayString = dayDateFormatter.string(from: currentDate)
     }
-    @Published var dayString: String
+  }
+  @Published var dayString: String
+  @Published var showTasksList: Bool = false
+  @Published var showAddTaskView: Bool = false
+  @Published var tasks: [EventTask] = []
+  
+  @DInjected(\.modelContext) private var modelContext: ModelContext
+  
+  init(currentDate: Date) {
+    self.currentDate = currentDate
+    dayString = dayDateFormatter.string(from: currentDate)
+  }
+  
+  let dayDateFormatter: DateFormatter = {
+    let dayFormatter = DateFormatter()
+    dayFormatter.dateFormat = "d MMMM yyyy"
+    return dayFormatter
+  }()
+  
+  func fetchTasks() {
+    // Placeholder for fetching tasks logic
     
-    init(currentDate: Date) {
-        self.currentDate = currentDate
-        dayString = dayDateFormatter.string(from: currentDate)
-    }
-    
-    let dayDateFormatter: DateFormatter = {
-        let dayFormatter = DateFormatter()
-        dayFormatter.dateFormat = "d MMMM yyyy"
-        return dayFormatter
-    }()
+    let fetchDescriptor = FetchDescriptor<EventTask>()
+  }
+  
+  func nextDate() {
+    currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
+  }
+  
+  func previousDate() {
+    currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? currentDate
+  }
+  
 }
