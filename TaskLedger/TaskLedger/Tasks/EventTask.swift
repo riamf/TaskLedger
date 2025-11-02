@@ -13,17 +13,14 @@ class EventTask: Identifiable {
     @Attribute(.unique) var id: String = UUID().uuidString
     var timestamp: Date
     var name: String
-    var taskTypeRaw: String
     var taskFixedDate: Date?
     var amount: Double
+    var repeatingPattern: RepeatingPattern?
     var days: [Int]
     var notes: String
     @Relationship()
     var events: [EventMark]
-    var taskType: TaskType {
-        get { TaskType(rawValue: taskTypeRaw) ?? .counter }
-        set { taskTypeRaw = newValue.rawValue }
-    }
+    var taskType: TaskType
     
     // need to performance check this!
     var isExistingToday: Bool {
@@ -47,14 +44,19 @@ class EventTask: Identifiable {
         amount: Double = 0.0,
         days: [Int] = [],
         notes: String = "",
-        events: [EventMark] = []) {
-            self.timestamp = timestamp
-            self.name = name
-            self.taskTypeRaw = taskType.rawValue
-            self.amount = amount
-            self.days = days
-            self.notes = notes
-            self.events = events
+        repeatingPattern: RepeatingPattern? = nil,
+        events: [EventMark] = [],
+        id: String = UUID().uuidString
+    ) {
+        self.id = id
+        self.timestamp = timestamp
+        self.name = name
+        self.taskType = taskType
+        self.amount = amount
+        self.days = days
+        self.notes = notes
+        self.events = events
+        self.repeatingPattern = repeatingPattern
     }
     
     @discardableResult
@@ -69,13 +71,23 @@ class EventTask: Identifiable {
     
     @discardableResult
     func addTodayEvent(amount: Double? = nil) -> EventMark {
-      let event = EventMark(date: Date(), amount: amount ?? self.amount, task: self)
+        let event = EventMark(date: Date(), amount: amount ?? self.amount, task: self)
         events.append(event)
         return event
     }
 }
 
-enum TaskType: String, CaseIterable {
+enum Weekdays: Int, Codable, CaseIterable {
+    case monday = 0, tuesday, wednesday, thursday, friday, saturday, sunday
+}
+
+enum RepeatingPattern: Codable {
+    case daily(weekdays: [Weekdays])
+    case monthly(day: Int)
+    case yearly(day: Int, month: Int)
+}
+
+enum TaskType: String, CaseIterable, Codable {
     case counter
     case cost
     case income
@@ -110,31 +122,31 @@ enum TaskType: String, CaseIterable {
 }
 
 extension EventTask {
-  func getMonthSummaryTasks(month: String, year: String) -> String {
-    let monthEvents = events.filter {
-      $0.year == year && $0.month == month
+    func getMonthSummaryTasks(month: String, year: String) -> String {
+        let monthEvents = events.filter {
+            $0.year == year && $0.month == month
+        }
+        if taskType == .counter {
+            let counterSum = monthEvents.count
+            return "\(counterSum) times"
+        }
+        if taskType == .cost {
+            var costSum = 0.0
+            monthEvents.forEach { costSum += $0.amount }
+            return "\(costSum) spend"
+        }
+        if taskType == .income {
+            var incomSum = 0.0
+            monthEvents.forEach { incomSum += $0.amount }
+            return "\(incomSum) earned"
+        }
+        if taskType == .time {
+            var amountTime = 0.0
+            monthEvents.forEach { amountTime += $0.amount }
+            return "\(amountTime) time spend"
+        }
+        return ""
     }
-    if taskType == .counter {
-      let counterSum = monthEvents.count
-      return "\(counterSum) times"
-    }
-    if taskType == .cost {
-      var costSum = 0.0
-      monthEvents.forEach { costSum += $0.amount }
-      return "\(costSum) spend"
-    }
-    if taskType == .income {
-      var incomSum = 0.0
-      monthEvents.forEach { incomSum += $0.amount }
-      return "\(incomSum) earned"
-    }
-    if taskType == .time {
-      var amountTime = 0.0
-      monthEvents.forEach { amountTime += $0.amount }
-      return "\(amountTime) time spend"
-    }
-    return ""
-  }
 }
 
 

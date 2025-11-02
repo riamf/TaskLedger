@@ -10,30 +10,28 @@ import SwiftData
 
 @main
 struct TaskLedgerApp: App {
-  @Environment(\.modelContext) private var modelContext
-  
-  init() {
-    DI.instance.initalize(modelContext: modelContext)
-  }
-  
-  var sharedModelContainer: ModelContainer = {
-    let schema = Schema([
-      EventTask.self,
-      EventMark.self
-    ])
-    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+    @Environment(\.modelContext) private var modelContext
     
-    do {
-      return try ModelContainer(for: schema, configurations: [modelConfiguration])
-    } catch {
-      fatalError("Could not create ModelContainer: \(error)")
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            EventTask.self,
+            EventMark.self
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        
+        do {
+            let container =  try ModelContainer(for: schema, configurations: [modelConfiguration])
+            DI.instance.initalize(modelContext: container.mainContext)
+            return container
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
+    
+    var body: some Scene {
+        WindowGroup {
+            DayView()
+        }
+        .modelContainer(sharedModelContainer)
     }
-  }()
-  
-  var body: some Scene {
-    WindowGroup {
-      DayView()
-    }
-    .modelContainer(sharedModelContainer)
-  }
 }
