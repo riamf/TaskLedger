@@ -10,6 +10,7 @@ class AddTaskViewModel: ObservableObject {
     @Published var timeMinutes: Int = 0
     @Published var timeSeconds: Int = 0
     @Published var notes: String = ""
+    @Published var selectedPage: Int = 0
     
     @Published var saveAlert = false
     

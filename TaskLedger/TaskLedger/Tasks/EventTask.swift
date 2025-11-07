@@ -118,6 +118,14 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
     case income
     case time
     
+    var number: Int {
+        switch self {
+        case .counter: return 0
+        case .cost: return 1
+        case .income: return 2
+        case .time: return 3
+        }
+    }
     var imageName: String {
         switch self {
         case .counter: return "plus.minus.capsule"
