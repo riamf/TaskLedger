@@ -14,95 +14,142 @@ struct AddTaskView: View {
     @StateObject private var viewModel = AddTaskViewModel()
     
     var body: some View {
-        VStack(spacing: 16) {
-            HStack(spacing: 16) {
-                HStack(spacing: 16) {
+        VStack(spacing: .spacing) {
+            HStack(spacing: .spacing) {
+                HStack(spacing: .spacing) {
                     CloseModalView(dismiss: dismiss)
                     Spacer()
                 }
-            }.padding(.vertical, 32).padding(.horizontal, 16)
-            VStack(spacing: 8) {
-                TaskTypeSwitcherView(taskType: $viewModel.taskType).padding(.horizontal, 16)
-                Text("Task name:").padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading)
-                TextField("", text: $viewModel.inputTaskName, prompt: Text("Enter task name"))
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal, 16)
-                
-                if viewModel.taskType == .income || viewModel.taskType == .cost {
-                    Text("Enter \(viewModel.taskType == .income ? "income" : "cost") amount:")
-                        .padding(.leading, 16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    TextField("", value: $viewModel.amount, format: .number)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal, 16)
-                } else if viewModel.taskType == .time {
-                    Text("Enter time time spend:")
-                    HStack {
-                        TextField("Hours", value: $viewModel.timeHours, format: .number, prompt: Text("Hours"))
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.numberPad)
-                        TextField("Minutes", value: $viewModel.timeMinutes, format: .number, prompt: Text("Minutes"))
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.numberPad)
-                        TextField("Seconds", value: $viewModel.timeSeconds, format: .number, prompt: Text("Seconds"))
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.numberPad)
-                    }.padding(.horizontal, 16)
+            }.padding(.vertical, .bigSpacing).padding(.horizontal, .spacing)
+            VStack(spacing: .spacingSmall) {
+                VStack(spacing: 8) {
+                    TaskTypeSwitcherView(taskType: $viewModel.taskType).padding(.horizontal, 16)
+                    
+                    if viewModel.taskType == .counter {
+                        CounterInputView(inputTaskName: $viewModel.inputTaskName)
+                            .transition(
+                                AnyTransition.move(
+                                    edge: .leading
+                                ).combined(with: .opacity))
+                    } else if viewModel.taskType == .cost {
+                        let animationDirections: Edge =
+                        viewModel.taskType == .cost || viewModel.taskType == .time
+                        ? .trailing
+                        : .leading
                         
-                }
-                VStack {
-//                    ForEach(dayNames, id: \.self) { day in
-//                        Button {
-//                            if daysSelected.contains(day) {
-//                                daysSelected.removeAll(where: { $0 == day })
-//                            } else {
-//                                daysSelected.append(day)
-//                            }
-//                        } label: {
-//                            HStack {
-//                                if daysSelected.contains(day) {
-//                                    Image(systemName: "checkmark.circle")
-//                                        .tint(.black)
-//                                } else {
-//                                    Image(systemName: "circle")
-//                                        .tint(.black)
-//                                }
-//                                    
-//                                Text(day)
-//                                    .frame(maxWidth: .infinity, alignment: .leading)
-//                                    .padding(.leading, 8)
-//                                    .tint(.black)
-//                            }
-//                            .padding(.leading, 16)
-//                            .padding(.top, 16)
-//                        }
-//                            
-//                    }
-                    Text("Enter task notes:")
-                        .padding(.horizontal, 16)
-                    TextEditor(text: $viewModel.notes)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 8)
-                                       .stroke(.black, lineWidth: 2)
+                        CostInputView(inputTaskName: $viewModel.inputTaskName,
+                                      amount: $viewModel.amount)
+                        .transition(AnyTransition.move(
+                            edge: animationDirections
+                        ).combined(with: .opacity))
+                        .onReceive(viewModel.$taskType) { newValue in
+                            print(newValue)
                         }
-                        .padding(.horizontal, 16)
+                    } else if viewModel.taskType == .income {
+                        let animationDirections: Edge =
+                        viewModel.taskType == .income || viewModel.taskType == .time
+                        ? .trailing
+                        : .leading
+                        IncomeInputView(inputTaskName: $viewModel.inputTaskName,
+                                        amount: $viewModel.amount)
+                        .transition(AnyTransition.move(
+                            edge: animationDirections
+                        ).combined(with: .opacity))
+                        .onReceive(viewModel.$taskType) { newValue in
+                            print(newValue)
+                        }
+                    } else if viewModel.taskType == .time {
+                        let animationDirections: Edge = .trailing
+                        TimeInputView(
+                            inputTaskName: $viewModel.inputTaskName,
+                            hours: $viewModel.timeHours,
+                            minutes: $viewModel.timeMinutes,
+                            seconds: $viewModel.timeSeconds
+                        )
+                        .transition(AnyTransition.move(
+                            edge: animationDirections
+                        ).combined(with: .opacity))
+                        .onReceive(viewModel.$taskType) { newValue in
+                            print(newValue)
+                        }
+                    }
+                }.animation(.easeInOut(duration: 0.33), value: viewModel.taskType)
+                
+                //                if viewModel.taskType == .income || viewModel.taskType == .cost {
+                //                    Text("Enter \(viewModel.taskType == .income ? "income" : "cost") amount:")
+                //                        .padding(.leading, 16)
+                //                        .frame(maxWidth: .infinity, alignment: .leading)
+                //                    TextField("", value: $viewModel.amount, format: .number)
+                //                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                //                        .padding(.horizontal, 16)
+                //                } else if viewModel.taskType == .time {
+                //                    Text("Enter time time spend:")
+                //                    HStack {
+                //                        TextField("Hours", value: $viewModel.timeHours, format: .number, prompt: Text("Hours"))
+                //                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                //                            .keyboardType(.numberPad)
+                //                        TextField("Minutes", value: $viewModel.timeMinutes, format: .number, prompt: Text("Minutes"))
+                //                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                //                            .keyboardType(.numberPad)
+                //                        TextField("Seconds", value: $viewModel.timeSeconds, format: .number, prompt: Text("Seconds"))
+                //                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                //                            .keyboardType(.numberPad)
+                //                    }.padding(.horizontal, 16)
+                //
+                //                }
+                VStack {
+                    //                    ForEach(dayNames, id: \.self) { day in
+                    //                        Button {
+                    //                            if daysSelected.contains(day) {
+                    //                                daysSelected.removeAll(where: { $0 == day })
+                    //                            } else {
+                    //                                daysSelected.append(day)
+                    //                            }
+                    //                        } label: {
+                    //                            HStack {
+                    //                                if daysSelected.contains(day) {
+                    //                                    Image(systemName: "checkmark.circle")
+                    //                                        .tint(.black)
+                    //                                } else {
+                    //                                    Image(systemName: "circle")
+                    //                                        .tint(.black)
+                    //                                }
+                    //
+                    //                                Text(day)
+                    //                                    .frame(maxWidth: .infinity, alignment: .leading)
+                    //                                    .padding(.leading, 8)
+                    //                                    .tint(.black)
+                    //                            }
+                    //                            .padding(.leading, 16)
+                    //                            .padding(.top, 16)
+                    //                        }
+                    //
+                    //                    }
+                    //                    Text("Enter task notes:")
+                    //                        .padding(.horizontal, 16)
+                    //                    TextEditor(text: $viewModel.notes)
+                    //                        .overlay {
+                    //                            RoundedRectangle(cornerRadius: 8)
+                    //                                       .stroke(.black, lineWidth: 2)
+                    //                        }
+                    //                        .padding(.horizontal, 16)
                     Spacer()
                     Button {
-////                        let task = EventTask(
-////                            timestamp: Date(),
-////                            name: inputTaskName,
-////                            taskType: taskType,
-////                            amount: amount,
-////                            days: daysSelected.compactMap { dayNames.firstIndex(of: $0) },
-////                            notes: notes
-////                        )
-////                        modelContext.insert(task)
-//                        do {
-//                            try modelContext.save()
-//                            dismiss()
-//                        } catch {
-//                            viewModel.saveAlert = true
-//                        }
+                        //                        let task = EventTask(
+                        //                            timestamp: Date(),
+                        //                            name: inputTaskName,
+                        //                            taskType: taskType,
+                        //                            amount: amount,
+                        //                            days: daysSelected.compactMap { dayNames.firstIndex(of: $0) },
+                        //                            notes: notes
+                        //                        )
+                        //                        modelContext.insert(task)
+                        //                        do {
+                        //                            try modelContext.save()
+                        //                            dismiss()
+                        //                        } catch {
+                        //                            viewModel.saveAlert = true
+                        //                        }
                     } label: {
                         HStack {
                             Spacer()
@@ -129,4 +176,8 @@ struct AddTaskView: View {
             )
         }
     }
+}
+
+#Preview {
+    AddTaskView()
 }

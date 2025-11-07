@@ -13,5 +13,9 @@ class AddTaskViewModel: ObservableObject {
     
     @Published var saveAlert = false
     
+    var dayNames: [String] {
+        Calendar.current.weekdaySymbols
+    }
+    
     
 }

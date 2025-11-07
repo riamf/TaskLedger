@@ -81,13 +81,38 @@ enum Weekdays: Int, Codable, CaseIterable {
     case monday = 0, tuesday, wednesday, thursday, friday, saturday, sunday
 }
 
-enum RepeatingPattern: Codable {
+enum RepeatingPattern: Codable, Hashable, CustomCaseIterable {
+    
     case daily(weekdays: [Weekdays])
     case monthly(day: Int)
     case yearly(day: Int, month: Int)
+    
+    var name: String {
+        switch self {
+        case .daily:
+            return "Daily"
+        case .monthly:
+            return "Monthly"
+        case .yearly:
+            return "Yearly"
+        }
+    }
+    
+    static var allNames: [String] = [
+        RepeatingPattern.daily(weekdays: []).name,
+        RepeatingPattern.monthly(day: 0).name,
+        RepeatingPattern.yearly(day: 0, month: 0).name
+    ]
+    
+    static var allValuesSamples: [any CustomCaseIterable] = [
+        RepeatingPattern.daily(weekdays: []),
+        RepeatingPattern.monthly(day: 0),
+        RepeatingPattern.yearly(day: 0, month: 0)
+    ]
+        
 }
 
-enum TaskType: String, CaseIterable, Codable {
+enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
     case counter
     case cost
     case income
@@ -118,6 +143,18 @@ enum TaskType: String, CaseIterable, Codable {
         case .income: return "Income"
         case .time: return "timeer"
         }
+    }
+    
+    static var allNames: [String] {
+        TaskType.allCases.map { $0.taskName }
+    }
+    
+    static var allValuesSamples: [any CustomCaseIterable] {
+        TaskType.allCases
+    }
+    
+    var name: String {
+        self.taskName
     }
 }
 

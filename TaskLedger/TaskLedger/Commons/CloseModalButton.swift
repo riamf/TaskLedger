@@ -3,6 +3,8 @@ import SwiftUI
 struct CloseModalButton: View {
     @Environment(\.dismiss) private var dismiss
     
+    let dayNames = Calendar.current.weekdaySymbols
+    
     var body: some View {
         Button {
             dismiss()
