@@ -77,8 +77,21 @@ class EventTask: Identifiable {
     }
 }
 
-enum Weekdays: Int, Codable, CaseIterable {
+enum Weekdays: Int, Codable, CaseIterable, Identifiable {
     case monday = 0, tuesday, wednesday, thursday, friday, saturday, sunday
+    
+    var id: Int { rawValue }
+    var stringName: String {
+        switch self {
+            case .monday: return "Monday"
+            case .tuesday: return "Tuesday"
+            case .wednesday: return "Wednesday"
+            case .thursday: return "Thursday"
+            case .friday: return "Friday"
+            case .saturday: return "Saturday"
+            case .sunday: return "Sunday"
+        }
+    }
 }
 
 enum RepeatingPattern: Codable, Hashable, CustomCaseIterable {

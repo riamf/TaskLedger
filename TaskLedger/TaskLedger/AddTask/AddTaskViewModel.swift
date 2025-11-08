@@ -18,5 +18,20 @@ class AddTaskViewModel: ObservableObject {
         Calendar.current.weekdaySymbols
     }
     
+    func isDaySelected(_ day: Weekdays) -> Bool {
+        daysSelected.contains { str in
+            str == day.stringName
+        }
+    }
+    
+    func deselectDay(_ day: Weekdays) {
+        daysSelected.removeAll { dayName in
+            day.stringName == dayName
+        }
+    }
+    
+    func selectDay(_ day: Weekdays) {
+        daysSelected.append(day.stringName)
+    }
     
 }

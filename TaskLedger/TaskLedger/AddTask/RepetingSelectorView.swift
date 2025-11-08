@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RepetingSelectorView<T: CustomCaseIterable>: View {
-    @State var repeating: T
+    @Binding var repeating: T
     
     var body: some View {
         HStack {
@@ -21,5 +21,5 @@ struct RepetingSelectorView<T: CustomCaseIterable>: View {
 
 #Preview {
     @Previewable @State var pattern: RepeatingPattern = .monthly(day: 10)
-    RepetingSelectorView(repeating: pattern)
+    RepetingSelectorView(repeating: $pattern)
 }

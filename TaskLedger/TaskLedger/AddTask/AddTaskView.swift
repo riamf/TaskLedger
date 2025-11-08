@@ -54,6 +54,34 @@ struct AddTaskView: View {
                             .id(TaskType.time.number)
                         }
                     }
+                        VStack {
+                            ForEach(Weekdays.allCases, id: \.self) { day in
+                                CheckButton(
+                                    title: day.stringName,
+                                    isChecked: viewModel.isDaySelected(day),
+                                    value: day) { selected in
+                                        if viewModel.isDaySelected(selected) {
+                                            viewModel.deselectDay(selected)
+                                        } else {
+                                            viewModel.selectDay(selected)
+                                        }
+                                    }
+                            }
+                        }
+                        HStack {
+                            Text("Task Notes:")
+                            Spacer()
+                        }.padding(.horizontal, .spacing)
+                        TextField("",
+                                  text: $viewModel.notes,
+                                  prompt: Text("Enter notes here..."),
+                                  axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(5, reservesSpace: true)
+                        .padding(.horizontal, .spacing)
+                        .padding(.vertical, .spacingSmall)
+                            
+                            
                 }
                 .scrollTargetBehavior(.paging)
                 .scrollIndicators(.never)
