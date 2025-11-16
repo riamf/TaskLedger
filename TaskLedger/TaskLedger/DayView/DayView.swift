@@ -44,6 +44,9 @@ struct DayView: View {
                     viewModel.deleteTask(at: index)
                 }
             }
+            .refreshable {
+                viewModel.fetchTasks()
+            }
             Spacer()
             HStack {
                 Spacer()
