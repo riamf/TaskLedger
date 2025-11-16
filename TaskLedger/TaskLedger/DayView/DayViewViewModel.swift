@@ -12,6 +12,7 @@ class DayViewViewModel: ObservableObject {
     var currentDate: Date {
         didSet {
             dayString = dayDateFormatter.string(from: currentDate)
+            fetchTasks()
         }
     }
     @Published var dayString: String
@@ -20,6 +21,7 @@ class DayViewViewModel: ObservableObject {
     @Published var tasks: [EventTask] = []
     
     @DInjected(\.fetcher) private var fetcher: Fetcher
+    @DInjected(\.modelContext) private var modelContext: ModelContext?
     
     init(currentDate: Date) {
         self.currentDate = currentDate
@@ -42,6 +44,19 @@ class DayViewViewModel: ObservableObject {
     
     func previousDate() {
         currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? currentDate
+    }
+    
+    func deleteTask(at indexSet: IndexSet) {
+        do {
+            for index in indexSet {
+                let task = tasks.remove(at: index)
+                modelContext?.delete(task)
+            }
+            try modelContext?.save()
+            fetchTasks()
+        } catch {
+            print("Error deleting task: \(error.localizedDescription)")
+        }
     }
     
 }

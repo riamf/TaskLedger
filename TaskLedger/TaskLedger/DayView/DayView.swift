@@ -40,6 +40,8 @@ struct DayView: View {
             List {
                 ForEach(viewModel.tasks) { task in
                     Text(task.name)
+                }.onDelete { index in
+                    viewModel.deleteTask(at: index)
                 }
             }
             Spacer()

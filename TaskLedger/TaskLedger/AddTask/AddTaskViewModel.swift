@@ -14,6 +14,8 @@ class AddTaskViewModel: ObservableObject {
     
     @Published var saveAlert = false
     
+    @DInjected(\.modelContext) private var modelContext
+    
     var dayNames: [String] {
         Calendar.current.weekdaySymbols
     }
@@ -34,4 +36,21 @@ class AddTaskViewModel: ObservableObject {
         daysSelected.append(day.stringName)
     }
     
+    
+    func saveTask() {
+        let event = EventTask(
+            timestamp: Date(),
+            name: inputTaskName,
+            taskType: taskType, amount: amount,
+            days: daysSelected.compactMap { DaysCalculator.dayNumberForName($0) },
+            notes: notes,
+            events: []
+        )
+        do {
+            modelContext?.insert(event)
+            try modelContext?.save()
+        } catch {
+            saveAlert.toggle()
+        }
+    }
 }

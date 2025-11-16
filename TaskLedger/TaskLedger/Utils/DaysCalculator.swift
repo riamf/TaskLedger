@@ -36,5 +36,9 @@ struct DaysCalculator {
         let dayName = dayNameFormatter.string(from: date)
         return Calendar.current.weekdaySymbols.firstIndex(of: dayName) ?? -1
     }
+    
+    static func dayNumberForName(_ name: String) -> Int? {
+        return Calendar.current.weekdaySymbols.firstIndex(of: name)
+    }
 }
 
