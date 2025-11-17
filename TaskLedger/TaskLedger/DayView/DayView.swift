@@ -21,7 +21,7 @@ struct DayView: View {
     var body: some View {
         VStack {
             HStack {
-                TaskListViewButton(showTasksListView: viewModel.showTasksList)
+                TaskListViewButton(showTasksListView: $viewModel.showTasksList)
                     .padding(.horizontal, 16)
                 Spacer()
             }
@@ -65,7 +65,9 @@ struct DayView: View {
             TasksListView()
         }
         .sheet(isPresented: $viewModel.showAddTaskView) {
-            AddTaskView()
+            AddTaskView {
+                viewModel.fetchTasks()
+            }
         }
     }
     

@@ -40,12 +40,6 @@ struct TasksListView: View {
                                 Text(task.name)
                                     .padding(.horizontal, 4)
                                     .padding(.vertical, 2)
-                                HStack {
-//                                    ForEach(task.days, id: \.self) { day in
-//                                        Text(DaysCalculator.dayName(from: day))
-//                                            .font(.caption)
-//                                    }
-                                }
                                 .padding(.horizontal, 4)
                             }
                             Spacer()

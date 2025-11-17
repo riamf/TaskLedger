@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct AddTaskView: View {
+    var onAddAction: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel = AddTaskViewModel()
@@ -96,6 +97,7 @@ struct AddTaskView: View {
                 Spacer()
                 Button {
                     viewModel.saveTask()
+                    onAddAction?()
                     dismiss()
                 } label: {
                     HStack {
