@@ -37,6 +37,10 @@ class EventTask: Identifiable {
         })
     }
     
+    var isTodayDone: Bool {
+        todayEvent != nil
+    }
+    
     init(
         timestamp: Date,
         name: String,
@@ -59,9 +63,20 @@ class EventTask: Identifiable {
         self.repeatingPattern = repeatingPattern
     }
     
+    func dayEvent(_ date: Date = Date()) -> EventMark? {
+        let today = DaysCalculator.compDateFormatter.string(from: date)
+        return events.first(where: { event in
+            DaysCalculator.compDateFormatter.string(from: event.date) == today
+        })
+    }
+    
+    func isCheck(_ date: Date = Date()) -> Bool {
+        dayEvent(date) != nil
+    }
+    
     @discardableResult
-    func removeTodayEvent() -> EventMark? {
-        let today = DaysCalculator.compDateFormatter.string(from: Date())
+    func removeEventForDate(_ date: Date) -> EventMark? {
+        let today = DaysCalculator.compDateFormatter.string(from: date)
         let toReturn = todayEvent
         events.removeAll(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today

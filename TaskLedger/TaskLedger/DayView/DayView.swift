@@ -41,7 +41,15 @@ struct DayView: View {
             }
             List {
                 ForEach(viewModel.tasks) { task in
-                    Text(task.name)
+                    HStack {
+                        CheckButton(
+                            title: task.name,
+                            isChecked: task.isCheck(viewModel.currentDate),
+                            value: task) { tsk in
+                                viewModel.markTask(tsk)
+                            }
+                            .tint(.black)
+                    }
                 }
             }
             .refreshable {

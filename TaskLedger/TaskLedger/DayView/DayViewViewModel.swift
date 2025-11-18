@@ -22,7 +22,7 @@ class DayViewViewModel: ObservableObject {
     @Published var tasks: [EventTask] = []
     
     @DInjected(\.fetcher) private var fetcher: Fetcher
-    @DInjected(\.modelContext) private var modelContext: ModelContext?
+    @DInjected(\.modelContext) private var modelContext: ModelContext
     
     init(currentDate: Date) {
         self.currentDate = currentDate
@@ -51,13 +51,30 @@ class DayViewViewModel: ObservableObject {
         do {
             for index in indexSet {
                 let task = tasks.remove(at: index)
-                modelContext?.delete(task)
+                modelContext.delete(task)
             }
-            try modelContext?.save()
+            try modelContext.save()
             fetchTasks()
         } catch {
             print("Error deleting task: \(error.localizedDescription)")
         }
+    }
+    
+    func markTask(_ task: EventTask) {
+        do {
+            if task.isCheck(currentDate), let event = task.removeEventForDate(currentDate) {
+                modelContext.delete(event)
+            } else {
+                let eventMerk = EventMark(date: currentDate,
+                                          amount: task.amount,
+                                          task: task)
+                modelContext.insert(eventMerk)
+            }
+            try modelContext.save()
+        } catch {
+            
+        }
+    
     }
     
 }

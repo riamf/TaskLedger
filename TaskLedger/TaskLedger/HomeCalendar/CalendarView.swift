@@ -90,18 +90,18 @@ struct CalendarView: View {
                         }
                     }
                 }
-                //        List {
-                ForEach(viewModel.tasks, id: \.id) { task in
-                    VStack {
-                        HStack {
-                            Text(task.name)
-                                .tint(.black)
-                            Spacer()
-                            Text(task.getMonthSummaryTasks(month: month, year: year))
-                                .tint(.black)
+                List {
+                    ForEach(viewModel.tasks, id: \.id) { task in
+                        VStack {
+                            HStack {
+                                Text(task.name)
+                                    .tint(.black)
+                                Spacer()
+                                Text(task.getMonthSummaryTasks(month: month, year: year))
+                                    .tint(.black)
+                            }
                         }
                     }
-                    //          }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
