@@ -24,6 +24,8 @@ struct DayView: View {
                 TaskListViewButton(showTasksListView: $viewModel.showTasksList)
                     .padding(.horizontal, 16)
                 Spacer()
+                CalendarButtonView(showCalendarView: $viewModel.showCalendar)
+                    .padding(.horizontal, 16)
             }
             Spacer()
             HStack {
@@ -40,8 +42,6 @@ struct DayView: View {
             List {
                 ForEach(viewModel.tasks) { task in
                     Text(task.name)
-                }.onDelete { index in
-                    viewModel.deleteTask(at: index)
                 }
             }
             .refreshable {
@@ -68,6 +68,9 @@ struct DayView: View {
             AddTaskView {
                 viewModel.fetchTasks()
             }
+        }
+        .sheet(isPresented: $viewModel.showCalendar) {
+            CalendarView(selectedDate: $viewModel.currentDate)
         }
     }
     

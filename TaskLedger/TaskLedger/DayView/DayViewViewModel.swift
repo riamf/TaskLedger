@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 class DayViewViewModel: ObservableObject {
-    var currentDate: Date {
+    @Published var currentDate: Date {
         didSet {
             dayString = dayDateFormatter.string(from: currentDate)
             fetchTasks()
@@ -17,6 +17,7 @@ class DayViewViewModel: ObservableObject {
     }
     @Published var dayString: String
     @Published var showTasksList: Bool = false
+    @Published var showCalendar: Bool = false
     @Published var showAddTaskView: Bool = false
     @Published var tasks: [EventTask] = []
     
