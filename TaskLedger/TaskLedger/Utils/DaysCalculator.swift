@@ -1,9 +1,3 @@
-//
-//  DaysCalculator.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 26/10/2025.
-//
 import Foundation
 
 fileprivate func dateFormatterFactory(_ format: String) -> DateFormatter {
@@ -39,6 +33,10 @@ struct DaysCalculator {
     
     static func dayNumberForName(_ name: String) -> Int? {
         return Calendar.current.weekdaySymbols.firstIndex(of: name)
+    }
+    
+    static func equalDatesDayMonthYear(_ date1: Date, date2: Date) -> Bool {
+        return compDateFormatter.string(from: date1) == compDateFormatter.string(from: date2)
     }
 }
 

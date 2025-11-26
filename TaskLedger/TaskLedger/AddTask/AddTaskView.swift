@@ -1,10 +1,3 @@
-//
-//  AddTaskView.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 01/10/2025.
-//
-
 import SwiftData
 import SwiftUI
 

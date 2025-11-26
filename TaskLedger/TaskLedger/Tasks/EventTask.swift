@@ -46,6 +46,7 @@ class EventTask: Identifiable {
         name: String,
         taskType: TaskType = .counter,
         amount: Double = 0.0,
+        taskFixedDate: Date? = nil,
         days: [Int] = [],
         notes: String = "",
         repeatingPattern: RepeatingPattern? = nil,
@@ -61,12 +62,13 @@ class EventTask: Identifiable {
         self.notes = notes
         self.events = events
         self.repeatingPattern = repeatingPattern
+        self.taskFixedDate = taskFixedDate
     }
     
     func dayEvent(_ date: Date = Date()) -> EventMark? {
-        let today = DaysCalculator.compDateFormatter.string(from: date)
+        let givenDate = DaysCalculator.compDateFormatter.string(from: date)
         return events.first(where: { event in
-            DaysCalculator.compDateFormatter.string(from: event.date) == today
+            DaysCalculator.compDateFormatter.string(from: event.date) == givenDate
         })
     }
     
@@ -77,7 +79,7 @@ class EventTask: Identifiable {
     @discardableResult
     func removeEventForDate(_ date: Date) -> EventMark? {
         let today = DaysCalculator.compDateFormatter.string(from: date)
-        let toReturn = todayEvent
+        let toReturn = dayEvent(date)
         events.removeAll(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
         })

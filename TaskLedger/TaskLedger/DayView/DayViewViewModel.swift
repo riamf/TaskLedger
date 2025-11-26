@@ -71,6 +71,7 @@ class DayViewViewModel: ObservableObject {
                 modelContext.insert(eventMerk)
             }
             try modelContext.save()
+            fetchTasks()
         } catch {
             
         }

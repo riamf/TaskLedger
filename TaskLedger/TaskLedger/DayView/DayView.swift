@@ -11,13 +11,8 @@ import SwiftData
 
 struct DayView: View {
     
-    @StateObject var viewModel: DayViewViewModel
-    @Query var tasks: [EventTask]
-    
-    init() {
-        _viewModel = StateObject(wrappedValue: DayViewViewModel(currentDate: Date()))
-    }
-    
+    @StateObject var viewModel: DayViewViewModel = DayViewViewModel(currentDate: Date())
+        
     var body: some View {
         VStack {
             HStack {

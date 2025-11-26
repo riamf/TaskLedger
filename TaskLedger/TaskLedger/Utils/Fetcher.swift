@@ -12,6 +12,10 @@ final class Fetcher {
             let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
             return tasks.filter { task in
                 task.days.contains(dayNumber)
+                || (
+                    task.taskFixedDate != nil
+                    && DaysCalculator.equalDatesDayMonthYear(task.taskFixedDate!, date2: date)
+                )
             }
         } catch {
             return []

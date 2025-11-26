@@ -42,6 +42,7 @@ class AddTaskViewModel: ObservableObject {
             timestamp: Date(),
             name: inputTaskName,
             taskType: taskType, amount: amount,
+            taskFixedDate: daysSelected.isEmpty ? Date() : nil,
             days: daysSelected.compactMap { DaysCalculator.dayNumberForName($0) },
             notes: notes,
             events: []
