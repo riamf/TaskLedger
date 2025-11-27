@@ -1,18 +1,12 @@
-# TaskLedger: Product Design Document Template
-
-This template provides a structured framework for documenting TaskLedger's product design. Complete each section thoroughly—your responses will form the authoritative product design specification that guides all development decisions.
+# TaskLedger: Product Design Document
 
 ---
 
 ## 1. Product Overview and Context
 
 ### 1.1 Product Name and Description
-**Fill this in:** What is TaskLedger? Provide a 2-3 sentence elevator pitch.
-
-*Example: "TaskLedger is an iOS tracking app for personal productivity. It helps users log daily events, expenses, income, and time investment with specialized views for daily tracking and monthly analytics."*
-
-**Your description:**
-[Your response here]
+Task Ledger is an iOS app that alows users to track their everyday activities like time spent on something, number of occurences of some event and
+also a cost and income tracking. It provides monthly summaries and export csv functionality.
 
 ---
 
@@ -21,8 +15,8 @@ This template provides a structured framework for documenting TaskLedger's produ
 
 *Example: "Users struggle with generic task managers that don't support specialized tracking. Existing apps lack intuitive daily logging, financial tracking features, or meaningful monthly insights."*
 
-**Your problem statement:**
-[Your response here]
+Main priblem is tasks tracking, and summarizing over some period of time. There is no solution on the market that does just that.
+Only possible way is excel/google sheet but it is cumbersome to use and maintain, also not available in the palm of your hand like mobile app is. 
 
 ---
 
