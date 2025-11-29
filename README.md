@@ -11,44 +11,37 @@ also a cost and income tracking. It provides monthly summaries and export csv fu
 ---
 
 ### 1.2 Problem Statement
-**Fill this in:** What specific problem does TaskLedger solve? Describe the user pain point and why existing solutions don't work.
-
-*Example: "Users struggle with generic task managers that don't support specialized tracking. Existing apps lack intuitive daily logging, financial tracking features, or meaningful monthly insights."*
-
 Main priblem is tasks tracking, and summarizing over some period of time. There is no solution on the market that does just that.
 Only possible way is excel/google sheet but it is cumbersome to use and maintain, also not available in the palm of your hand like mobile app is. 
 
 ---
 
 ### 1.3 Product Vision
-**Fill this in:** What is the long-term vision for TaskLedger? Where do you want it to be in 12+ months?
-
-*Example: "Become the go-to iOS tracking app for users who value simplicity, personalization, and data-driven daily insights."*
-
-**Your vision:**
-[Your response here]
+In next year I want this app to be on AppStore and have more than 1k downloads.
 
 ---
 
 ## 2. Target Users and Personas
 
 ### 2.1 Primary User Persona
-**Fill this in:** Describe your primary target user in detail.
-
-- **Name/Title**: [e.g., "Sarah, the Freelancer"]
-- **Age Range**: [e.g., "28–40"]
-- **Background**: [e.g., "Self-employed consultant, manages own finances"]
-- **Pain Points**: [e.g., "Needs to track income and expenses daily; wants monthly summaries for tax prep"]
-- **Goals**: [e.g., "Quick daily logging; clear month-end financial reports"]
-- **Device Usage**: [e.g., "iOS only; uses iPhone 14 Pro"]
-- **Why They Need TaskLedger**: [e.g., "Existing apps are too complex or don't support financial tracking"]
+- Sarah the worker
+- 20-60
+- normal everyday worker aand house wife
+- Needs to track income and expenses daily; wants monthly summaries to know where money goes
+- Having knowledge about tasks done 
+- iPhone with iOS
+- There is no app that have all these features.
 
 ---
 
 ### 2.2 Secondary User Personas
-**Fill this in:** Describe 1–2 secondary personas (if applicable).
-
-[Repeat the structure above for each secondary persona]
+- Bob the student
+- 20-40
+- normal student
+- Needs to track time spend on some tasks, gaming, study sessions and event and how many times they occur
+- Having knowledge about where time goes
+- iPhone with iOS
+- There is no app that have all these features.
 
 ---
 
@@ -57,8 +50,8 @@ Only possible way is excel/google sheet but it is cumbersome to use and maintain
 
 | Persona | Primary Job | Secondary Jobs | Success Criteria |
 |---------|-------------|-----------------|------------------|
-| [Persona 1] | [Main task they want to accomplish] | [Other tasks] | [How they measure success] |
-| [Persona 2] | [Main task they want to accomplish] | [Other tasks] | [How they measure success] |
+| [Persona 1] | Log in income and costs | Track how many times her kids where eating out this month | By using counter in app she will know it |
+| [Persona 2] | Track time spend on gaming sessions | Track missed lessons or how many times he was late for lesson | Measuting time event in app and measuring timer occurences |
 
 ---
 
@@ -67,11 +60,11 @@ Only possible way is excel/google sheet but it is cumbersome to use and maintain
 ### 3.1 Core Features (Must Have for MVP)
 **Fill this in:** List the essential features required for launch. For each feature, describe what it does and why it's critical.
 
-**Feature 1: [Name]**
-- **Description**: [What it does]
-- **User Benefit**: [Why users need it]
-- **Success Criteria**: [How you'll know it's working]
-- **UI Considerations**: [Key interaction patterns or design notes]
+**Feature 1: Defining Tasks**
+- **Description**: User should be able to define task, this includes: naming task, selecting task type, adding notes(optional), adding amount(cost, income), adding time spent(time task), ability to define if task repeats, if not it is one time only task with fixed date
+- **User Benefit**: Declared once task will be visible on day view
+- **Success Criteria**: Added task is visible in task list and on day view if date filter match
+- **UI Considerations**: Adding from home screen by using floating plus button
 
 **Feature 2: [Name]**
 - **Description**: [What it does]
