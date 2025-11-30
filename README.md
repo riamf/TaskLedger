@@ -66,20 +66,39 @@ In next year I want this app to be on AppStore and have more than 1k downloads.
 - **Success Criteria**: Added task is visible in task list and on day view if date filter match
 - **UI Considerations**: Adding from home screen by using floating plus button
 
-**Feature 2: [Name]**
-- **Description**: [What it does]
-- **User Benefit**: [Why users need it]
-- **Success Criteria**: [How you'll know it's working]
-- **UI Considerations**: [Key interaction patterns or design notes]
+**Feature 2: Disaply Tasks for today**
+- **Description**: Main app View should show all tasks defined for today, it should allow. marking task as done and visually show done tasks, maybe move them down to the list. This view should also allow to change current date forward or backward, and tasks list should adjust acordingly. This view should also allow pausing task and it should be moved to last section PAUSED where it could be broth back or would just be visible.
+- **User Benefit**: User will be able to quickly mark tasks as done.
+- **Success Criteria**: List displays all tasks with split done/not done.
+- **UI Considerations**: Date switcher on top with navigaiton controls to switch to calendar summary and to show tasks lists, both views should be shown modally, there also should be a plus icon to show modally view for defining new task.
 
-[Repeat for all "Must Have" features]
+
+**Feature 3: Show Tasks list**
+- **Description**: Tasks list should show all available tasks. You should be able to delete tasks with all its events from here(Mark as deleted but not delete events to be able to show them historically). You should be able to edit tasks from here also pause them.
+- **User Benefit**: Quick and easy way to edit/delete/pause tasks.
+- **Success Criteria**: Tasks list displays with some details on the list with ability to go to task edition.
+- **UI Considerations**: Simplae CRUD list to disaply.
+
+
+**Feature 4: Calendar View**
+- **Description**: Calendar view should as name siggest show calendar with summary list below with all task events availbe on the presented month, this is also the place to export to csv file. Cost summary should add all costs group by task, income should work same as cost, time tasks should summarize all time spend on task counter should summarize ocurrences of tasks.
+- **User Benefit**: Easy way of looking at month summary and one click export to csv.
+- **Success Criteria**: Calendar clear view with marked current date and list of summarized task types , counters, income, costs, timers.
+- **UI Considerations**: Clear design that will show list and nice calendar on top.
+
+
+**Feature 5: Edit task**
+- **Description**: This should work same as define task and should but also store old version.
+- **User Benefit**: User will be able to quickly edit task name or reoccurences.
+- **Success Criteria**: Task adding view is displayed with current data information.
+- **UI Considerations**: Same as adding new tasks
 
 ---
 
 ### 3.2 Secondary Features (Should Have for v1.1)
 **Fill this in:** List features that enhance user experience but aren't essential for launch.
 
-[Follow same structure as 3.1 for each "Should Have" feature]
+
 
 ---
 
