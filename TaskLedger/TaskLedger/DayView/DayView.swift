@@ -12,63 +12,66 @@ import SwiftData
 struct DayView: View {
     
     @StateObject var viewModel: DayViewViewModel = DayViewViewModel(currentDate: Date())
-        
+    
     var body: some View {
-        VStack {
-            HStack {
-                TaskListViewButton(showTasksListView: $viewModel.showTasksList)
-                    .padding(.horizontal, 16)
+        NavigationStack {
+            VStack {
+                HStack {
+                    TaskListViewButton(showTasksListView: $viewModel.showTasksList)
+                        .padding(.horizontal, 16)
+                    Spacer()
+                    CalendarButtonView(showCalendarView: $viewModel.showCalendar)
+                        .padding(.horizontal, 16)
+                }
                 Spacer()
-                CalendarButtonView(showCalendarView: $viewModel.showCalendar)
-                    .padding(.horizontal, 16)
-            }
-            Spacer()
-            HStack {
-                ButtonArrowLeft {
-                    viewModel.previousDate()
-                }
-                Text(viewModel.dayString)
-                    .tint(.black)
-                    .font(.headline)
-                ButtonArrowRight {
-                    viewModel.nextDate()
-                }
-            }
-            List {
-                ForEach(viewModel.tasks) { task in
-                    HStack {
-                        VStack(alignment: .leading, spacing: .spacingSmall) {
-                            CheckButton(
-                                title: task.name,
-                                isChecked: task.isCheck(viewModel.currentDate),
-                                value: task) { tsk in
-                                    viewModel.markTask(tsk)
-                                }
-                            HStack {
-                                ForEach(0..<task.days.count) { idx in
-                                    Text(DaysCalculator.dayName(from: task.days[idx]))
-                                }
-                                Spacer()
-                            }
-                        }
+                HStack {
+                    ButtonArrowLeft {
+                        viewModel.previousDate()
+                    }
+                    Text(viewModel.dayString)
                         .tint(.black)
-                        Spacer()
+                        .font(.headline)
+                    ButtonArrowRight {
+                        viewModel.nextDate()
                     }
                 }
-            }
-            .refreshable {
-                viewModel.fetchTasks()
-            }
-            Spacer()
-            HStack {
-                Spacer()
-                AddTaskButton {
-                    viewModel.showAddTaskView.toggle()
+                List {
+                    ForEach(viewModel.tasks) { task in
+                        HStack {
+                            VStack(alignment: .leading, spacing: .spacingSmall) {
+                                CheckButton(
+                                    title: task.name,
+                                    isChecked: task.isCheck(viewModel.currentDate),
+                                    value: task) { tsk in
+                                        viewModel.markTask(tsk)
+                                    }
+                                HStack {
+                                    ForEach(0..<task.days.count) { idx in
+                                        Text(DaysCalculator.dayName(from: task.days[idx]))
+                                    }
+                                    Spacer()
+                                }
+                            }
+                            .tint(.black)
+                            Spacer()
+                        }
+                    }
                 }
-                .padding(.trailing, 32)
-                .padding(.bottom, 16)
+                .refreshable {
+                    viewModel.fetchTasks()
+                }
+                Spacer()
+                HStack {
+                    Spacer()
+                    AddTaskButton {
+                        viewModel.showAddTaskView.toggle()
+                    }
+                    .padding(.trailing, 32)
+                    .padding(.bottom, 16)
+                }
+                Spacer()
             }
-            Spacer()
+            .navigationTitle("title")
         }
         .onAppear {
             viewModel.fetchTasks()
