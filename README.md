@@ -96,8 +96,7 @@ In next year I want this app to be on AppStore and have more than 1k downloads.
 ---
 
 ### 3.2 Secondary Features (Should Have for v1.1)
-**Fill this in:** List features that enhance user experience but aren't essential for launch.
-
+- cost and income should have categories selector also screen to define these categories
 
 
 ---
