@@ -71,7 +71,7 @@ struct DayView: View {
                 }
                 Spacer()
             }
-            .navigationTitle("title")
+            .navigationBarTitle("Title", displayMode: .inline)
         }
         .onAppear {
             viewModel.fetchTasks()
