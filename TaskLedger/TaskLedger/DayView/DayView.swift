@@ -71,7 +71,19 @@ struct DayView: View {
                 }
                 Spacer()
             }
-            .navigationBarTitle("Title", displayMode: .inline)
+            .navigationBarTitle(viewModel.dayString, displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    ButtonArrowLeft {
+                        viewModel.previousDate()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonArrowRight {
+                        viewModel.nextDate()
+                    }
+                }
+            }
         }
         .onAppear {
             viewModel.fetchTasks()
