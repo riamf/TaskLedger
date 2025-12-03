@@ -16,49 +16,37 @@ struct DayView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    TaskListViewButton(showTasksListView: $viewModel.showTasksList)
-                        .padding(.horizontal, 16)
+                if viewModel.tasks.isEmpty {
                     Spacer()
-                    CalendarButtonView(showCalendarView: $viewModel.showCalendar)
-                        .padding(.horizontal, 16)
-                }
-                Spacer()
-                HStack {
-                    ButtonArrowLeft {
-                        viewModel.previousDate()
-                    }
-                    Text(viewModel.dayString)
-                        .tint(.black)
-                        .font(.headline)
-                    ButtonArrowRight {
-                        viewModel.nextDate()
-                    }
-                }
-                List {
-                    ForEach(viewModel.tasks) { task in
-                        HStack {
-                            VStack(alignment: .leading, spacing: .spacingSmall) {
-                                CheckButton(
-                                    title: task.name,
-                                    isChecked: task.isCheck(viewModel.currentDate),
-                                    value: task) { tsk in
-                                        viewModel.markTask(tsk)
+                    Text("Nothing To See Here")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                } else {
+                    List {
+                        ForEach(viewModel.tasks) { task in
+                            HStack {
+                                VStack(alignment: .leading, spacing: .spacingSmall) {
+                                    CheckButton(
+                                        title: task.name,
+                                        isChecked: task.isCheck(viewModel.currentDate),
+                                        value: task) { tsk in
+                                            viewModel.markTask(tsk)
+                                        }
+                                    HStack {
+                                        ForEach(0..<task.days.count) { idx in
+                                            Text(DaysCalculator.dayName(from: task.days[idx]))
+                                        }
+                                        Spacer()
                                     }
-                                HStack {
-                                    ForEach(0..<task.days.count) { idx in
-                                        Text(DaysCalculator.dayName(from: task.days[idx]))
-                                    }
-                                    Spacer()
                                 }
+                                .tint(.black)
+                                Spacer()
                             }
-                            .tint(.black)
-                            Spacer()
                         }
                     }
-                }
-                .refreshable {
-                    viewModel.fetchTasks()
+                    .refreshable {
+                        viewModel.fetchTasks()
+                    }
                 }
                 Spacer()
                 HStack {
