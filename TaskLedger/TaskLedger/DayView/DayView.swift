@@ -15,49 +15,43 @@ struct DayView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if viewModel.tasks.isEmpty {
-                    Spacer()
-                    Text("Nothing To See Here")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                } else {
-                    List {
-                        ForEach(viewModel.tasks) { task in
-                            HStack {
-                                VStack(alignment: .leading, spacing: .spacingSmall) {
-                                    CheckButton(
-                                        title: task.name,
-                                        isChecked: task.isCheck(viewModel.currentDate),
-                                        value: task) { tsk in
-                                            viewModel.markTask(tsk)
+            ZStackLayout(alignment: .bottomTrailing) {
+                VStack {
+                    if viewModel.tasks.isEmpty {
+                        Spacer()
+                        Text("Nothing To See Here")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        
+                    } else {
+                        List {
+                            ForEach(viewModel.tasks) { task in
+                                HStack {
+                                    VStack(alignment: .leading, spacing: .spacingSmall) {
+                                        CheckButton(
+                                            title: task.name,
+                                            isChecked: task.isCheck(viewModel.currentDate),
+                                            value: task) { tsk in
+                                                viewModel.markTask(tsk)
+                                            }
+                                        HStack {
+                                            ForEach(0..<task.days.count) { idx in
+                                                Text(DaysCalculator.dayName(from: task.days[idx]))
+                                            }
+                                            Spacer()
                                         }
-                                    HStack {
-                                        ForEach(0..<task.days.count) { idx in
-                                            Text(DaysCalculator.dayName(from: task.days[idx]))
-                                        }
-                                        Spacer()
                                     }
+                                    .tint(.black)
+                                    Spacer()
                                 }
-                                .tint(.black)
-                                Spacer()
                             }
                         }
+                        .refreshable {
+                            viewModel.fetchTasks()
+                        }
                     }
-                    .refreshable {
-                        viewModel.fetchTasks()
-                    }
-                }
-                Spacer()
-                HStack {
                     Spacer()
-                    AddTaskButton {
-                        viewModel.showAddTaskView.toggle()
-                    }
-                    .padding(.trailing, 32)
-                    .padding(.bottom, 16)
                 }
-                Spacer()
             }
             .navigationBarTitle(viewModel.dayString, displayMode: .inline)
             .toolbar {
@@ -71,6 +65,15 @@ struct DayView: View {
                         viewModel.nextDate()
                     }
                 }
+            }
+            
+            HStack {
+                Spacer()
+                AddTaskButton {
+                    viewModel.showAddTaskView.toggle()
+                }
+                .padding(.trailing, 44)
+                .padding(.bottom, 32)
             }
         }
         .onAppear {
