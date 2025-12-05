@@ -59,6 +59,8 @@ struct DayView: View {
                     ButtonArrowLeft {
                         viewModel.previousDate()
                     }
+                    .buttonStyle(.plain)
+                    .background(Color.clear)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonArrowRight {
