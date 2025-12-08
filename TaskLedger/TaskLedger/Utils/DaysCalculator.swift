@@ -38,5 +38,11 @@ struct DaysCalculator {
     static func equalDatesDayMonthYear(_ date1: Date, date2: Date) -> Bool {
         return compDateFormatter.string(from: date1) == compDateFormatter.string(from: date2)
     }
+    
+    static func dateAtStartOfMonth(from date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: date)
+        return calendar.date(from: components) ?? date
+    }
 }
 
