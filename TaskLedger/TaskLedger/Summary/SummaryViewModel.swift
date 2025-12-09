@@ -1,7 +1,13 @@
 import Foundation
 import SwiftUI
 
-@Observable class SummaryViewModel {
-    var currentMonthDate: Date = DaysCalculator.dateAtStartOfMonth(from: Date())
-    
+final class SummaryViewModel: ObservableObject {
+    @Published var currentMonthDate: Date = DaysCalculator.dateAtStartOfMonth(from: Date())
+    @DInjected(\.fetcher) private var fetcher: Fetcher
+
+    init() {}
+
+    func fetchData() {
+        
+    }
 }

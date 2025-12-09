@@ -21,4 +21,8 @@ final class Fetcher {
             return []
         }
     }
+    
+    func fetchSummary(for date: Date) {
+        
+    }
 }
