@@ -23,6 +23,18 @@ final class Fetcher {
     }
     
     func fetchSummary(for date: Date) {
-        
+        let searchedMonth = DaysCalculator.monthFormatter.string(from: date)
+        let searchedYear = DaysCalculator.yearFormatter.string(from: date)
+        do {
+            let predicate = #Predicate<EventMark>() {
+                $0.month == searchedMonth && $0.year == searchedYear
+            }
+            let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
+            let uniqueTasks = Set(events.map { $0.task })
+            
+            
+        } catch {
+            return []
+        }
     }
 }

@@ -8,6 +8,6 @@ final class SummaryViewModel: ObservableObject {
     init() {}
 
     func fetchData() {
-        
+        fetcher.fetchSummary(for: currentMonthDate)
     }
 }
