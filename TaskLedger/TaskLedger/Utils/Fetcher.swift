@@ -22,7 +22,7 @@ final class Fetcher {
         }
     }
     
-    func fetchSummary(for date: Date) {
+    func fetchSummary(for date: Date) -> [EventTask: [EventMark]] {
         let searchedMonth = DaysCalculator.monthFormatter.string(from: date)
         let searchedYear = DaysCalculator.yearFormatter.string(from: date)
         do {
@@ -30,11 +30,24 @@ final class Fetcher {
                 $0.month == searchedMonth && $0.year == searchedYear
             }
             let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
-            let uniqueTasks = Set(events.map { $0.task })
-            
-            
+            var eventsDict = [EventTask: [EventMark]]()
+            events.forEach { event in
+                guard let task = event.task else { return }
+                eventsDict[task] = (eventsDict[task] ?? []) + [event]
+            }
+            return eventsDict
         } catch {
-            return []
+            return [:]
         }
+    }
+}
+
+struct EventMartSummary {
+    let amountSummary: Double
+    let counterSummary: Int
+    
+    init(events: [EventMark]) {
+        amountSummary = events.reduce(0.0, { $0 + $1.amount })
+        counterSummary = events.filter { $0.task?.taskType == .counter }.count
     }
 }
