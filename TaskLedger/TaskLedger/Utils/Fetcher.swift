@@ -45,9 +45,11 @@ final class Fetcher {
 struct EventMartSummary {
     let amountSummary: Double
     let counterSummary: Int
+    let timeSummary: Int
     
     init(events: [EventMark]) {
         amountSummary = events.reduce(0.0, { $0 + $1.amount })
         counterSummary = events.filter { $0.task?.taskType == .counter }.count
+        timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
     }
 }

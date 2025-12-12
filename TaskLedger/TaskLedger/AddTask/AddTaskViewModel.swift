@@ -38,6 +38,7 @@ class AddTaskViewModel: ObservableObject {
     
     
     func saveTask() {
+        // calculate amount base on time spend 
         let event = EventTask(
             timestamp: Date(),
             name: inputTaskName,
