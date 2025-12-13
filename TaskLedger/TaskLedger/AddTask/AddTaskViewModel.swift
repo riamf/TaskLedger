@@ -41,7 +41,7 @@ class AddTaskViewModel: ObservableObject {
         // calculate amount base on time spend
         var customAmount: Double?
         if taskType == .time {
-            customAmount = timeHours * 3600 + timeMinutes * 60 + timeSeconds
+            customAmount = Double(timeHours * 3600 + timeMinutes * 60 + timeSeconds)
         }
         let event = EventTask(
             timestamp: Date(),
