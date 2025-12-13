@@ -38,11 +38,15 @@ class AddTaskViewModel: ObservableObject {
     
     
     func saveTask() {
-        // calculate amount base on time spend 
+        // calculate amount base on time spend
+        var customAmount: Double?
+        if taskType == .time {
+            customAmount = timeHours * 3600 + timeMinutes * 60 + timeSeconds
+        }
         let event = EventTask(
             timestamp: Date(),
             name: inputTaskName,
-            taskType: taskType, amount: amount,
+            taskType: taskType, amount: customAmount ?? amount,
             taskFixedDate: daysSelected.isEmpty ? Date() : nil,
             days: daysSelected.compactMap { DaysCalculator.dayNumberForName($0) },
             notes: notes,
