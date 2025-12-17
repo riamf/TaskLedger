@@ -30,7 +30,7 @@ struct TaskLedgerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            DayView()
+            MainView()
         }
         .modelContainer(sharedModelContainer)
     }

@@ -5,13 +5,15 @@ struct MainView: View {
         TabView {
             DayView()
                 .tabItem {
-                    Label("Day", systemImage: "calendar.day.timeline.left").tint(.black)
+                    Label("Day", systemImage: "calendar.day.timeline.left")
                 }
+
             SummaryView()
                 .tabItem {
-                    Label("Summary", systemImage: "sum").tint(.black)
+                    Label("Summary", systemImage: "chart.bar.fill")
                 }
         }
+        .tint(.black)
     }
 }
 
