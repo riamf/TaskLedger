@@ -27,7 +27,7 @@ final class Fetcher {
         let searchedYear = DaysCalculator.yearFormatter.string(from: date)
         do {
             let predicate = #Predicate<EventMark>() {
-                $0.month == searchedMonth && $0.year == searchedYear
+                $0.month == searchedMonth && $0.year == searchedYear // hmm
             }
             let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
             var eventsDict = [EventTask: EventMartSummary]()
