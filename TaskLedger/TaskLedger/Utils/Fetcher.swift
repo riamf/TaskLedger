@@ -27,11 +27,23 @@ final class Fetcher {
         let searchedYear = DaysCalculator.yearFormatter.string(from: date)
         do {
             let predicate = #Predicate<EventMark>() {
-                $0.month == searchedMonth && $0.year == searchedYear // hmm
+                $0.month == searchedMonth && $0.year == searchedYear
             }
             let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
+            
+            // Group events by their associated task (skip events without a task)
+            var grouped = [EventTask: [EventMark]]()
+            for event in events {
+                guard let task = event.task else { continue }
+                grouped[task, default: []].append(event)
+            }
+            
+            // Map grouped events into summaries
             var eventsDict = [EventTask: EventMartSummary]()
-            let summaryModel = EventMartSummary(events: events)
+            for (task, eventsForTask) in grouped {
+                eventsDict[task] = EventMartSummary(events: eventsForTask)
+            }
+            
             return eventsDict
         } catch {
             return [:]
