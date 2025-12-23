@@ -10,19 +10,17 @@ struct SummaryView: View {
                     HStack {
                         Image(systemName: eventTask.taskType.imageName)
                         Text(eventTask.name)
-                    }
+                    }.padding(.leading, 0)
                     let summary = viewModel.eventsDict[eventTask]
                     HStack {
                         Text(eventTask.taskType.taskName)
-                        if eventTask.taskType == .counter, let counterSummary = summary?.counterSummary {
-                            Text("\(counterSummary)")
-                        } else if eventTask.taskType == .time, let timerSummary = summary?.amountSummary {
-                            Text("\(timerSummary)")
-                        } else if eventTask.taskType == .cost || eventTask.taskType == .income, let summary = summary?.amountSummary {
-                            Text("\(summary)")
-                        }
-                            
-                        
+                    }
+                    if eventTask.taskType == .counter, let counterSummary = summary?.counterSummary {
+                        Text("\(counterSummary)")
+                    } else if eventTask.taskType == .time, let timerSummary = summary?.amountSummary {
+                        Text("\(timerSummary)")
+                    } else if eventTask.taskType == .cost || eventTask.taskType == .income, let summary = summary?.amountSummary {
+                        Text("\(summary)")
                     }
                         
                     
