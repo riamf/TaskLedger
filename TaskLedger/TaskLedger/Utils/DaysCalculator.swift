@@ -14,6 +14,7 @@ struct DaysCalculator {
     static let hourFormatter = dateFormatterFactory("HH")
     static let minuteFormatter = dateFormatterFactory("mm")
     static let compDateFormatter = dateFormatterFactory("yyyy-MM-dd")
+    static let monthYearFormatter = dateFormatterFactory("MMMM yyyy")
     
     static func todayNumberInWeek() -> Int {
         return dayNumberInWeekFrom(Date())
