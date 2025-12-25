@@ -35,10 +35,11 @@ struct SummaryView: View {
                     }
                     .refreshable {
                         viewModel.fetchData()
-                    }.onAppear {
-                        viewModel.fetchData()
                     }
                 }
+            }
+            .onAppear {
+                viewModel.fetchData()
             }
             .navigationBarTitle(viewModel.currentMonthDateString, displayMode: .inline)
             .toolbar {
