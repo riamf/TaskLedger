@@ -19,7 +19,6 @@ struct SummaryView: View {
                                     Text(eventTask.name)
                                     let summary = viewModel.eventsDict[eventTask]
                                     HStack {
-                                        Text(eventTask.taskType.taskName)
                                         Spacer()
                                         if eventTask.taskType == .counter, let counterSummary = summary?.counterSummary {
                                             Text("\(counterSummary)")
