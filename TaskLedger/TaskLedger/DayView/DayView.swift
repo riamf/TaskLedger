@@ -50,7 +50,6 @@ struct DayView: View {
                             viewModel.fetchTasks()
                         }
                     }
-                    Spacer()
                 }
             }
             .navigationBarTitle(viewModel.dayString, displayMode: .inline)
