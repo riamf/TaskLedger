@@ -25,7 +25,7 @@ struct SummaryView: View {
                                         } else if eventTask.taskType == .time, let timerSummary = summary?.amountSummary {
                                             Text("\(timerSummary)")
                                         } else if eventTask.taskType == .cost || eventTask.taskType == .income, let summary = summary?.amountSummary {
-                                            Text("\(summary)")
+                                            Text(MoneyFormatter.formatter.string(from: NSNumber(value: summary)) ?? "\(summary)")
                                         }
                                     }
                                 }.padding(.leading, 0)
