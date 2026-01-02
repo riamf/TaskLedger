@@ -13,9 +13,12 @@ struct IncomeInputView: View {
             Text("Enter income amount:")
                 .padding(.leading, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            TextField("", value: $amount, format: .number)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal, 16)
+            HStack {
+                TextField("", value: $amount, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.horizontal, 16)
+                Text(MoneyFormatter.localeCurrencyCode).padding(.trailing, 16)
+            }
         }
     }
 }

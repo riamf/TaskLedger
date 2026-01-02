@@ -8,7 +8,7 @@ final class MoneyFormatter {
         return formatter
     }()
     
-    static let localeCurrencyCode: String? = {
-        Locale.current.currencyCode
+    static let localeCurrencyCode: String = {
+        Locale.current.currency?.identifier ?? ""
     }()
 }
