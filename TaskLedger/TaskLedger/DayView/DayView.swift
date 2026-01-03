@@ -35,7 +35,7 @@ struct DayView: View {
                                                 viewModel.markTask(tsk)
                                             }
                                         HStack {
-                                            ForEach(0..<task.days.count) { idx in
+                                            ForEach(0..<task.days.count, id: \.self) { idx in
                                                 Text(DaysCalculator.dayName(from: task.days[idx]))
                                             }
                                             Spacer()
