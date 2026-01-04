@@ -87,6 +87,7 @@ struct DayView: View {
             AddTaskView {
                 viewModel.fetchTasks()
             }
+            .interactiveDismissDisabled()
         }
         .sheet(isPresented: $viewModel.showCalendar) {
             CalendarView(selectedDate: $viewModel.currentDate)
