@@ -1,10 +1,3 @@
-//
-//  TaskLedgerApp.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 30/09/2025.
-//
-
 import SwiftUI
 import SwiftData
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TaskTypeSwitcherView: View {
     @Binding var taskType: TaskType
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack {

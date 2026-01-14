@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         TabView {
             DayView()
@@ -13,7 +15,7 @@ struct MainView: View {
                     Label("Summary", systemImage: "chart.bar.fill")
                 }
         }
-        .tint(.black)
+        .tint(colorScheme == .light ? .black : .white)
     }
 }
 

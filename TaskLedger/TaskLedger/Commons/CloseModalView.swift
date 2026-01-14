@@ -1,12 +1,7 @@
-//
-//  CloseModalView.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 20/10/2025.
-//
 import SwiftUI
 
 struct CloseModalView: View {
+    @Environment(\.colorScheme) var colorScheme
     
     private var dismiss: DismissAction
     
@@ -21,8 +16,8 @@ struct CloseModalView: View {
                     dismiss()
                 } label: {
                     HStack(spacing: 4) {
-                        Image("close").tint(.black)
-                        Text("Cancel").foregroundStyle(.black)
+                        Image("close").tint(colorScheme == .light ? .black : .white)
+                        Text("Cancel").foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                 }
                 Spacer()

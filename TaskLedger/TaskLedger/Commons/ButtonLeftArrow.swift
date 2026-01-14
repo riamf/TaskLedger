@@ -12,7 +12,7 @@ struct ButtonArrowLeft: View {
             action()
         } label: {
             Image(systemName: "chevron.left").tint(colorScheme == .light ? .black : .white)
-        }.background(Color.clear)
+        }
     }
     
 }

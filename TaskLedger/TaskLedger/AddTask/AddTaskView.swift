@@ -2,6 +2,7 @@ import SwiftData
 import SwiftUI
 
 struct AddTaskView: View {
+    @Environment(\.colorScheme) var colorScheme
     var onAddAction: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     
@@ -96,15 +97,17 @@ struct AddTaskView: View {
                     } label: {
                         HStack {
                             Spacer()
-                            Image(systemName: "square.and.arrow.down.on.square").tint(.black)
+                            Image(systemName: "square.and.arrow.down.on.square")
                             Spacer()
                         }
+                        .tint(colorScheme == .light ? .black : .white)
+                        
                     }
                     .frame(height: 44)
                     .cornerRadius(8)
                     .overlay( /// apply a rounded border
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(.black, lineWidth: 2)
+                            .stroke(colorScheme == .light ? .black : .white, lineWidth: 2)
                     )
                     .padding(.horizontal, 16)
                 }

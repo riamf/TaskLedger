@@ -11,11 +11,16 @@ struct ButtonArrowRight: View {
         Button {
             action()
         } label: {
-            Image(systemName: "chevron.right").tint(colorScheme == .dark ? .white : .black)
-        }.background(Color.clear)
+            if colorScheme == .light {
+                Image(systemName: "chevron.right").tint(.black)
+            } else {
+                Image(systemName: "chevron.right").tint(.white)
+            }
+        }
     }
 }
 
 #Preview {
     ButtonArrowRight(action: {})
+        
 }

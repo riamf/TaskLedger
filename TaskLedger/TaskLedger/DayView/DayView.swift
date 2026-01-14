@@ -1,10 +1,3 @@
-//
-//  DayView.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 03/10/2025.
-//
-
 import Foundation
 import SwiftUI
 import SwiftData
@@ -65,6 +58,8 @@ struct DayView: View {
                     ButtonArrowRight {
                         viewModel.nextDate()
                     }
+                    .buttonStyle(.plain)
+                    .background(Color.clear)
                 }
             }
             
