@@ -27,6 +27,7 @@ struct DayView: View {
                                             value: task) { tsk in
                                                 viewModel.markTask(tsk)
                                             }
+                                            .containerShape(Circle())
                                         HStack {
                                             ForEach(0..<task.days.count, id: \.self) { idx in
                                                 Text(DaysCalculator.dayName(from: task.days[idx]))
