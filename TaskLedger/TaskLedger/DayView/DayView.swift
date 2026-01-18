@@ -21,7 +21,12 @@ struct DayView: View {
                             ForEach(viewModel.tasks) { task in
                                 HStack {
                                     Image(systemName: task.taskType.imageName)
-                                        .border(.red, width: 1)
+                                        .frame(width: 44, height: 44)
+                                        .clipShape(Circle())
+                                        .overlay(
+                                            Circle()
+                                                .stroke(task.taskType.color, lineWidth: 2)
+                                        )
                                     VStack(alignment: .leading, spacing: .spacingSmall) {
                                         CheckButton(
                                             title: task.name,

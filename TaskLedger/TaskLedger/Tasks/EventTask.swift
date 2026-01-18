@@ -7,6 +7,7 @@
 
 import SwiftData
 import Foundation
+import SwiftUI
 
 @Model
 class EventTask: Identifiable {
@@ -162,6 +163,15 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
         case .cost: return "dollarsign.bank.building"
         case .income: return "singaporedollarsign.bank.building"
         case .time: return "clock.badge"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .counter: return .blue
+        case .cost: return .red
+        case .income: return .green
+        case .time: return .yellow
         }
     }
     
