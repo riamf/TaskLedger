@@ -93,6 +93,19 @@ class EventTask: Identifiable {
         events.append(event)
         return event
     }
+
+    static func example(_ type: TaskType = .counter) -> EventTask {
+        EventTask(
+            timestamp: Date(),
+            name: "Example Task",
+            taskType: type,
+            amount: 1.0,
+            days: [0, 1, 2, 3, 4],
+            notes: "This is an example task.",
+            repeatingPattern: .daily(weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday])
+        )
+    }
+        
 }
 
 enum Weekdays: Int, Codable, CaseIterable, Identifiable {
