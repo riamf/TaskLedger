@@ -1,9 +1,3 @@
-//
-//  DayViewViewModel.swift
-//  TaskLedger
-//
-//  Created by Pawel Kowalczuk on 03/10/2025.
-//
 import Foundation
 import SwiftUI
 import SwiftData
@@ -24,7 +18,8 @@ class DayViewViewModel: ObservableObject {
     @DInjected(\.fetcher) private var fetcher: Fetcher
     @DInjected(\.modelContext) private var modelContext: ModelContext
     
-    init(currentDate: Date) {
+    init(currentDate: Date, tasks: [EventTask] = []) {
+        self.tasks = tasks
         self.currentDate = currentDate
         dayString = dayDateFormatter.string(from: currentDate)
     }

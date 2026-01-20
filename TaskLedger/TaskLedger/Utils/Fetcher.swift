@@ -62,3 +62,26 @@ struct EventMartSummary {
         timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
     }
 }
+
+#if DEBUG
+@MainActor
+let previewContainer: ModelContainer = {
+    do {
+        // Create a schema and a configuration that is stored only in memory
+        let schema = Schema([EventTask.self])
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        
+        // Add sample data to the container's main context
+        let sampleTask1 = EventTask.example() // Assuming this returns a new instance
+        let sampleTask2 = EventTask.example()
+        
+        container.mainContext.insert(sampleTask1)
+        container.mainContext.insert(sampleTask2)
+        
+        return container
+    } catch {
+        fatalError("Failed to create preview container")
+    }
+}()
+#endif // DEBUG

@@ -4,23 +4,28 @@ import SwiftData
 
 struct DayView: View {
     
-    @StateObject var viewModel: DayViewViewModel = DayViewViewModel(currentDate: Date())
+    @ObservedObject var viewModel: DayViewViewModel
+    
+    init(viewModel: DayViewViewModel = .init(currentDate: Date())) {
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         NavigationStack {
-            ZStackLayout(alignment: .bottomTrailing) {
+            ZStack(alignment: .bottomTrailing) {
                 VStack {
                     if viewModel.tasks.isEmpty {
                         Spacer()
                         Text("Nothing To See Here")
                             .font(.subheadline)
                             .foregroundColor(.gray)
+                        Spacer()
                         
                     } else {
                         List {
                             ForEach(viewModel.tasks) { task in
                                 HStack {
-                                    
+                                    TaskTypeCircleIcon(task: task)
                                     VStack(alignment: .leading, spacing: .spacingSmall) {
                                         CheckButton(
                                             title: task.name,
@@ -93,5 +98,10 @@ struct DayView: View {
 }
 
 #Preview {
-    DayView()
+    let vm = DayViewViewModel(
+        currentDate: Date(),
+        tasks: [EventTask.example(), EventTask.example()]
+    )
+    return DayView(viewModel: vm)
+        .modelContainer(previewContainer)
 }
