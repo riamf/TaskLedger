@@ -13,7 +13,7 @@ struct AddTaskView: View {
             VStack(spacing: .spacing) {
                 HStack(spacing: .spacing) {
                     HStack(spacing: .spacing) {
-                        CloseModalView(dismiss: dismiss)
+                        CloseModalButton()
                         Spacer()
                     }
                 }.padding(.vertical, .bigSpacing).padding(.horizontal, .spacing)
@@ -21,7 +21,7 @@ struct AddTaskView: View {
                     VStack(spacing: 8) {
                         ScrollViewReader { proxy in
                             TaskTypeSwitcherView(taskType: $viewModel.taskType).padding(.horizontal, 16)
-                                .onChange(of: viewModel.taskType) { newValue in
+                                .onChange(of: viewModel.taskType) { _, newValue in
                                     withAnimation {
                                         proxy.scrollTo(viewModel.taskType.number,
                                                        anchor: .center)

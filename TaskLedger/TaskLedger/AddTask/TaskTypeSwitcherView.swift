@@ -10,7 +10,11 @@ struct TaskTypeSwitcherView: View {
                 Button {
                     self.taskType = type
                 } label: {
-                    TaskTypeButtonLabel(systemImageName: type == taskType ? type.imageNameMarked : type.imageName, title: type.taskName)
+                    TaskTypeButtonLabel(
+                        systemImageName: type == taskType ? type.imageNameMarked: type.imageName,
+                        title: type.taskName,
+                        color: type.color
+                    )
                 }
             }
         }

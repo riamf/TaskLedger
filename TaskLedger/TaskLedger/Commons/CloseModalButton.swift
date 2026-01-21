@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CloseModalButton: View {
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) private var dismiss
     
     let dayNames = Calendar.current.weekdaySymbols
@@ -10,9 +11,13 @@ struct CloseModalButton: View {
             dismiss()
         } label: {
             HStack(spacing: 4) {
-                Image("close").tint(.black)
-                Text("Cancel").foregroundStyle(.black)
+                Image("close").renderingMode(.template).tint(colorScheme == .light ? .black : .white)
+                Text("Cancel").foregroundStyle(colorScheme == .light ? .black : .white)
             }
         }
     }
+}
+
+#Preview {
+    CloseModalButton()
 }
