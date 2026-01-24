@@ -15,7 +15,7 @@ struct SummaryView: View {
                         ForEach(viewModel.eventsDict.keys.sorted(by: { $0.name < $1.name }), id: \.self) { eventTask in
                             VStack {
                                 HStack {
-                                    Image(systemName: eventTask.taskType.imageName)
+                                    TaskTypeCircleIcon(task: eventTask)
                                     Text(eventTask.name)
                                     let summary = viewModel.eventsDict[eventTask]
                                     HStack {
