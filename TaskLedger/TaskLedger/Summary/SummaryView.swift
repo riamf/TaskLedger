@@ -13,22 +13,18 @@ struct SummaryView: View {
                 } else {
                     List {
                         ForEach(viewModel.eventsDict.keys.sorted(by: { $0.name < $1.name }), id: \.self) { eventTask in
-                            VStack {
-                                HStack {
-                                    TaskTypeCircleIcon(task: eventTask)
-                                    Text(eventTask.name)
-                                    let summary = viewModel.eventsDict[eventTask]
+                            NavigationLink(value: eventTask) {
+                                VStack {
                                     HStack {
-                                        Spacer()
-                                        if eventTask.taskType == .counter, let counterSummary = summary?.counterSummary {
-                                            Text("\(counterSummary)")
-                                        } else if eventTask.taskType == .time, let timerSummary = summary?.amountSummary {
-                                            Text("\(timerSummary)")
-                                        } else if eventTask.taskType == .cost || eventTask.taskType == .income, let summary = summary?.amountSummary {
-                                            Text(MoneyFormatter.formatter.string(from: NSNumber(value: summary)) ?? "\(summary)")
+                                        TaskTypeCircleIcon(task: eventTask)
+                                        Text(eventTask.name)
+                                        let summary = viewModel.eventsDict[eventTask]
+                                        HStack {
+                                            Spacer()
+                                            Text(eventTask.summaryShortText(summary))
                                         }
-                                    }
-                                }.padding(.leading, 0)
+                                    }.padding(.leading, 0)
+                                }
                             }
                         }
                     }
@@ -55,6 +51,9 @@ struct SummaryView: View {
                     }
                 }
             }
+        }
+        .navigationDestination(for: EventTask.self) { eventTask in
+            SummaryDetailsView(eventTask: eventTask)
         }
     }
 }

@@ -66,6 +66,17 @@ class EventTask: Identifiable {
         self.taskFixedDate = taskFixedDate
     }
     
+    func summaryShortText(_ summary: EventMartSummary?) -> String {
+        if taskType == .counter, let counterSummary = summary?.counterSummary {
+            return "\(counterSummary)"
+        } else if taskType == .time, let timerSummary = summary?.amountSummary {
+            return "\(timerSummary)"
+        } else if taskType == .cost || taskType == .income, let summary = summary?.amountSummary {
+            return MoneyFormatter.formatter.string(from: NSNumber(value: summary)) ?? "\(summary)"
+        }
+        return ""
+    }
+    
     func dayEvent(_ date: Date = Date()) -> EventMark? {
         let givenDate = DaysCalculator.compDateFormatter.string(from: date)
         return events.first(where: { event in
