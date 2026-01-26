@@ -13,7 +13,9 @@ struct SummaryView: View {
                 } else {
                     List {
                         ForEach(viewModel.eventsDict.keys.sorted(by: { $0.name < $1.name }), id: \.self) { eventTask in
-                            NavigationLink(value: eventTask) {
+                            NavigationLink {
+                                SummaryDetailsView(eventTask: eventTask)
+                            } label: {
                                 VStack {
                                     HStack {
                                         TaskTypeCircleIcon(task: eventTask)
@@ -51,9 +53,6 @@ struct SummaryView: View {
                     }
                 }
             }
-        }
-        .navigationDestination(for: EventTask.self) { eventTask in
-            SummaryDetailsView(eventTask: eventTask)
         }
     }
 }
