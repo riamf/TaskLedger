@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct SummaryDetailsView: View {
     private let eventTask: EventTask
