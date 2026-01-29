@@ -2,18 +2,17 @@ import SwiftUI
 import Charts
 
 struct SummaryDetailsView: View {
-    private let eventTask: EventTask
+    private let eventSummary: EventMartSummary
     
-    init(eventTask: EventTask) {
-        self.eventTask = eventTask
+    init(eventSummary: EventMartSummary) {
+        self.eventSummary = eventSummary
     }
     
     var body: some View {
         Text("Summary Details View")
     }
 }
-
-#Preview {
-    let et = EventTask.example()
-    SummaryDetailsView(eventTask: et)
-}
+//
+//#Preview {
+//    
+//}
