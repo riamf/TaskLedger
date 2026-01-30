@@ -9,7 +9,13 @@ struct SummaryDetailsView: View {
     }
     
     var body: some View {
-        Text("Summary Details View")
+        Chart(eventSummary.events, id: \.date) { event in
+            PointMark(
+                x: .value("Day", event.date),
+                y: .value("Value", "X")
+            )
+            
+        }
     }
 }
 //

@@ -63,6 +63,10 @@ struct EventMartSummary {
         counterSummary = events.filter { $0.task?.taskType == .counter }.count
         timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
     }
+    
+    #if DEBUG
+    
+    #endif
 }
 
 #if DEBUG
