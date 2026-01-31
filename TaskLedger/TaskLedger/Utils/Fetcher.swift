@@ -41,7 +41,7 @@ final class Fetcher {
             // Map grouped events into summaries
             var eventsDict = [EventTask: EventMartSummary]()
             for (task, eventsForTask) in grouped {
-                eventsDict[task] = EventMartSummary(events: eventsForTask)
+                eventsDict[task] = EventMartSummary(task: task, events: eventsForTask)
             }
             
             return eventsDict
@@ -56,17 +56,15 @@ struct EventMartSummary {
     let counterSummary: Int
     let timeSummary: Int
     let events: [EventMark]
+    let task: EventTask
     
-    init(events: [EventMark]) {
+    init(task: EventTask, events: [EventMark]) {
+        self.task = task
         self.events = events
         amountSummary = events.reduce(0.0, { $0 + $1.amount })
         counterSummary = events.filter { $0.task?.taskType == .counter }.count
         timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
     }
-    
-    #if DEBUG
-    
-    #endif
 }
 
 #if DEBUG
