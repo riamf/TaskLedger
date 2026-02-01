@@ -97,6 +97,8 @@ struct DayView: View {
     
 }
 
+#if DEBUG
+
 #Preview {
     let vm = DayViewViewModel(
         currentDate: Date(),
@@ -105,3 +107,5 @@ struct DayView: View {
     return DayView(viewModel: vm)
         .modelContainer(previewContainer)
 }
+
+#endif
