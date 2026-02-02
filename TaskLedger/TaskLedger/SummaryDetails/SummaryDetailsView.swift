@@ -15,7 +15,6 @@ struct SummaryDetailsView: View {
         let color: Color
     }
 
-    // Aggregate events into daily counts and assign a deterministic color per point
     private var dailyCounts: [PointData] {
         let grouped = Dictionary(grouping: eventSummary.events) { Calendar.current.startOfDay(for: $0.date) }
         return grouped.map { key, values in
@@ -28,7 +27,6 @@ struct SummaryDetailsView: View {
         .sorted { $0.date < $1.date }
     }
     
-    // Quick lookup to map specific dates to data for the calendar grid
     private var dailyCountsDict: [Date: PointData] {
         Dictionary(uniqueKeysWithValues: dailyCounts.map { ($0.date, $0) })
     }
@@ -101,7 +99,6 @@ struct SummaryDetailsView: View {
             )
             .padding(.horizontal)
 
-            // Dates list below the calendar (vertical rows)
             if dailyCounts.isEmpty {
                 Text("No data available")
                     .foregroundColor(.secondary)
