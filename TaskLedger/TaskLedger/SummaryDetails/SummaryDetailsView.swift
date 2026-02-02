@@ -18,11 +18,7 @@ struct SummaryDetailsView: View {
     private var dailyCounts: [PointData] {
         let grouped = Dictionary(grouping: eventSummary.events) { Calendar.current.startOfDay(for: $0.date) }
         return grouped.map { key, values in
-            // Deterministic hue based on the day's timestamp to avoid color flicker
-            let seconds = Int(key.timeIntervalSince1970)
-            let hueComponent = Double((seconds & 0xFF)) / 255.0 // 0..1
-            let color = Color(hue: hueComponent, saturation: 0.6, brightness: 0.85)
-            return PointData(date: key, count: values.count, color: color)
+            return PointData(date: key, count: values.count, color: eventSummary.task.taskType.color)
         }
         .sorted { $0.date < $1.date }
     }
