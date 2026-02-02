@@ -11,7 +11,10 @@ struct ButtonArrowLeft: View {
         Button {
             action()
         } label: {
-            Image(systemName: "chevron.left").tint(colorScheme == .light ? .black : .white)
+            Image(systemName: "chevron.left")
+                .tint(colorScheme == .light ? .black : .white)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
         }
     }
     
