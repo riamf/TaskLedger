@@ -28,118 +28,151 @@ struct SummaryDetailsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            
-            // Calendar with bordered background
-            VStack(spacing: 12) {
-                // Calendar Header: Prev | Month Name | Next
-                HStack {
-                    Button(action: { moveMonth(by: -1) }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.primary)
-                            .padding(8)
-                    }
-                    Spacer()
-                    Text(visibleMonth, format: .dateTime.month(.wide).year())
-                        .font(.headline)
-                    Spacer()
-                    Button(action: { moveMonth(by: 1) }) {
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.primary)
-                            .padding(8)
-                    }
-                }
+        VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 12) {
                 
-                // Calendar Grid
-                let days = daysForVisibleMonth()
-                let columns = Array(repeating: GridItem(.flexible()), count: 7)
-                
-                LazyVGrid(columns: columns, spacing: 10) {
-                    // Weekday Labels
-                    ForEach(Calendar.current.shortWeekdaySymbols, id: \.self) { day in
-                        Text(day)
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.secondary)
+                // Calendar with bordered background
+                VStack(spacing: 12) {
+                    // Calendar Header: Prev | Month Name | Next
+                    HStack {
+                        Button(action: { moveMonth(by: -1) }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(.primary)
+                                .padding(8)
+                        }
+                        Spacer()
+                        Text(visibleMonth, format: .dateTime.month(.wide).year())
+                            .font(.headline)
+                        Spacer()
+                        Button(action: { moveMonth(by: 1) }) {
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.primary)
+                                .padding(8)
+                        }
                     }
                     
-                    // Days
-                    ForEach(days.indices, id: \.self) { index in
-                        if let date = days[index] {
-                            let data = dailyCountsDict[date]
-                            
-                            // Day Cell
-                            ZStack {
-                                if let color = data?.color {
-                                    Circle()
-                                        .fill(color)
-                                }
+                    // Calendar Grid
+                    let days = daysForVisibleMonth()
+                    let columns = Array(repeating: GridItem(.flexible()), count: 7)
+                    
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        // Weekday Labels
+                        ForEach(Calendar.current.shortWeekdaySymbols, id: \.self) { day in
+                            Text(day)
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        // Days
+                        ForEach(days.indices, id: \.self) { index in
+                            if let date = days[index] {
+                                let data = dailyCountsDict[date]
                                 
-                                Text(date, format: .dateTime.day())
-                                    .font(.system(size: 14, weight: data != nil ? .bold : .regular))
-                                    .foregroundColor(data != nil ? .white : .primary)
+                                // Day Cell
+                                ZStack {
+                                    if let color = data?.color {
+                                        Circle()
+                                            .fill(color)
+                                    }
+                                    
+                                    Text(date, format: .dateTime.day())
+                                        .font(.system(size: 14, weight: data != nil ? .bold : .regular))
+                                        .foregroundColor(data != nil ? .white : .primary)
+                                }
+                                .frame(height: 36)
+                            } else {
+                                // Empty cell helper
+                                Text("").frame(height: 36)
                             }
-                            .frame(height: 36)
-                        } else {
-                            // Empty cell helper
-                            Text("").frame(height: 36)
                         }
                     }
                 }
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray.opacity(0.25), lineWidth: 1)
-                    .background(Color(UIColor.systemBackground).cornerRadius(10))
-            )
-            .padding(.horizontal)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray.opacity(0.25), lineWidth: 1)
+                        .background(Color(UIColor.systemBackground).cornerRadius(10))
+                )
+                .padding(.horizontal)
 
-            if dailyCounts.isEmpty {
-                Text("No data available")
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-            } else {
-                ScrollView(.vertical, showsIndicators: true) {
-                    LazyVStack(alignment: .leading, spacing: 8) {
-                        ForEach(dailyCounts) { point in
-                            HStack(spacing: 12) {
-                                Circle()
-                                    .fill(point.color)
-                                    .frame(width: 12, height: 12)
+                if dailyCounts.isEmpty {
+                    Text("No data available")
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else {
+                    ScrollView(.vertical, showsIndicators: true) {
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            ForEach(dailyCounts) { point in
+                                HStack(spacing: 12) {
+                                    Circle()
+                                        .fill(point.color)
+                                        .frame(width: 12, height: 12)
 
-                                Text(point.date, format: .dateTime.month().day())
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    Text(point.date, format: .dateTime.month().day())
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
 
-                                Spacer()
+                                    Spacer()
 
-                                Text("\(point.count)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    Text("\(point.count)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(Color(UIColor.secondarySystemBackground))
+                                )
                             }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color(UIColor.secondarySystemBackground))
-                            )
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 4)
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 4)
                 }
-                .frame(maxHeight: .infinity) // Allow list to fill remaining space
             }
+            .padding(.vertical)
+
+            summaryFooter
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(.vertical) // Top/bottom padding for the whole view
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 CustomToolbarView(task: eventSummary.task)
             }
         }
+    }
+    
+    private var summaryFooter: some View {
+        HStack {
+            Text("Total")
+                .font(.headline)
+            Spacer()
+            
+            switch eventSummary.task.taskType {
+            case .counter:
+                Text("\(eventSummary.counterSummary)")
+                    .font(.headline)
+            case .cost, .income:
+                Text(MoneyFormatter.formatter.string(from: NSNumber(value: eventSummary.amountSummary)) ?? "")
+                    .font(.headline)
+            case .time:
+                let duration = Duration.seconds(eventSummary.timeSummary)
+                Text(duration.formatted(.time(pattern: .hourMinuteSecond)))
+                    .font(.headline)
+            }
+        }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(UIColor.systemBackground))
+                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: -2)
+        )
+        .padding(.horizontal)
+        .padding(.bottom)
     }
     
     // MARK: - Calendar Helpers
