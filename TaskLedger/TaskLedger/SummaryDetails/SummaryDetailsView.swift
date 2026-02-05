@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct SummaryDetailsView: View {
-    private let eventSummary: EventMartSummary
+    @State private var eventSummary: EventMartSummary
     @State private var visibleMonth: Date = Date()
+    @DInjected(\.fetcher) private var fetcher: Fetcher
 
     init(eventSummary: EventMartSummary) {
         self.eventSummary = eventSummary
@@ -15,8 +16,15 @@ struct SummaryDetailsView: View {
         let color: Color
     }
 
+    private var filteredEvents: [EventMark] {
+        let calendar = Calendar.current
+        return eventSummary.events.filter { event in
+            calendar.isDate(event.date, equalTo: visibleMonth, toGranularity: .month)
+        }
+    }
+
     private var dailyCounts: [PointData] {
-        let grouped = Dictionary(grouping: eventSummary.events) { Calendar.current.startOfDay(for: $0.date) }
+        let grouped = Dictionary(grouping: filteredEvents) { Calendar.current.startOfDay(for: $0.date) }
         return grouped.map { key, values in
             return PointData(date: key, count: values.count, color: eventSummary.task.taskType.color)
         }
@@ -152,15 +160,20 @@ struct SummaryDetailsView: View {
                 .font(.headline)
             Spacer()
             
+            let currentEvents = filteredEvents
+            
             switch eventSummary.task.taskType {
             case .counter:
-                Text("\(eventSummary.counterSummary)")
+                let count = currentEvents.count
+                Text("\(count)")
                     .font(.headline)
             case .cost, .income:
-                Text(MoneyFormatter.formatter.string(from: NSNumber(value: eventSummary.amountSummary)) ?? "")
+                let amount = currentEvents.reduce(0.0) { $0 + $1.amount }
+                Text(MoneyFormatter.formatter.string(from: NSNumber(value: amount)) ?? "")
                     .font(.headline)
             case .time:
-                let duration = Duration.seconds(eventSummary.timeSummary)
+                let seconds = currentEvents.reduce(0) { $0 + Int($1.amount) }
+                let duration = Duration.seconds(seconds)
                 Text(duration.formatted(.time(pattern: .hourMinuteSecond)))
                     .font(.headline)
             }
@@ -178,7 +191,10 @@ struct SummaryDetailsView: View {
     // MARK: - Calendar Helpers
     private func moveMonth(by value: Int) {
         if let newDate = Calendar.current.date(byAdding: .month, value: value, to: visibleMonth) {
+
             visibleMonth = newDate
+            let newSummaary = fetcher.fetchSummary(for: newDate)
+            eventSummary = newSummaary[eventSummary.task] ?? eventSummary
         }
     }
     
