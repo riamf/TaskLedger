@@ -24,25 +24,9 @@ struct DayView: View {
                     } else {
                         List {
                             ForEach(viewModel.tasks) { task in
-                                HStack {
-                                    TaskTypeCircleIcon(task: task)
-                                    VStack(alignment: .leading, spacing: .spacingSmall) {
-                                        CheckButton(
-                                            title: task.name,
-                                            isChecked: task.isCheck(viewModel.currentDate),
-                                            value: task) { tsk in
-                                                viewModel.markTask(tsk)
-                                            }
-                                        HStack {
-                                            ForEach(0..<task.days.count, id: \.self) { idx in
-                                                Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
-                                            }
-                                            Spacer()
-                                        }
-                                    }
-                                    .tint(.black)
-                                    Spacer()
-                                }
+                                DayViewTaskCell(
+                                    task: task, currentDate: viewModel.currentDate, markTask: viewModel.markTask
+                                )
                             }
                         }
                         .refreshable {

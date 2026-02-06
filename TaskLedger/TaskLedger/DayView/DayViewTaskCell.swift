@@ -1,0 +1,27 @@
+import SwiftUI
+
+struct DayViewTaskCell: View {
+    let task: EventTask
+    let currentDate: Date
+    var markTask: (EventTask) -> Void
+    
+    var body: some View {
+        HStack {
+            TaskTypeCircleIcon(task: task)
+            VStack(alignment: .leading, spacing: .spacingSmall) {
+                CheckButton(
+                    title: task.name,
+                    isChecked: task.isCheck(currentDate),
+                    value: task, action: markTask)
+                HStack {
+                    ForEach(0..<task.days.count, id: \.self) { idx in
+                        Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
+                    }
+                    Spacer()
+                }
+            }
+            .tint(.black)
+        }
+    }
+}
+
