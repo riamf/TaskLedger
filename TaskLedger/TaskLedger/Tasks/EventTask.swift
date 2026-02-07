@@ -85,7 +85,7 @@ class EventTask: Identifiable {
     }
     
     func isCheck(_ date: Date = Date()) -> Bool {
-        dayEvent(date) != nil
+        return dayEvent(date) != nil
     }
     
     @discardableResult

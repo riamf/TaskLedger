@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct DayViewTaskCell: View {
-    let task: EventTask
-    let currentDate: Date
+    @State var task: EventTask
+    @State var currentDate: Date
     var markTask: (EventTask) -> Void
     
     var body: some View {
