@@ -40,6 +40,28 @@ struct DayView: View {
                                     }
                                     .tint(.black)
                                 }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button(role: .destructive) {
+                                        // Delete Logic
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    .tint(.red)
+
+                                    Button {
+                                        // Snooze Logic
+                                    } label: {
+                                        Label("Snooze", systemImage: "clock")
+                                    }
+                                    .tint(.orange)
+                                    
+                                    Button {
+                                        // Edit Logic
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                    .tint(.blue)
+                                }
                             }
                         }
                         .refreshable {
