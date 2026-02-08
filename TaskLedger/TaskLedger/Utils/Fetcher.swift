@@ -11,7 +11,14 @@ final class Fetcher {
         do {
             let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
             return tasks.filter { task in
-                task.days.contains(dayNumber)
+                // If archivedAt is present, only show if archived AFTER the query date.
+                // Assuming `date` is start of day, and archivedAt captures exact time.
+                // We compare checking if archivedAt is strictly after the date.
+                if let archivedAt = task.archivedAt, archivedAt < date {
+                    return false
+                }
+                
+                return task.days.contains(dayNumber)
                 || (
                     task.taskFixedDate != nil
                     && DaysCalculator.equalDatesDayMonthYear(task.taskFixedDate!, date2: date)

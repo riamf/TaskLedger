@@ -76,7 +76,23 @@ class DayViewViewModel: ObservableObject {
         
     }
     
+    func archiveTask(_ task: EventTask) {
+        task.archivedAt = Date()
+        do {
+            try modelContext.save()
+            fetchTasks()
+        } catch {
+            print("Error archiving task: \(error.localizedDescription)")
+        }
+    }
+    
     func deleteTask(_ task: EventTask) {
-        
+        modelContext.delete(task)
+        do {
+            try modelContext.save()
+            fetchTasks()
+        } catch {
+            print("Error deleting task: \(error.localizedDescription)")
+        }
     }
 }

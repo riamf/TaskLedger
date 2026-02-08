@@ -16,5 +16,5 @@ struct TaskTypeCircleIcon: View {
 
 
 #Preview {
-    TaskTypeCircleIcon(task: EventTask.example(.counter))
+    TaskTypeCircleIcon(task: EventTask.example())
 }

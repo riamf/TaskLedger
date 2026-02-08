@@ -117,12 +117,19 @@ struct DayView: View {
             CalendarView(selectedDate: $viewModel.currentDate)
         }
         .alert("Are you sure you want to delete?", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
+            Button("Delete task schedule", role: .destructive) {
+                if let task = taskToDelete {
+                    viewModel.archiveTask(task)
+                }
+            }
+            Button("Delete task & history", role: .destructive) {
                 if let task = taskToDelete {
                     viewModel.deleteTask(task)
                 }
             }
             Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("You can delete only future schedule or delete task completely with history.")
         }
     }
     

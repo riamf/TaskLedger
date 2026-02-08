@@ -19,9 +19,10 @@ class EventTask: Identifiable {
     var repeatingPattern: RepeatingPattern?
     var days: [Int]
     var notes: String
-    @Relationship()
+    @Relationship(deleteRule: .cascade)
     var events: [EventMark]
     var taskType: TaskType
+    var archivedAt: Date?
     
     // need to performance check this!
     var isExistingToday: Bool {
@@ -48,13 +49,12 @@ class EventTask: Identifiable {
         taskType: TaskType = .counter,
         amount: Double = 0.0,
         taskFixedDate: Date? = nil,
+        repeatingPattern: RepeatingPattern? = nil,
         days: [Int] = [],
         notes: String = "",
-        repeatingPattern: RepeatingPattern? = nil,
         events: [EventMark] = [],
-        id: String = UUID().uuidString
+        archivedAt: Date? = nil
     ) {
-        self.id = id
         self.timestamp = timestamp
         self.name = name
         self.taskType = taskType
@@ -62,8 +62,9 @@ class EventTask: Identifiable {
         self.days = days
         self.notes = notes
         self.events = events
-        self.repeatingPattern = repeatingPattern
         self.taskFixedDate = taskFixedDate
+        self.repeatingPattern = repeatingPattern
+        self.archivedAt = archivedAt
     }
     
     func summaryShortText(_ summary: EventMartSummary?) -> String {
@@ -105,15 +106,15 @@ class EventTask: Identifiable {
         return event
     }
 
-    static func example(_ type: TaskType = .counter) -> EventTask {
+    static func example() -> EventTask {
         EventTask(
             timestamp: Date(),
             name: "Example Task",
-            taskType: type,
+            taskType: .counter,
             amount: 1.0,
+            repeatingPattern: .daily(weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday]),
             days: [0, 1, 2, 3, 4],
-            notes: "This is an example task.",
-            repeatingPattern: .daily(weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday])
+            notes: "This is an example task."
         )
     }
         
@@ -257,5 +258,3 @@ extension EventTask {
         return ""
     }
 }
-
-
