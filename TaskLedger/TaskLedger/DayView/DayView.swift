@@ -5,6 +5,8 @@ import SwiftData
 struct DayView: View {
     
     @ObservedObject var viewModel: DayViewViewModel
+    @State private var taskToDelete: EventTask?
+    @State private var showDeleteConfirmation = false
     
     init(viewModel: DayViewViewModel = .init(currentDate: Date())) {
         self.viewModel = viewModel
@@ -41,8 +43,9 @@ struct DayView: View {
                                     .tint(.black)
                                 }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                    Button(role: .destructive) {
-                                        // Delete Logic
+                                    Button {
+                                        taskToDelete = task
+                                        showDeleteConfirmation = true
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
@@ -50,6 +53,7 @@ struct DayView: View {
 
                                     Button {
                                         // Snooze Logic
+                                        viewModel.snoozeTask(task)
                                     } label: {
                                         Label("Snooze", systemImage: "clock")
                                     }
@@ -111,6 +115,14 @@ struct DayView: View {
         }
         .sheet(isPresented: $viewModel.showCalendar) {
             CalendarView(selectedDate: $viewModel.currentDate)
+        }
+        .alert("Are you sure you want to delete?", isPresented: $showDeleteConfirmation) {
+            Button("Delete", role: .destructive) {
+                if let task = taskToDelete {
+                    viewModel.deleteTask(task)
+                }
+            }
+            Button("Cancel", role: .cancel) { }
         }
     }
     

@@ -70,7 +70,13 @@ class DayViewViewModel: ObservableObject {
         } catch {
             
         }
-    
     }
     
+    func snoozeTask(_ task: EventTask) {
+        
+    }
+    
+    func deleteTask(_ task: EventTask) {
+        
+    }
 }
