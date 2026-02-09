@@ -72,10 +72,6 @@ class DayViewViewModel: ObservableObject {
         }
     }
     
-    func snoozeTask(_ task: EventTask) {
-        
-    }
-    
     func archiveTask(_ task: EventTask) {
         task.archivedAt = Date()
         do {

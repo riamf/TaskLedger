@@ -6,7 +6,8 @@ final class Fetcher {
     @DInjected(\.modelContext) private var modelContext: ModelContext
     
     func fetchTasks(for date: Date) -> [EventTask] {
-        let dayNumber = DaysCalculator.dayNumberInWeekFrom(date)
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let dayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
         
         do {
             let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
@@ -14,14 +15,14 @@ final class Fetcher {
                 // If archivedAt is present, only show if archived AFTER the query date.
                 // Assuming `date` is start of day, and archivedAt captures exact time.
                 // We compare checking if archivedAt is strictly after the date.
-                if let archivedAt = task.archivedAt, archivedAt < date {
+                if let archivedAt = task.archivedAt, archivedAt < startOfDay {
                     return false
                 }
                 
                 return task.days.contains(dayNumber)
                 || (
                     task.taskFixedDate != nil
-                    && DaysCalculator.equalDatesDayMonthYear(task.taskFixedDate!, date2: date)
+                    && DaysCalculator.equalDatesDayMonthYear(task.taskFixedDate!, date2: startOfDay)
                 )
             }
         } catch {
