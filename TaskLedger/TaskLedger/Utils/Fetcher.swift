@@ -19,6 +19,11 @@ final class Fetcher {
                     return false
                 }
                 
+                // If snoozedUntil is present, only show if the snoozed date is BEFORE or EQUAL to the query date.
+                if let snoozedUntil = task.snoozedUntil, snoozedUntil > startOfDay {
+                    return false
+                }
+                
                 return task.days.contains(dayNumber)
                 || (
                     task.taskFixedDate != nil

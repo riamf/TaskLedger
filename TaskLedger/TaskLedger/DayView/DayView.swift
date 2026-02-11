@@ -7,6 +7,9 @@ struct DayView: View {
     @ObservedObject var viewModel: DayViewViewModel
     @State private var taskToDelete: EventTask?
     @State private var showDeleteConfirmation = false
+    @State private var taskToSnooze: EventTask?
+    @State private var showSnoozeSheet = false
+    @State private var snoozeDays = 1
     
     init(viewModel: DayViewViewModel = .init(currentDate: Date())) {
         self.viewModel = viewModel
@@ -37,6 +40,10 @@ struct DayView: View {
         .sheet(isPresented: $viewModel.showCalendar) {
             CalendarView(selectedDate: $viewModel.currentDate)
         }
+        .sheet(isPresented: $showSnoozeSheet) {
+            snoozeSheetView
+                .presentationDetents([.medium])
+        }
         .alert("Are you sure you want to delete?", isPresented: $showDeleteConfirmation) {
             deleteConfirmationButtons
         } message: {
@@ -46,6 +53,43 @@ struct DayView: View {
     
     // MARK: - Subviews
     
+    private var snoozeSheetView: some View {
+        VStack(spacing: 20) {
+            Text("Snooze Task")
+                .font(.headline)
+            
+            Text("Snooze for how many days?")
+                .font(.subheadline)
+            
+            Picker("Days", selection: $snoozeDays) {
+                ForEach(1...30, id: \.self) { day in
+                    Text("\(day) \(day == 1 ? "day" : "days")").tag(day)
+                }
+            }
+            .pickerStyle(.wheel)
+            
+            HStack {
+                Button("Cancel", role: .cancel) {
+                    showSnoozeSheet = false
+                }
+                .buttonStyle(.bordered)
+                
+                Spacer()
+                
+                Button("Snooze") {
+                    if let task = taskToSnooze {
+                        viewModel.snoozeTask(task, days: snoozeDays)
+                    }
+                    showSnoozeSheet = false
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+            }
+            .padding()
+        }
+        .padding()
+    }
+
     private var mainContent: some View {
         ZStack(alignment: .bottomTrailing) {
             VStack {
@@ -94,7 +138,6 @@ struct DayView: View {
                     Spacer()
                 }
             }
-            .tint(.black)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             swipeActions(for: task)
@@ -112,7 +155,9 @@ struct DayView: View {
         .tint(.red)
         
         Button {
-            viewModel.snoozeTask(task)
+            taskToSnooze = task
+            snoozeDays = 1
+            showSnoozeSheet = true
         } label: {
             Label("Snooze", systemImage: "clock")
         }

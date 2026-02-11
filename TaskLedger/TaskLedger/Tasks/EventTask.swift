@@ -23,6 +23,7 @@ class EventTask: Identifiable {
     var events: [EventMark]
     var taskType: TaskType
     var archivedAt: Date?
+    var snoozedUntil: Date?
     
     // need to performance check this!
     var isExistingToday: Bool {
@@ -53,7 +54,8 @@ class EventTask: Identifiable {
         days: [Int] = [],
         notes: String = "",
         events: [EventMark] = [],
-        archivedAt: Date? = nil
+        archivedAt: Date? = nil,
+        snoozedUntil: Date? = nil
     ) {
         self.timestamp = timestamp
         self.name = name
@@ -65,6 +67,7 @@ class EventTask: Identifiable {
         self.taskFixedDate = taskFixedDate
         self.repeatingPattern = repeatingPattern
         self.archivedAt = archivedAt
+        self.snoozedUntil = snoozedUntil
     }
     
     func summaryShortText(_ summary: EventMartSummary?) -> String {

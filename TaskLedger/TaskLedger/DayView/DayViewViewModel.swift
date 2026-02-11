@@ -72,8 +72,16 @@ class DayViewViewModel: ObservableObject {
         }
     }
     
-    func snoozeTask(_ task: EventTask) {
-        // TODO: Implement snooze functionality
+    func snoozeTask(_ task: EventTask, days: Int) {
+        let snoozeUntil = Calendar.current.date(byAdding: .day, value: days, to: currentDate) ?? currentDate
+        task.snoozedUntil = snoozeUntil
+        
+        do {
+            try modelContext.save()
+            fetchTasks()
+        } catch {
+            print("Error snoozing task: \(error.localizedDescription)")
+        }
     }
     
     func archiveTask(_ task: EventTask) {
