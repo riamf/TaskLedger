@@ -14,7 +14,10 @@ struct SummaryView: View {
                     List {
                         ForEach(viewModel.eventsDict.keys.sorted(by: { $0.name < $1.name }), id: \.self) { eventTask in
                             NavigationLink {
-                                SummaryDetailsView(eventSummary: viewModel.eventsDict[eventTask]!)
+                                SummaryDetailsView(
+                                    eventSummary: viewModel.eventsDict[eventTask]!,
+                                    visibleMonth: viewModel.currentMonthDate
+                                )
                             } label: {
                                 VStack {
                                     HStack {

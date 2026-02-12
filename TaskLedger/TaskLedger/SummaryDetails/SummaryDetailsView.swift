@@ -2,11 +2,12 @@ import SwiftUI
 
 struct SummaryDetailsView: View {
     @State private var eventSummary: EventMartSummary
-    @State private var visibleMonth: Date = Date()
+    @State private var visibleMonth: Date
     @DInjected(\.fetcher) private var fetcher: Fetcher
 
-    init(eventSummary: EventMartSummary) {
+    init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
         self.eventSummary = eventSummary
+        self.visibleMonth = visibleMonth
     }
 
     private struct PointData: Identifiable {
