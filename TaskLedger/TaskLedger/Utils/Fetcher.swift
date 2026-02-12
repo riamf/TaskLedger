@@ -7,28 +7,23 @@ final class Fetcher {
     
     func fetchTasks(for date: Date) -> [EventTask] {
         let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
         let dayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
+
+        let distantFuture = Date.distantFuture
+        let distantPast = Date.distantPast
+        
+        let predicate = #Predicate<EventTask> { task in
+            ((task.archivedAt ?? distantFuture) >= startOfDay) &&
+            ((task.snoozedUntil ?? distantPast) <= startOfDay)
+        }
         
         do {
-            let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
+            let tasks = try modelContext.fetch(FetchDescriptor(predicate: predicate))
+            
             return tasks.filter { task in
-                // If archivedAt is present, only show if archived AFTER the query date.
-                // Assuming `date` is start of day, and archivedAt captures exact time.
-                // We compare checking if archivedAt is strictly after the date.
-                if let archivedAt = task.archivedAt, archivedAt < startOfDay {
-                    return false
-                }
-                
-                // If snoozedUntil is present, only show if the snoozed date is BEFORE or EQUAL to the query date.
-                if let snoozedUntil = task.snoozedUntil, snoozedUntil > startOfDay {
-                    return false
-                }
-                
-                return task.days.contains(dayNumber)
-                || (
-                    task.taskFixedDate != nil
-                    && DaysCalculator.equalDatesDayMonthYear(task.taskFixedDate!, date2: startOfDay)
-                )
+                task.days.contains(dayNumber) ||
+                (task.taskFixedDate != nil && task.taskFixedDate! >= startOfDay && task.taskFixedDate! < endOfDay)
             }
         } catch {
             return []
