@@ -69,9 +69,12 @@ struct EventMartSummary {
     init(task: EventTask, events: [EventMark]) {
         self.task = task
         self.events = events
-        amountSummary = events.reduce(0.0, { $0 + $1.amount })
-        counterSummary = events.filter { $0.task?.taskType == .counter }.count
-        timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
+        // Calculate once based on the task type, don't iterate events unnecessarily
+        self.amountSummary = events.reduce(0.0) { $0 + $1.amount }
+        
+        // Optimization: Check type on the parent task, not every individual event
+        self.counterSummary = (task.taskType == .counter) ? events.count : 0
+        self.timeSummary = (task.taskType == .time) ? Int(amountSummary) : 0
     }
 }
 

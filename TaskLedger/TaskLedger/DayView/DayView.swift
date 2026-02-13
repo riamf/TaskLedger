@@ -146,7 +146,7 @@ struct DayView: View {
     
     @ViewBuilder
     private func swipeActions(for task: EventTask) -> some View {
-        Button(role: .destructive) {
+        Button {
             taskToDelete = task
             showDeleteConfirmation = true
         } label: {
