@@ -217,7 +217,7 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
         case .counter: return "Counter"
         case .cost: return "Cost"
         case .income: return "Income"
-        case .time: return "timer"
+        case .time: return "Timer"
         }
     }
     

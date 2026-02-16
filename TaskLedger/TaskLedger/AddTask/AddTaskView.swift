@@ -64,14 +64,16 @@ struct AddTaskView: View {
                         }
                         HStack {
                             Text("Task Notes:")
+                                .fontWeight(.semibold)
                             Spacer()
-                        }.padding(.horizontal, .spacing)
+                        }
+                        .padding(.spacing)
                         TextField("",
                                   text: $viewModel.notes,
                                   prompt: Text("Enter notes here..."),
                                   axis: .vertical)
                         .textFieldStyle(.roundedBorder)
-                        .lineLimit(5, reservesSpace: true)
+                        .lineLimit(3, reservesSpace: true)
                         .padding(.horizontal, .spacing)
                         .padding(.vertical, .spacingSmall)
                         
