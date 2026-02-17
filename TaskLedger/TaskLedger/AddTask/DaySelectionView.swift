@@ -8,7 +8,7 @@ struct DaySelectionView: View {
         VStack(alignment: .leading, spacing: .spacing) {
             Text("Repeats on:")
                 .fontWeight(.semibold)
-                .padding(.vertical, .spacing)
+                .padding(.spacing)
             
             let columns = [
                 GridItem(.adaptive(minimum: 80))

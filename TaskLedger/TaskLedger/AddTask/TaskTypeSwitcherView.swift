@@ -17,7 +17,7 @@ struct TaskTypeSwitcherView: View {
                         TaskTypeButtonLabel(
                             systemImageName: type == taskType ? type.imageNameMarked: type.imageName,
                             title: type.taskName,
-                            color: type.color
+                            color: taskType == type ? type.color : type.color.opacity(0.5)
                         )
                     }.padding(.horizontal, .spacing)
                 }
