@@ -50,8 +50,37 @@ struct AddTaskView: View {
                                     .id(TaskType.time.number)
                                 }
                             }
-                            
-                            DaySelectionView(viewModel: viewModel)
+                            FrequencySwitcher(selection: $viewModel.taskFrequency.animation())
+                            Group {
+                                switch viewModel.taskFrequency {
+                                case .weekly:
+                                    WeeklySelectionView(viewModel: viewModel)
+                                        .transition(.asymmetric(
+                                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                                            removal: .move(edge: .leading).combined(with: .opacity)
+                                        ))
+                                case .monthly:
+                                    MonthlySelectionView(viewModel: viewModel)
+                                        .transition(.asymmetric(
+                                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                                            removal: .move(edge: .leading).combined(with: .opacity)
+                                        ))
+                                case .oneTime:
+                                    OneTimeSelectionView(viewModel: viewModel)
+                                        .transition(.asymmetric(
+                                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                                            removal: .move(edge: .leading).combined(with: .opacity)
+                                        ))
+                                case .daily:
+                                    Text("Task will repeat every day")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.gray)
+                                        .padding(.vertical, .spacing)
+                                        .frame(maxWidth: .infinity)
+                                        .transition(.opacity)
+                                }
+                            }
+                                
                         }
                         
                         NotesInputView(notes: $viewModel.notes)
