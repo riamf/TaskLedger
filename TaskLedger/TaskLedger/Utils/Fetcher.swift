@@ -7,8 +7,11 @@ final class Fetcher {
     
     func fetchTasks(for date: Date) -> [EventTask] {
         let startOfDay = Calendar.current.startOfDay(for: date)
-        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
-        let dayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
+        
+        let weekdayIndex = Calendar.current.component(.weekday, from: date)
+        let day = Calendar.current.component(.day, from: date)
+        let month = Calendar.current.component(.month, from: date)
+        let legacyDayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
 
         let distantFuture = Date.distantFuture
         let distantPast = Date.distantPast
@@ -22,11 +25,45 @@ final class Fetcher {
             let tasks = try modelContext.fetch(FetchDescriptor(predicate: predicate))
             
             return tasks.filter { task in
-                task.days.contains(dayNumber) ||
-                (task.taskFixedDate != nil && task.taskFixedDate! >= startOfDay && task.taskFixedDate! < endOfDay)
+                if let pattern = task.repeatingPattern {
+                    switch pattern {
+                    case .daily(let weekdays):
+                        if let currentWeekday = self.weekdayFromCalendar(weekdayIndex) {
+                            return weekdays.contains(currentWeekday)
+                        }
+                        return false
+                    case .monthly(let dayOfMonth):
+                        return day == dayOfMonth
+                    case .yearly(let dayOfMonth, let monthOfYear):
+                        return day == dayOfMonth && month == monthOfYear
+                    }
+                }
+                
+                if let fixedDate = task.taskFixedDate {
+                    return Calendar.current.isDate(fixedDate, inSameDayAs: date)
+                }
+                
+                if !task.days.isEmpty {
+                    return task.days.contains(legacyDayNumber)
+                }
+                
+                return false
             }
         } catch {
             return []
+        }
+    }
+    
+    private func weekdayFromCalendar(_ component: Int) -> Weekdays? {
+        switch component {
+        case 1: return .sunday
+        case 2: return .monday
+        case 3: return .tuesday
+        case 4: return .wednesday
+        case 5: return .thursday
+        case 6: return .friday
+        case 7: return .saturday
+        default: return nil
         }
     }
     
@@ -69,12 +106,9 @@ struct EventMartSummary {
     init(task: EventTask, events: [EventMark]) {
         self.task = task
         self.events = events
-        // Calculate once based on the task type, don't iterate events unnecessarily
-        self.amountSummary = events.reduce(0.0) { $0 + $1.amount }
-        
-        // Optimization: Check type on the parent task, not every individual event
-        self.counterSummary = (task.taskType == .counter) ? events.count : 0
-        self.timeSummary = (task.taskType == .time) ? Int(amountSummary) : 0
+        amountSummary = events.reduce(0.0, { $0 + $1.amount })
+        counterSummary = events.filter { $0.task?.taskType == .counter }.count
+        timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
     }
 }
 

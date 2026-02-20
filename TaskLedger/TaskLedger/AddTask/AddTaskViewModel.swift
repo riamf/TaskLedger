@@ -57,7 +57,7 @@ class AddTaskViewModel: ObservableObject {
             // Daily means every day (Mon-Sun)
             // Assuming 'days' stores 1-7 for weekdays. If empty, maybe interpreted as daily?
             // Or we explicitly fill 1...7
-            frequencyDays = Array(1...7)
+            frequencyDays = Array(0...6)
             repeatingPattern = .daily(weekdays: Weekdays.allCases)
             
         case .weekly:

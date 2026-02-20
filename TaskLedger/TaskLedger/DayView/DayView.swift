@@ -132,18 +132,78 @@ struct DayView: View {
                     isChecked: task.isCheck(viewModel.currentDate),
                     value: task, action: viewModel.markTask)
                 HStack {
-                    ForEach(0..<task.days.count, id: \.self) { idx in
-                        Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
+                    if let pattern = task.repeatingPattern {
+                        switch pattern {
+                        case .daily(let weekdays):
+                            if weekdays.count == 7 {
+                                Text("Every day")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            } else {
+                                Text(weekdays.sorted { $0.rawValue < $1.rawValue }.map { String($0.stringName.prefix(3)) }.joined(separator: ", "))
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        case .monthly(let day):
+                            Text("Every \(day)\(daySuffix(for: day)) of month")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        case .yearly(let day, let month):
+                            Text("Every \(day)\(daySuffix(for: day)) of \(Month(rawValue: month)?.name ?? "")")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    } else if let fixedDate = task.taskFixedDate {
+                        Text(fixedDate.formatted(date: .abbreviated, time: .omitted))
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    } else if !task.days.isEmpty {
+                        // Fallback for legacy tasks
+                        ForEach(0..<task.days.count, id: \.self) { idx in
+                            Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
                     }
                     Spacer()
                 }
-            }
+            }.padding(.horizontal, .spacingSmall)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             swipeActions(for: task)
         }
     }
     
+    private func daySuffix(for day: Int) -> String {
+        switch day {
+        case 1, 21, 31: return "st"
+        case 2, 22: return "nd"
+        case 3, 23: return "rd"
+        default: return "th"
+        }
+    }
+    
+    private enum Month: Int {
+        case january = 1, february, march, april, may, june, july, august, september, october, november, december
+        
+        var name: String {
+            switch self {
+            case .january: return "January"
+            case .february: return "February"
+            case .march: return "March"
+            case .april: return "April"
+            case .may: return "May"
+            case .june: return "June"
+            case .july: return "July"
+            case .august: return "August"
+            case .september: return "September"
+            case .october: return "October"
+            case .november: return "November"
+            case .december: return "December"
+            }
+        }
+    }
+
     @ViewBuilder
     private func swipeActions(for task: EventTask) -> some View {
         Button {
