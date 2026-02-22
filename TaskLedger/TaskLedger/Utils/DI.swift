@@ -6,6 +6,7 @@ final class DI {
     static let instance = DI()
     private(set) var modelContext: ModelContext!
     private(set) var fetcher = Fetcher()
+    private(set) var calendar: Calendar = .current
     private init() {}
     
     func initalize(modelContext: ModelContext) {

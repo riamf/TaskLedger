@@ -43,8 +43,8 @@ final class Fetcher {
                     return Calendar.current.isDate(fixedDate, inSameDayAs: date)
                 }
                 
-                if !task.days.isEmpty {
-                    return task.days.contains(legacyDayNumber)
+                if !task.days.isEmpty, let weekday = Weekdays(rawValue: legacyDayNumber) {
+                    return task.days.contains(weekday)
                 }
                 
                 return false

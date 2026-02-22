@@ -160,7 +160,7 @@ struct DayView: View {
                     } else if !task.days.isEmpty {
                         // Fallback for legacy tasks
                         ForEach(0..<task.days.count, id: \.self) { idx in
-                            Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
+                            Text(DaysCalculator.dayName(from: task.daysOrdered[idx].rawValue))
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }

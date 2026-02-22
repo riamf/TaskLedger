@@ -16,24 +16,26 @@ struct DaysCalculator {
     static let compDateFormatter = dateFormatterFactory("yyyy-MM-dd")
     static let monthYearFormatter = dateFormatterFactory("MMMM yyyy")
     
+    @DInjected(\.calendar) private static var calendar: Calendar
+    
     static func todayNumberInWeek() -> Int {
         return dayNumberInWeekFrom(Date())
     }
     
     static func dayName(from number: Int) -> String {
-        guard number < Calendar.current.shortWeekdaySymbols.count, number >= 0 else {
+        guard number < calendar.shortWeekdaySymbols.count, number >= 0 else {
             return ""
         }
-        return Calendar.current.shortWeekdaySymbols[number]
+        return calendar.shortWeekdaySymbols[number]
     }
     
     static func dayNumberInWeekFrom(_ date: Date) -> Int {
         let dayName = dayNameFormatter.string(from: date)
-        return Calendar.current.weekdaySymbols.firstIndex(of: dayName) ?? -1
+        return calendar.weekdaySymbols.firstIndex(of: dayName) ?? -1
     }
     
     static func dayNumberForName(_ name: String) -> Int? {
-        return Calendar.current.weekdaySymbols.firstIndex(of: name)
+        return calendar.weekdaySymbols.firstIndex(of: name)
     }
     
     static func equalDatesDayMonthYear(_ date1: Date, date2: Date) -> Bool {
@@ -41,7 +43,6 @@ struct DaysCalculator {
     }
     
     static func dateAtStartOfMonth(from date: Date) -> Date {
-        let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month], from: date)
         return calendar.date(from: components) ?? date
     }

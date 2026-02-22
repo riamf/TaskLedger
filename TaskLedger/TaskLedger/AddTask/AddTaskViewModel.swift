@@ -49,7 +49,7 @@ class AddTaskViewModel: ObservableObject {
         }
         
         var fixedDate: Date? = nil
-        var frequencyDays: [Int] = []
+        var frequencyDays: [Weekdays] = []
         var repeatingPattern: RepeatingPattern? = nil
         
         switch taskFrequency {
@@ -57,11 +57,11 @@ class AddTaskViewModel: ObservableObject {
             // Daily means every day (Mon-Sun)
             // Assuming 'days' stores 1-7 for weekdays. If empty, maybe interpreted as daily?
             // Or we explicitly fill 1...7
-            frequencyDays = Array(0...6)
+            frequencyDays = Weekdays.from(0...6)
             repeatingPattern = .daily(weekdays: Weekdays.allCases)
             
         case .weekly:
-            frequencyDays = daysSelected.compactMap { DaysCalculator.dayNumberForName($0) }
+            frequencyDays = Weekdays.from(daysSelected.compactMap { DaysCalculator.dayNumberForName($0) })
             // Map string names back to Weekdays enum for repeatingPattern if needed
             let selectedWeekdays = daysSelected.compactMap { name in
                 Weekdays.allCases.first(where: { $0.stringName == name })

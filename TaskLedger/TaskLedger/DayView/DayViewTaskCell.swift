@@ -15,7 +15,7 @@ struct DayViewTaskCell: View {
                     value: task, action: markTask)
                 HStack {
                     ForEach(0..<task.days.count, id: \.self) { idx in
-                        Text(DaysCalculator.dayName(from: task.days.sorted()[idx]))
+                        Text(DaysCalculator.dayName(from: task.days.sorted(by: { $0.rawValue < $1.rawValue })[idx].rawValue))
                     }
                     Spacer()
                 }

@@ -17,7 +17,7 @@ class EventTask: Identifiable {
     var taskFixedDate: Date?
     var amount: Double
     var repeatingPattern: RepeatingPattern?
-    var days: [Int]
+    var days: [Weekdays]
     var notes: String
     @Relationship(deleteRule: .cascade)
     var events: [EventMark]
@@ -44,6 +44,10 @@ class EventTask: Identifiable {
         todayEvent != nil
     }
     
+    var daysOrdered: [Weekdays] {
+        days.sorted(by: { $0.rawValue < $1.rawValue })
+    }
+    
     init(
         timestamp: Date,
         name: String,
@@ -51,7 +55,7 @@ class EventTask: Identifiable {
         amount: Double = 0.0,
         taskFixedDate: Date? = nil,
         repeatingPattern: RepeatingPattern? = nil,
-        days: [Int] = [],
+        days: [Weekdays] = [],
         notes: String = "",
         events: [EventMark] = [],
         archivedAt: Date? = nil,
@@ -68,6 +72,62 @@ class EventTask: Identifiable {
         self.repeatingPattern = repeatingPattern
         self.archivedAt = archivedAt
         self.snoozedUntil = snoozedUntil
+    }
+    
+    convenience init(
+        timestamp: Date,
+        name: String,
+        taskType: TaskType = .counter,
+        amount: Double = 0.0,
+        taskFixedDate: Date? = nil,
+        repeatingPattern: RepeatingPattern? = nil,
+        days: [Int],
+        notes: String = "",
+        events: [EventMark] = [],
+        archivedAt: Date? = nil,
+        snoozedUntil: Date? = nil
+    ) {
+        self.init(
+            timestamp: timestamp,
+            name: name,
+            taskType: taskType,
+            amount: amount,
+            taskFixedDate: taskFixedDate,
+            repeatingPattern: repeatingPattern,
+            days: Weekdays.from(days),
+            notes: notes,
+            events: events,
+            archivedAt: archivedAt,
+            snoozedUntil: snoozedUntil
+        )
+    }
+    
+    convenience init(
+        timestamp: Date,
+        name: String,
+        taskType: TaskType = .counter,
+        amount: Double = 0.0,
+        taskFixedDate: Date? = nil,
+        repeatingPattern: RepeatingPattern? = nil,
+        days: ClosedRange<Int>,
+        notes: String = "",
+        events: [EventMark] = [],
+        archivedAt: Date? = nil,
+        snoozedUntil: Date? = nil
+    ) {
+        self.init(
+            timestamp: timestamp,
+            name: name,
+            taskType: taskType,
+            amount: amount,
+            taskFixedDate: taskFixedDate,
+            repeatingPattern: repeatingPattern,
+            days: Weekdays.from(days),
+            notes: notes,
+            events: events,
+            archivedAt: archivedAt,
+            snoozedUntil: snoozedUntil
+        )
     }
     
     func summaryShortText(_ summary: EventMartSummary?) -> String {
@@ -116,7 +176,7 @@ class EventTask: Identifiable {
             taskType: .counter,
             amount: 1.0,
             repeatingPattern: .daily(weekdays: [.monday, .tuesday, .wednesday, .thursday, .friday]),
-            days: [0, 1, 2, 3, 4],
+            days: Weekdays.allCases,
             notes: "This is an example task."
         )
     }
@@ -137,6 +197,14 @@ enum Weekdays: Int, Codable, CaseIterable, Identifiable {
             case .saturday: return "Saturday"
             case .sunday: return "Sunday"
         }
+    }
+    
+    static func from(_ numbers: [Int]) -> [Weekdays] {
+        return numbers.compactMap { Weekdays(rawValue: $0) }
+    }
+    
+    static func from(_ range: ClosedRange<Int>) -> [Weekdays] {
+        return range.compactMap { Weekdays(rawValue: $0) }
     }
 }
 
