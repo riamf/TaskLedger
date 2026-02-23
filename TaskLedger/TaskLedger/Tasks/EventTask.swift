@@ -16,7 +16,7 @@ class EventTask: Identifiable {
     var name: String
     var taskFixedDate: Date?
     var amount: Double
-    var repeatingPattern: RepeatingPattern?
+    var repeatingPatternData: Data?
     var days: [Int]
     var notes: String
     @Relationship(deleteRule: .cascade)
@@ -24,6 +24,17 @@ class EventTask: Identifiable {
     var taskType: TaskType
     var archivedAt: Date?
     var snoozedUntil: Date?
+    
+    @Transient
+    var repeatingPattern: RepeatingPattern? {
+        get {
+            guard let data = repeatingPatternData else { return nil }
+            return try? JSONDecoder().decode(RepeatingPattern.self, from: data)
+        }
+        set {
+            repeatingPatternData = try? JSONEncoder().encode(newValue)
+        }
+    }
     
     // Computed property to work with Weekdays enum
     @Transient
@@ -76,7 +87,7 @@ class EventTask: Identifiable {
         self.notes = notes
         self.events = events
         self.taskFixedDate = taskFixedDate
-        self.repeatingPattern = repeatingPattern
+        self.repeatingPatternData = try? JSONEncoder().encode(repeatingPattern)
         self.archivedAt = archivedAt
         self.snoozedUntil = snoozedUntil
     }
