@@ -17,13 +17,20 @@ class EventTask: Identifiable {
     var taskFixedDate: Date?
     var amount: Double
     var repeatingPattern: RepeatingPattern?
-    var days: [Weekdays]
+    var days: [Int]
     var notes: String
     @Relationship(deleteRule: .cascade)
     var events: [EventMark]
     var taskType: TaskType
     var archivedAt: Date?
     var snoozedUntil: Date?
+    
+    // Computed property to work with Weekdays enum
+    @Transient
+    var weekdays: [Weekdays] {
+        get { days.compactMap { Weekdays(rawValue: $0) } }
+        set { days = newValue.map { $0.rawValue } }
+    }
     
     // need to performance check this!
     var isExistingToday: Bool {
@@ -45,7 +52,7 @@ class EventTask: Identifiable {
     }
     
     var daysOrdered: [Weekdays] {
-        days.sorted(by: { $0.rawValue < $1.rawValue })
+        weekdays.sorted(by: { $0.rawValue < $1.rawValue })
     }
     
     init(
@@ -65,7 +72,7 @@ class EventTask: Identifiable {
         self.name = name
         self.taskType = taskType
         self.amount = amount
-        self.days = days
+        self.days = days.map { $0.rawValue }
         self.notes = notes
         self.events = events
         self.taskFixedDate = taskFixedDate

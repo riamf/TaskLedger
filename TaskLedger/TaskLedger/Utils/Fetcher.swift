@@ -44,7 +44,7 @@ final class Fetcher {
                 }
                 
                 if !task.days.isEmpty, let weekday = Weekdays(rawValue: legacyDayNumber) {
-                    return task.days.contains(weekday)
+                    return task.weekdays.contains(weekday)
                 }
                 
                 return false
