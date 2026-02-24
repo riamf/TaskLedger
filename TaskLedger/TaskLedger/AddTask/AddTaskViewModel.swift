@@ -13,7 +13,7 @@ class AddTaskViewModel: ObservableObject {
     @Published var selectedPage: Int = 0
     @Published var taskFrequency: TaskFrequencies = .weekly
     
-    @Published var selectedDayOfMonth: Int = 1
+    @Published var selectedDayOfMonth: Int = Calendar.current.component(.day, from: Date())
     @Published var selectedDate: Date = Date()
     
     @Published var saveAlert = false
