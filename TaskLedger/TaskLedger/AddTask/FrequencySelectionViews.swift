@@ -10,9 +10,7 @@ struct WeeklySelectionView: View {
 
 struct MonthlySelectionView: View {
     @ObservedObject var viewModel: AddTaskViewModel
-    
-    let days = Array(1...31)
-    let columns = [GridItem(.adaptive(minimum: 40))]
+    @State private var visibleMonth = Date()
     
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing) {
@@ -21,20 +19,14 @@ struct MonthlySelectionView: View {
                 .padding(.horizontal, .spacing)
                 .padding(.top, .spacing)
             
-            LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(days, id: \.self) { day in
-                    Button {
-                        viewModel.selectedDayOfMonth = day
-                    } label: {
-                        Text("\(day)")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 40)
-                            .background(viewModel.selectedDayOfMonth == day ? Color.blue : Color.gray.opacity(0.2))
-                            .foregroundColor(viewModel.selectedDayOfMonth == day ? .white : .primary)
-                            .clipShape(Circle())
-                    }
+            CalendarMonthView(visibleMonth: $visibleMonth) { date in
+                let day = Calendar.current.component(.day, from: date)
+                CalendarDayButton(
+                    dayNumber: day,
+                    isSelected: viewModel.selectedDayOfMonth == day,
+                    color: nil
+                ) {
+                    viewModel.selectedDayOfMonth = day
                 }
             }
             .padding(.horizontal, .spacing)
@@ -44,6 +36,7 @@ struct MonthlySelectionView: View {
 
 struct OneTimeSelectionView: View {
     @ObservedObject var viewModel: AddTaskViewModel
+    @State private var visibleMonth = Date()
     
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing) {
@@ -52,13 +45,20 @@ struct OneTimeSelectionView: View {
                 .padding(.horizontal, .spacing)
                 .padding(.top, .spacing)
             
-            DatePicker(
-                "Select Date",
-                selection: $viewModel.selectedDate,
-                displayedComponents: [.date]
-            )
-            .datePickerStyle(.graphical)
+            CalendarMonthView(visibleMonth: $visibleMonth) { date in
+                let day = Calendar.current.component(.day, from: date)
+                CalendarDayButton(
+                    dayNumber: day,
+                    isSelected: Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate),
+                    color: nil
+                ) {
+                    viewModel.selectedDate = date
+                }
+            }
             .padding(.horizontal, .spacing)
+        }
+        .onAppear {
+            visibleMonth = viewModel.selectedDate
         }
     }
 }

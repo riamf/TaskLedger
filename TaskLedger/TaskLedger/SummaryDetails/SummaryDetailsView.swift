@@ -41,60 +41,19 @@ struct SummaryDetailsView: View {
             VStack(alignment: .leading, spacing: 12) {
                 
                 // Calendar with bordered background
-                VStack(spacing: 12) {
-                    // Calendar Header: Prev | Month Name | Next
-                    HStack {
-                        Button(action: { moveMonth(by: -1) }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.primary)
-                                .padding(8)
-                        }
-                        Spacer()
-                        Text(visibleMonth, format: .dateTime.month(.wide).year())
-                            .font(.headline)
-                        Spacer()
-                        Button(action: { moveMonth(by: 1) }) {
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.primary)
-                                .padding(8)
-                        }
-                    }
+                CalendarMonthView(visibleMonth: $visibleMonth) { date in
+                    let data = dailyCountsDict[Calendar.current.startOfDay(for: date)]
                     
-                    // Calendar Grid
-                    let days = daysForVisibleMonth()
-                    let columns = Array(repeating: GridItem(.flexible()), count: 7)
-                    
-                    LazyVGrid(columns: columns, spacing: 10) {
-                        // Weekday Labels
-                        ForEach(Calendar.current.shortWeekdaySymbols, id: \.self) { day in
-                            Text(day)
-                                .font(.caption2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.secondary)
+                    // Day Cell
+                    ZStack {
+                        if let color = data?.color {
+                            Circle()
+                                .fill(color)
                         }
                         
-                        // Days
-                        ForEach(days.indices, id: \.self) { index in
-                            if let date = days[index] {
-                                let data = dailyCountsDict[date]
-                                
-                                // Day Cell
-                                ZStack {
-                                    if let color = data?.color {
-                                        Circle()
-                                            .fill(color)
-                                    }
-                                    
-                                    Text(date, format: .dateTime.day())
-                                        .font(.system(size: 14, weight: data != nil ? .bold : .regular))
-                                        .foregroundColor(data != nil ? .white : .primary)
-                                }
-                                .frame(height: 36)
-                            } else {
-                                // Empty cell helper
-                                Text("").frame(height: 36)
-                            }
-                        }
+                        Text(date, format: .dateTime.day())
+                            .font(.system(size: 14, weight: data != nil ? .bold : .regular))
+                            .foregroundColor(data != nil ? .white : .primary)
                     }
                 }
                 .padding()
@@ -153,6 +112,10 @@ struct SummaryDetailsView: View {
                 CustomToolbarView(task: eventSummary.task)
             }
         }
+        .onChange(of: visibleMonth) { newDate in
+            let newSummaary = fetcher.fetchSummary(for: newDate)
+            eventSummary = newSummaary[eventSummary.task] ?? eventSummary
+        }
     }
     
     private var summaryFooter: some View {
@@ -189,38 +152,7 @@ struct SummaryDetailsView: View {
         .padding(.bottom)
     }
     
-    // MARK: - Calendar Helpers
-    private func moveMonth(by value: Int) {
-        if let newDate = Calendar.current.date(byAdding: .month, value: value, to: visibleMonth) {
 
-            visibleMonth = newDate
-            let newSummaary = fetcher.fetchSummary(for: newDate)
-            eventSummary = newSummaary[eventSummary.task] ?? eventSummary
-        }
-    }
-    
-    // Generate dates for the grid (including nil for offset days)
-    private func daysForVisibleMonth() -> [Date?] {
-        let cal = Calendar.current
-        guard let monthInterval = cal.dateInterval(of: .month, for: visibleMonth),
-              let monthRange = cal.range(of: .day, in: .month, for: monthInterval.start)
-        else { return [] }
-        
-        let firstDayOfMonth = monthInterval.start
-        let firstWeekday = cal.component(.weekday, from: firstDayOfMonth)
-        // Calculate offset (assuming Sunday is 1, so offset is weekday-1)
-        let offset = firstWeekday - 1
-        
-        var days: [Date?] = Array(repeating: nil, count: offset)
-        
-        for dayOffset in 0..<monthRange.count {
-            if let date = cal.date(byAdding: .day, value: dayOffset, to: firstDayOfMonth) {
-                days.append(date)
-            }
-        }
-        
-        return days
-    }
 }
 
 
