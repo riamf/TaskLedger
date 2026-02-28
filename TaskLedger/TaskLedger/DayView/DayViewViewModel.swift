@@ -25,9 +25,9 @@ class DayViewViewModel: ObservableObject {
     }
     
     let dayDateFormatter: DateFormatter = {
-        let dayFormatter = DateFormatter()
-        dayFormatter.dateFormat = "d MMMM yyyy"
-        return dayFormatter
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, d MMMM yyyy"
+        return formatter
     }()
     
     func fetchTasks() {
