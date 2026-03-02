@@ -43,6 +43,7 @@ struct FrequencySwitcher: View {
                         )
                         .cornerRadius(8)
                 }
+                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal)

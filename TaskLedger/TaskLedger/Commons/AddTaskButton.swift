@@ -13,6 +13,7 @@ struct AddTaskButton: View {
         .tint(.white)
         .background(Circle().fill(.blue).frame(width: 56, height: 56))
     }
+    .buttonStyle(.plain)
   }
 }
 

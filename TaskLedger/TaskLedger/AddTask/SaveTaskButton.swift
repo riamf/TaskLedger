@@ -16,6 +16,7 @@ struct SaveTaskButton: View {
             .tint(colorScheme == .light ? .black : .white)
         }
         .frame(height: 44)
+        .buttonStyle(.plain)
         .cornerRadius(8)
         .overlay( /// apply a rounded border
             RoundedRectangle(cornerRadius: 20)

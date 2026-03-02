@@ -48,6 +48,7 @@ struct DaySelectionView: View {
             }
             .frame(width: 40, height: 40)
         }
+        .buttonStyle(.plain)
     }
 }
 

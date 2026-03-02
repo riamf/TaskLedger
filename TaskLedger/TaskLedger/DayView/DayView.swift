@@ -82,7 +82,7 @@ struct DayView: View {
                     }
                     showSnoozeSheet = false
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.orange)
             }
             .padding()

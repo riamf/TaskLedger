@@ -15,6 +15,7 @@ struct CloseModalButton: View {
                 Text("Cancel").foregroundStyle(colorScheme == .light ? .black : .white)
             }
         }
+        .buttonStyle(.plain)
     }
 }
 

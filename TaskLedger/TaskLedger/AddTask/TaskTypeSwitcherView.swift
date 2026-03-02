@@ -19,7 +19,9 @@ struct TaskTypeSwitcherView: View {
                             title: type.taskName,
                             color: taskType == type ? type.color : type.color.opacity(0.5)
                         )
-                    }.padding(.horizontal, .spacing)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, .spacing)
                 }
             }
         }
