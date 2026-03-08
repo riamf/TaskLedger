@@ -10,7 +10,7 @@ struct SaveTaskButton: View {
         } label: {
             HStack {
                 Spacer()
-                Image(systemName: "square.and.arrow.down.on.square")
+                Text("Save")
                 Spacer()
             }
             .tint(colorScheme == .light ? .black : .white)
