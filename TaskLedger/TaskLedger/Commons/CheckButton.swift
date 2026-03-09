@@ -14,10 +14,13 @@ struct CheckButton<T>: View {
             if isChecked {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.secondary)
                     Text(title)
+                        .strikethrough()
                         .fontWeight(.medium)
                         .lineLimit(1)
-                }.tint(colorScheme == .light ? .black : .white)
+                        .foregroundStyle(.secondary)
+                }
             } else {
                 HStack(spacing: 8) {
                     Image(systemName: "circle")
