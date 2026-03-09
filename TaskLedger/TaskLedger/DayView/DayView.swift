@@ -10,6 +10,8 @@ struct DayView: View {
     @State private var taskToSnooze: EventTask?
     @State private var showSnoozeSheet = false
     @State private var snoozeDays = 1
+
+    @DInjected(\.haptics) var haptics
     
     init(viewModel: DayViewViewModel = .init(currentDate: Date())) {
         self.viewModel = viewModel
@@ -130,7 +132,10 @@ struct DayView: View {
                 CheckButton(
                     title: task.name,
                     isChecked: task.isCheck(viewModel.currentDate),
-                    value: task, action: viewModel.markTask)
+                    value: task, action: { task in
+                        haptics.trigger(.medium)
+                        viewModel.markTask(task)
+                    })
                 HStack {
                     if let pattern = task.repeatingPattern {
                         switch pattern {
