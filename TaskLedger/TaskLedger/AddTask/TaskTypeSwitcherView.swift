@@ -9,7 +9,7 @@ struct TaskTypeSwitcherView: View {
             Text("Select event type:")
                 .fontWeight(.semibold)
                 .padding(.vertical, .spacing)
-            HStack {
+            HStack(alignment: .top, spacing: .spacingSmall) {
                 ForEach(TaskType.allCases, id: \.self) { type in
                     Button {
                         self.taskType = type
@@ -17,11 +17,12 @@ struct TaskTypeSwitcherView: View {
                         TaskTypeButtonLabel(
                             systemImageName: type == taskType ? type.imageNameMarked: type.imageName,
                             title: type.taskName,
+                            summary: type.summary,
                             color: taskType == type ? type.color : type.color.opacity(0.5)
                         )
                     }
                     .buttonStyle(.plain)
-                    .padding(.horizontal, .spacing)
+                    .frame(maxWidth: .infinity)
                 }
             }
         }

@@ -4,6 +4,7 @@ struct TaskTypeButtonLabel: View {
     @Environment(\.colorScheme) var colorScheme
     let systemImageName: String
     let title: String
+    let summary: String
     let color: Color
     var body: some View {
         VStack {
@@ -17,12 +18,16 @@ struct TaskTypeButtonLabel: View {
                 )
             Text(title).tint(colorScheme == .light ? .black : .white)
                 .font(Font.system(.caption))
+                .multilineTextAlignment(.center)
                 .padding(.top, .spacingSmall)
+            Text(summary).tint(colorScheme == .light ? .black : .white)
+                .font(Font.system(.caption))
+                .multilineTextAlignment(.center)
         }
     }
 }
 
 #Preview {
     let task = EventTask.example()
-    TaskTypeButtonLabel(systemImageName: task.taskType.imageName, title: task.name, color: task.taskType.color)
+    TaskTypeButtonLabel(systemImageName: task.taskType.imageName, title: task.name, summary: task.taskType.summary, color: task.taskType.color)
 }

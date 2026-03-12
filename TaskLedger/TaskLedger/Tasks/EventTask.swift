@@ -307,6 +307,15 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
         }
     }
     
+    var summary: String {
+        switch self {
+            case .counter: return "Perfect for counting occurrences."
+            case .cost: return "Easily track your daily expenses."
+            case .income: return "Keep a record of your earnings."
+            case .time: return "Measure time spent on tasks."
+        }
+    }
+    
     static var allNames: [String] {
         TaskType.allCases.map { $0.taskName }
     }
