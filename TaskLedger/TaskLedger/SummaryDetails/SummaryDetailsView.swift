@@ -17,6 +17,13 @@ struct SummaryDetailsView: View {
         let color: Color
     }
 
+    private struct DayParams: Identifiable {
+        let id = UUID()
+        let date: Date
+    }
+
+    @State private var selectedDayParams: DayParams?
+
     private var filteredEvents: [EventMark] {
         let calendar = Calendar.current
         return eventSummary.events.filter { event in
@@ -45,16 +52,21 @@ struct SummaryDetailsView: View {
                     let data = dailyCountsDict[Calendar.current.startOfDay(for: date)]
                     
                     // Day Cell
-                    ZStack {
-                        if let color = data?.color {
-                            Circle()
-                                .fill(color)
+                    Button {
+                        selectedDayParams = DayParams(date: date)
+                    } label: {
+                        ZStack {
+                            if let color = data?.color {
+                                Circle()
+                                    .fill(color)
+                            }
+                            
+                            Text(date, format: .dateTime.day())
+                                .font(.system(size: 14, weight: data != nil ? .bold : .regular))
+                                .foregroundColor(data != nil ? .white : .primary)
                         }
-                        
-                        Text(date, format: .dateTime.day())
-                            .font(.system(size: 14, weight: data != nil ? .bold : .regular))
-                            .foregroundColor(data != nil ? .white : .primary)
                     }
+                    .buttonStyle(.plain)
                 }
                 .padding()
                 .background(
@@ -113,8 +125,12 @@ struct SummaryDetailsView: View {
             }
         }
         .onChange(of: visibleMonth) { newDate in
-            let newSummaary = fetcher.fetchSummary(for: newDate)
-            eventSummary = newSummaary[eventSummary.task] ?? eventSummary
+            refreshData(for: newDate)
+        }
+        .sheet(item: $selectedDayParams, onDismiss: {
+            refreshData()
+        }) { params in
+             DayView(viewModel: .init(currentDate: params.date), showAddButton: false)
         }
     }
     
@@ -152,6 +168,11 @@ struct SummaryDetailsView: View {
         .padding(.bottom)
     }
     
+    private func refreshData(for date: Date? = nil) {
+        let dateToFetch = date ?? visibleMonth
+        let newSummary = fetcher.fetchSummary(for: dateToFetch)
+        eventSummary = newSummary[eventSummary.task] ?? eventSummary
+    }
 
 }
 

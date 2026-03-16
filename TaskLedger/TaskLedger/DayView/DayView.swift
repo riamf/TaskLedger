@@ -10,11 +10,14 @@ struct DayView: View {
     @State private var taskToSnooze: EventTask?
     @State private var showSnoozeSheet = false
     @State private var snoozeDays = 1
+    private let showAddButton: Bool
 
     @DInjected(\.haptics) var haptics
+    @Environment(\.dismiss) private var dismiss
     
-    init(viewModel: DayViewViewModel = .init(currentDate: Date())) {
+    init(viewModel: DayViewViewModel = .init(currentDate: Date()), showAddButton: Bool = true) {
         self.viewModel = viewModel
+        self.showAddButton = showAddButton
     }
     
     var body: some View {
@@ -25,7 +28,9 @@ struct DayView: View {
                     toolbarItems
                 }
             
-            floatingActionButton
+            if showAddButton {
+                floatingActionButton
+            }
         }
         .onAppear {
             viewModel.fetchTasks()
@@ -231,19 +236,27 @@ struct DayView: View {
     
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarLeading) {
-            ButtonArrowLeft {
-                viewModel.previousDate()
+        if showAddButton {
+            ToolbarItem(placement: .navigationBarLeading) {
+                ButtonArrowLeft {
+                    viewModel.previousDate()
+                }
+                .buttonStyle(.plain)
+                .background(Color.clear)
             }
-            .buttonStyle(.plain)
-            .background(Color.clear)
-        }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            ButtonArrowRight {
-                viewModel.nextDate()
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ButtonArrowRight {
+                    viewModel.nextDate()
+                }
+                .buttonStyle(.plain)
+                .background(Color.clear)
             }
-            .buttonStyle(.plain)
-            .background(Color.clear)
+        } else {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
         }
     }
     
