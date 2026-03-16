@@ -227,13 +227,6 @@ struct DayView: View {
             Label("Snooze", systemImage: "clock")
         }
         .tint(.orange)
-        
-        Button {
-            // Edit Logic
-        } label: {
-            Label("Edit", systemImage: "pencil")
-        }
-        .tint(.blue)
     }
     
     @ToolbarContentBuilder
