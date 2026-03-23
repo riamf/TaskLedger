@@ -16,7 +16,7 @@ struct AddTaskView: View {
                         CloseModalButton()
                         Spacer()
                     }
-                }.padding(.vertical, .bigSpacing).padding(.horizontal, .spacing)
+                }.padding(.top, .bigSpacing).padding(.horizontal, .spacing)
                 VStack(spacing: .spacingSmall) {
                     VStack(spacing: 8) {
                         ScrollViewReader { proxy in
@@ -82,9 +82,6 @@ struct AddTaskView: View {
                             }
                                 
                         }
-                        
-                        NotesInputView(notes: $viewModel.notes)
-                            .padding(.vertical, .spacingSmall)
                     }
                     .scrollTargetBehavior(.paging)
                     .scrollIndicators(.never)
