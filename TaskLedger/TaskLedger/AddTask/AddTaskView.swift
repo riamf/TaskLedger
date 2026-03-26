@@ -73,8 +73,7 @@ struct AddTaskView: View {
                                         ))
                                 case .daily:
                                     Text("add_task_daily_repeat_message")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.gray)
+                                        .font(.headline)
                                         .padding(.vertical, .spacing)
                                         .frame(maxWidth: .infinity)
                                         .transition(.opacity)

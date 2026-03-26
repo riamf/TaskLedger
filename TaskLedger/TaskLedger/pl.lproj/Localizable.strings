@@ -1,0 +1,135 @@
+// Localizable.strings
+// TaskLedger
+// Localization for Polish (pl)
+
+/* Add Task View */
+"add_task_daily_repeat_message" = "Zadanie będzie powtarzane codziennie";
+"error_title" = "Błąd";
+"save_task_error_message" = "Nie udało się zapisać zadania. Spróbuj ponownie.";
+"ok_button" = "OK";
+"save_button_title" = "Zapisz";
+
+/* AddTask/Common */
+"task_name_label" = "Nazwa zadania:";
+"enter_task_name_prompt" = "Wprowadź nazwę zadania";
+
+/* AddTask/CostInputView */
+"enter_cost_amount_label" = "Kwota kosztu:";
+
+/* AddTask/IncomeInputView */
+"enter_income_amount_label" = "Kwota przychodu:";
+
+/* AddTask/TimeInputView */
+"enter_time_spent_label" = "Czas trwania:";
+"time_hours_label" = "Godziny: ";
+"time_minutes_label" = "Minuty: ";
+"time_seconds_label" = "Sekundy: ";
+"time_hours_prompt" = "Godziny";
+"time_minutes_prompt" = "Minuty";
+"time_seconds_prompt" = "Sekundy";
+
+/* AddTask/FrequencySelection */
+"repeats_on_day_label" = "Powtarzaj w dzień:";
+"select_date_label" = "Wybierz datę:";
+
+/* AddTask/DaySelection */
+"repeats_on_label" = "Powtarzaj w:";
+
+/* AddTask/FrequencySwitcher */
+"frequency_weekly" = "Tygodniowo";
+"frequency_monthly" = "Miesięcznie";
+"frequency_daily" = "Codziennie";
+"frequency_one_time" = "Jednorazowo";
+
+/* AddTask/TaskTypeSwitcher */
+"select_event_type_label" = "Wybierz typ zdarzenia:";
+
+/* Tasks/EventTask */
+"task_type_counter" = "Licznik";
+"task_type_cost" = "Koszt";
+"task_type_income" = "Przychód";
+"task_type_time" = "Czasomierz";
+
+"task_summary_counter" = "Licz wystąpienia";
+"task_summary_cost" = "Śledź wydatki";
+"task_summary_income" = "Śledź zarobki";
+"task_summary_time" = "Śledź czas";
+
+"summary_times_suffix" = " razy";
+"summary_spend_suffix" = " wydano";
+"summary_earned_suffix" = " zarobiono";
+"summary_time_spent_suffix" = " spędzono";
+
+/* Weekdays */
+"weekday_monday" = "Poniedziałek";
+"weekday_tuesday" = "Wtorek";
+"weekday_wednesday" = "Środa";
+"weekday_thursday" = "Czwartek";
+"weekday_friday" = "Piątek";
+"weekday_saturday" = "Sobota";
+"weekday_sunday" = "Niedziela";
+
+/* RepeatingPattern */
+"pattern_daily" = "Codziennie";
+"pattern_monthly" = "Miesięcznie";
+"pattern_yearly" = "Rocznie";
+
+/* Commons */
+"cancel_button_title" = "Anuluj";
+
+/* DayView */
+"day_view_delete_confirmation_title" = "Czy na pewno chcesz usunąć?";
+"day_view_delete_confirmation_message" = "Możesz usunąć tylko przyszły harmonogram lub całe zadanie wraz z historią.";
+"snooze_task_title" = "Odłóż zadanie";
+"snooze_days_prompt" = "Odłóż o ile dni?";
+"snooze_day_singular" = "dzień";
+"snooze_day_plural" = "dni";
+"snooze_button_title" = "Odłóż";
+"nothing_to_see_here" = "Nic tu nie ma";
+"every_day_label" = "Codziennie";
+"every_month_pattern" = "Każdego %lld%@ dnia miesiąca";
+"every_year_pattern" = "Każdego %lld%@ dnia %@";
+"delete_action_title" = "Usuń";
+"done_button_title" = "Gotowe";
+"delete_task_schedule_button" = "Usuń harmonogram zadania";
+"delete_task_history_button" = "Usuń zadanie i historię";
+
+/* DayView/Month */
+"month_january" = "stycznia";
+"month_february" = "lutego";
+"month_march" = "marca";
+"month_april" = "kwietnia";
+"month_may" = "maja";
+"month_june" = "czerwca";
+"month_july" = "lipca";
+"month_august" = "sierpnia";
+"month_september" = "września";
+"month_october" = "października";
+"month_november" = "listopada";
+"month_december" = "grudnia";
+
+/* DaySuffix */
+"day_suffix_st" = "-go";
+"day_suffix_nd" = "-go";
+"day_suffix_rd" = "-go";
+"day_suffix_th" = "-go";
+
+/* Calendar */
+"calendar_today_prefix" = "Dzisiaj: ";
+
+/* Summary */
+"no_events_for_month" = "Brak wydarzeń w tym miesiącu.";
+
+/* SummaryDetails */
+"no_data_available" = "Brak danych";
+"total_label" = "Razem";
+
+/* TasksList */
+"no_tasks_add_some" = "Brak zadań, dodaj jakieś!";
+"all_available_tasks_header" = "Wszystkie dostępne zadania";
+"edit_button_title" = "Edytuj";
+"delete_task_error_message" = "Nie udało się usunąć zadania. Spróbuj ponownie.";
+
+/* MainView */
+"tab_day_title" = "Dzień";
+"tab_summary_title" = "Podsumowanie";
