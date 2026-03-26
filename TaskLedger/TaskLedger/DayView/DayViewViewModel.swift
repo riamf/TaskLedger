@@ -26,7 +26,7 @@ class DayViewViewModel: ObservableObject {
     
     let dayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, d MMMM yyyy"
+        formatter.dateStyle = .full
         return formatter
     }()
     

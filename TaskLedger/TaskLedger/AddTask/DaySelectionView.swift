@@ -6,7 +6,7 @@ struct DaySelectionView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: .spacing) {
-            Text("Repeats on:")
+            Text("repeats_on_label")
                 .fontWeight(.semibold)
                 .padding(.spacing)
             

@@ -8,8 +8,10 @@ enum TaskFrequencies: String, CaseIterable {
     
     var title: String {
         switch self {
-        case .oneTime: return "One Time"
-        default: return rawValue.capitalized
+        case .oneTime: return String(localized: "frequency_one_time")
+        case .daily: return String(localized: "frequency_daily")
+        case .weekly: return String(localized: "frequency_weekly")
+        case .monthly: return String(localized: "frequency_monthly")
         }
     }
 }

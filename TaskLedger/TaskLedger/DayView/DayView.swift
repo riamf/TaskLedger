@@ -51,10 +51,10 @@ struct DayView: View {
             snoozeSheetView
                 .presentationDetents([.medium])
         }
-        .alert("Are you sure you want to delete?", isPresented: $showDeleteConfirmation) {
+        .alert("day_view_delete_confirmation_title", isPresented: $showDeleteConfirmation) {
             deleteConfirmationButtons
         } message: {
-            Text("You can delete only future schedule or delete task completely with history.")
+            Text("day_view_delete_confirmation_message")
         }
     }
     
@@ -62,28 +62,28 @@ struct DayView: View {
     
     private var snoozeSheetView: some View {
         VStack(spacing: 20) {
-            Text("Snooze Task")
+            Text("snooze_task_title")
                 .font(.headline)
             
-            Text("Snooze for how many days?")
+            Text("snooze_days_prompt")
                 .font(.subheadline)
             
             Picker("Days", selection: $snoozeDays) {
                 ForEach(1...30, id: \.self) { day in
-                    Text("\(day) \(day == 1 ? "day" : "days")").tag(day)
+                    Text("\(day) \(day == 1 ? String(localized: "snooze_day_singular") : String(localized: "snooze_day_plural"))").tag(day)
                 }
             }
             .pickerStyle(.wheel)
             
             HStack {
-                Button("Cancel", role: .cancel) {
+                Button("cancel_button_title", role: .cancel) {
                     showSnoozeSheet = false
                 }
                 .buttonStyle(.bordered)
                 
                 Spacer()
                 
-                Button("Snooze") {
+                Button("snooze_button_title") {
                     if let task = taskToSnooze {
                         viewModel.snoozeTask(task, days: snoozeDays)
                     }
@@ -112,7 +112,7 @@ struct DayView: View {
     private var emptyStateView: some View {
         VStack {
             Spacer()
-            Text("Nothing To See Here")
+            Text("nothing_to_see_here")
                 .font(.subheadline)
                 .foregroundColor(.gray)
             Spacer()
@@ -146,7 +146,7 @@ struct DayView: View {
                         switch pattern {
                         case .daily(let weekdays):
                             if weekdays.count == 7 {
-                                Text("Every day")
+                                Text("every_day_label")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             } else {
@@ -155,11 +155,11 @@ struct DayView: View {
                                     .foregroundColor(.gray)
                             }
                         case .monthly(let day):
-                            Text("Every \(day)\(daySuffix(for: day)) of month")
+                            Text(String(format: String(localized: "every_month_pattern"), day, daySuffix(for: day)))
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         case .yearly(let day, let month):
-                            Text("Every \(day)\(daySuffix(for: day)) of \(Month(rawValue: month)?.name ?? "")")
+                            Text(String(format: String(localized: "every_year_pattern"), day, daySuffix(for: day), Month(rawValue: month)?.name ?? ""))
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
@@ -186,10 +186,10 @@ struct DayView: View {
     
     private func daySuffix(for day: Int) -> String {
         switch day {
-        case 1, 21, 31: return "st"
-        case 2, 22: return "nd"
-        case 3, 23: return "rd"
-        default: return "th"
+        case 1, 21, 31: return String(localized: "day_suffix_st")
+        case 2, 22: return String(localized: "day_suffix_nd")
+        case 3, 23: return String(localized: "day_suffix_rd")
+        default: return String(localized: "day_suffix_th")
         }
     }
     
@@ -198,18 +198,18 @@ struct DayView: View {
         
         var name: String {
             switch self {
-            case .january: return "January"
-            case .february: return "February"
-            case .march: return "March"
-            case .april: return "April"
-            case .may: return "May"
-            case .june: return "June"
-            case .july: return "July"
-            case .august: return "August"
-            case .september: return "September"
-            case .october: return "October"
-            case .november: return "November"
-            case .december: return "December"
+            case .january: return String(localized: "month_january")
+            case .february: return String(localized: "month_february")
+            case .march: return String(localized: "month_march")
+            case .april: return String(localized: "month_april")
+            case .may: return String(localized: "month_may")
+            case .june: return String(localized: "month_june")
+            case .july: return String(localized: "month_july")
+            case .august: return String(localized: "month_august")
+            case .september: return String(localized: "month_september")
+            case .october: return String(localized: "month_october")
+            case .november: return String(localized: "month_november")
+            case .december: return String(localized: "month_december")
             }
         }
     }
@@ -220,7 +220,7 @@ struct DayView: View {
             taskToDelete = task
             showDeleteConfirmation = true
         } label: {
-            Label("Delete", systemImage: "trash")
+            Label("delete_action_title", systemImage: "trash")
         }
         .tint(.red)
         
@@ -229,7 +229,7 @@ struct DayView: View {
             snoozeDays = 1
             showSnoozeSheet = true
         } label: {
-            Label("Snooze", systemImage: "clock")
+            Label("snooze_button_title", systemImage: "clock")
         }
         .tint(.orange)
     }
@@ -253,7 +253,7 @@ struct DayView: View {
             }
         } else {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done") {
+                Button("done_button_title") {
                     dismiss()
                 }
             }
@@ -273,19 +273,18 @@ struct DayView: View {
     
     @ViewBuilder
     private var deleteConfirmationButtons: some View {
-        Button("Delete task schedule", role: .destructive) {
+        Button("delete_task_schedule_button", role: .destructive) {
             if let task = taskToDelete {
                 viewModel.archiveTask(task)
             }
         }
-        Button("Delete task & history", role: .destructive) {
+        Button("delete_task_history_button", role: .destructive) {
             if let task = taskToDelete {
                 viewModel.deleteTask(task)
             }
         }
-        Button("Cancel", role: .cancel) { }
+        Button("cancel_button_title", role: .cancel) { }
     }
-    
 }
 
 #if DEBUG

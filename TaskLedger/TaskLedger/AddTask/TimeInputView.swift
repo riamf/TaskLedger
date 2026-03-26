@@ -8,25 +8,25 @@ struct TimeInputView: View {
     
     var body: some View {
         VStack(spacing: 8) {
-            Text("Task name:").padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading)
-            TextField("", text: $inputTaskName, prompt: Text("Enter task name"))
+            Text("task_name_label").padding(.leading, 16).frame(maxWidth: .infinity, alignment: .leading)
+            TextField("", text: $inputTaskName, prompt: Text("enter_task_name_prompt"))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 16)
-            Text("Enter time spent:")
+            Text("enter_time_spent_label")
                 .padding(.leading, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: .spacingSmall) {
                 VStack{
-                    Text("Hours: ")
-                    TextField("Hours", value: $hours, format: .number, prompt: Text("Hours")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    Text("time_hours_label")
+                    TextField("time_hours_prompt", value: $hours, format: .number, prompt: Text("time_hours_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 VStack {
-                    Text("Minutes: ")
-                    TextField("Minues", value: $minutes, format: .number, prompt: Text("Minutes")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    Text("time_minutes_label")
+                    TextField("time_minutes_prompt", value: $minutes, format: .number, prompt: Text("time_minutes_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 VStack {
-                    Text("Seconds: ")
-                    TextField("Seconds", value: $seconds, format: .number, prompt: Text("Seconds")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    Text("time_seconds_label")
+                    TextField("time_seconds_prompt", value: $seconds, format: .number, prompt: Text("time_seconds_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
                 }
             }.padding(.horizontal, .bigSpacing)
         }

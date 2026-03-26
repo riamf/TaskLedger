@@ -1,0 +1,135 @@
+// Localizable.strings
+// TaskLedger
+// Created by GitHub Copilot.
+
+/* Add Task View */
+"add_task_daily_repeat_message" = "Task will repeat every day";
+"error_title" = "Error";
+"save_task_error_message" = "Failed to save task. Please try again.";
+"ok_button" = "OK";
+"save_button_title" = "Save";
+
+/* AddTask/Common */
+"task_name_label" = "Task name:";
+"enter_task_name_prompt" = "Enter task name";
+
+/* AddTask/CostInputView */
+"enter_cost_amount_label" = "Enter cost amount:";
+
+/* AddTask/IncomeInputView */
+"enter_income_amount_label" = "Enter income amount:";
+
+/* AddTask/TimeInputView */
+"enter_time_spent_label" = "Enter time spent:";
+"time_hours_label" = "Hours: ";
+"time_minutes_label" = "Minutes: ";
+"time_seconds_label" = "Seconds: ";
+"time_hours_prompt" = "Hours";
+"time_minutes_prompt" = "Minutes";
+"time_seconds_prompt" = "Seconds";
+
+/* AddTask/FrequencySelection */
+"repeats_on_day_label" = "Repeats on day:";
+"select_date_label" = "Select Date:";
+
+/* AddTask/DaySelection */
+"repeats_on_label" = "Repeats on:";
+
+/* AddTask/FrequencySwitcher */
+"frequency_weekly" = "Weekly";
+"frequency_monthly" = "Monthly";
+"frequency_daily" = "Daily";
+"frequency_one_time" = "One Time";
+
+/* AddTask/TaskTypeSwitcher */
+"select_event_type_label" = "Select event type:";
+
+/* Tasks/EventTask */
+"task_type_counter" = "Counter";
+"task_type_cost" = "Cost";
+"task_type_income" = "Income";
+"task_type_time" = "Timer";
+
+"task_summary_counter" = "Calculate occurrences";
+"task_summary_cost" = "Track expenses";
+"task_summary_income" = "Track earnings";
+"task_summary_time" = "Track time spent";
+
+"summary_times_suffix" = " times";
+"summary_spend_suffix" = " spend";
+"summary_earned_suffix" = " earned";
+"summary_time_spent_suffix" = " time spent";
+
+/* Weekdays */
+"weekday_monday" = "Monday";
+"weekday_tuesday" = "Tuesday";
+"weekday_wednesday" = "Wednesday";
+"weekday_thursday" = "Thursday";
+"weekday_friday" = "Friday";
+"weekday_saturday" = "Saturday";
+"weekday_sunday" = "Sunday";
+
+/* RepeatingPattern */
+"pattern_daily" = "Daily";
+"pattern_monthly" = "Monthly";
+"pattern_yearly" = "Yearly";
+
+/* Commons */
+"cancel_button_title" = "Cancel";
+
+/* DayView */
+"day_view_delete_confirmation_title" = "Are you sure you want to delete?";
+"day_view_delete_confirmation_message" = "You can delete only future schedule or delete task completely with history.";
+"snooze_task_title" = "Snooze Task";
+"snooze_days_prompt" = "Snooze for how many days?";
+"snooze_day_singular" = "day";
+"snooze_day_plural" = "days";
+"snooze_button_title" = "Snooze";
+"nothing_to_see_here" = "Nothing To See Here";
+"every_day_label" = "Every day";
+"every_month_pattern" = "Every %lld%@ of month";
+"every_year_pattern" = "Every %lld%@ of %@";
+"delete_action_title" = "Delete";
+"done_button_title" = "Done";
+"delete_task_schedule_button" = "Delete task schedule";
+"delete_task_history_button" = "Delete task & history";
+
+/* DayView/Month */
+"month_january" = "January";
+"month_february" = "February";
+"month_march" = "March";
+"month_april" = "April";
+"month_may" = "May";
+"month_june" = "June";
+"month_july" = "July";
+"month_august" = "August";
+"month_september" = "September";
+"month_october" = "October";
+"month_november" = "November";
+"month_december" = "December";
+
+/* DaySuffix */
+"day_suffix_st" = "st";
+"day_suffix_nd" = "nd";
+"day_suffix_rd" = "rd";
+"day_suffix_th" = "th";
+
+/* Calendar */
+"calendar_today_prefix" = "Today: ";
+
+/* Summary */
+"no_events_for_month" = "No events for this month.";
+
+/* SummaryDetails */
+"no_data_available" = "No data available";
+"total_label" = "Total";
+
+/* TasksList */
+"no_tasks_add_some" = "No tasks, add some!";
+"all_available_tasks_header" = "All available Tasks";
+"edit_button_title" = "Edit";
+"delete_task_error_message" = "Failed to delete task. Please try again.";
+
+/* MainView */
+"tab_day_title" = "Day";
+"tab_summary_title" = "Summary";

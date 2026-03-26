@@ -6,7 +6,7 @@ struct TaskTypeSwitcherView: View {
     
     var body: some View {
         VStack {
-            Text("Select event type:")
+            Text("select_event_type_label")
                 .fontWeight(.semibold)
                 .padding(.vertical, .spacing)
             HStack(alignment: .top, spacing: .spacingSmall) {

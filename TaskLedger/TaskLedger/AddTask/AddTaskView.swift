@@ -72,7 +72,7 @@ struct AddTaskView: View {
                                             removal: .move(edge: .leading).combined(with: .opacity)
                                         ))
                                 case .daily:
-                                    Text("Task will repeat every day")
+                                    Text("add_task_daily_repeat_message")
                                         .font(.subheadline)
                                         .foregroundStyle(.gray)
                                         .padding(.vertical, .spacing)
@@ -103,9 +103,9 @@ struct AddTaskView: View {
         .scrollDismissesKeyboard(.immediately)
         .alert(isPresented: $viewModel.saveAlert) {
             Alert(
-                title: Text("Error"),
-                message: Text("Failed to save task. Please try again."),
-                dismissButton: .default(Text("OK"))
+                title: Text("error_title"),
+                message: Text("save_task_error_message"),
+                dismissButton: .default(Text("ok_button"))
             )
         }
     }

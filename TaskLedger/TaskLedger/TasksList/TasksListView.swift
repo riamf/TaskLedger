@@ -26,11 +26,11 @@ struct TasksListView: View {
             }.padding(.vertical, 8)
             Spacer()
             if tasks.isEmpty {
-                Text("No tasks, add some!")
+                Text("no_tasks_add_some")
                     .foregroundStyle(.gray)
                 Spacer()
             } else {
-                Text("All available Tasks")
+                Text("all_available_tasks_header")
                     .font(.headline)
                 Spacer()
                 List {
@@ -47,7 +47,7 @@ struct TasksListView: View {
                                 
                             } label: {
                                 HStack {
-                                    Text("Edit")
+                                    Text("edit_button_title")
                                     Image(systemName: "pencil")
                                 }.tint(.black)
                             }
@@ -69,9 +69,9 @@ struct TasksListView: View {
         }
         .alert(isPresented: $showAlertView) {
             Alert(
-                title: Text("Error"),
-                message: Text("Failed to delete task. Please try again."),
-                dismissButton: .default(Text("OK"))
+                title: Text("error_title"),
+                message: Text("delete_task_error_message"),
+                dismissButton: .default(Text("ok_button"))
             )
         }
     }

@@ -7,12 +7,12 @@ struct MainView: View {
         TabView {
             DayView()
                 .tabItem {
-                    Label("Day", systemImage: "calendar.day.timeline.left")
+                    Label("tab_day_title", systemImage: "calendar.day.timeline.left")
                 }
 
             SummaryView()
                 .tabItem {
-                    Label("Summary", systemImage: "chart.bar.fill")
+                    Label("tab_summary_title", systemImage: "chart.bar.fill")
                 }
         }
         .tint(colorScheme == .light ? .black : .white)

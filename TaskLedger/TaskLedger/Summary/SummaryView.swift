@@ -7,7 +7,7 @@ struct SummaryView: View {
         NavigationStack {
             VStack {
                 if viewModel.eventsDict.isEmpty {
-                    Text("No events for this month.")
+                    Text("no_events_for_month")
                         .foregroundColor(.gray)
                         .padding()
                 } else {

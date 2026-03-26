@@ -61,7 +61,7 @@ struct CalendarView: View {
                 Text(monthFormatter.string(from: today))
                     .font(.title2)
                     .bold()
-                Text("Today: \(dayFormatter.string(from: today))")
+                Text("\(String(localized: "calendar_today_prefix")) \(dayFormatter.string(from: today))")
                     .font(.headline)
                     .padding(.bottom, 8)
                 // Day names row

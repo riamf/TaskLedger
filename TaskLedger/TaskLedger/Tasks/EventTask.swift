@@ -207,13 +207,13 @@ enum Weekdays: Int, Codable, CaseIterable, Identifiable {
     var id: Int { rawValue }
     var stringName: String {
         switch self {
-            case .monday: return "Monday"
-            case .tuesday: return "Tuesday"
-            case .wednesday: return "Wednesday"
-            case .thursday: return "Thursday"
-            case .friday: return "Friday"
-            case .saturday: return "Saturday"
-            case .sunday: return "Sunday"
+            case .monday: return String(localized: "weekday_monday")
+            case .tuesday: return String(localized: "weekday_tuesday")
+            case .wednesday: return String(localized: "weekday_wednesday")
+            case .thursday: return String(localized: "weekday_thursday")
+            case .friday: return String(localized: "weekday_friday")
+            case .saturday: return String(localized: "weekday_saturday")
+            case .sunday: return String(localized: "weekday_sunday")
         }
     }
     
@@ -235,11 +235,11 @@ enum RepeatingPattern: Codable, Hashable, CustomCaseIterable {
     var name: String {
         switch self {
         case .daily:
-            return "Daily"
+            return String(localized: "pattern_daily")
         case .monthly:
-            return "Monthly"
+            return String(localized: "pattern_monthly")
         case .yearly:
-            return "Yearly"
+            return String(localized: "pattern_yearly")
         }
     }
     
@@ -300,19 +300,19 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
     
     var taskName: String {
         switch self {
-        case .counter: return "Counter"
-        case .cost: return "Cost"
-        case .income: return "Income"
-        case .time: return "Timer"
+        case .counter: return String(localized: "task_type_counter")
+        case .cost: return String(localized: "task_type_cost")
+        case .income: return String(localized: "task_type_income")
+        case .time: return String(localized: "task_type_time")
         }
     }
     
     var summary: String {
         switch self {
-            case .counter: return "Perfect for counting occurrences."
-            case .cost: return "Easily track your daily expenses."
-            case .income: return "Keep a record of your earnings."
-            case .time: return "Measure time spent on tasks."
+        case .counter: return String(localized: "task_summary_counter")
+        case .cost: return String(localized: "task_summary_cost")
+        case .income: return String(localized: "task_summary_income")
+        case .time: return String(localized: "task_summary_time")
         }
     }
     
@@ -336,22 +336,22 @@ extension EventTask {
         }
         if taskType == .counter {
             let counterSum = monthEvents.count
-            return "\(counterSum) times"
+            return "\(counterSum)\(String(localized: "summary_times_suffix"))"
         }
         if taskType == .cost {
             var costSum = 0.0
             monthEvents.forEach { costSum += $0.amount }
-            return "\(costSum) spend"
+            return "\(costSum)\(String(localized: "summary_spend_suffix"))"
         }
         if taskType == .income {
             var incomSum = 0.0
             monthEvents.forEach { incomSum += $0.amount }
-            return "\(incomSum) earned"
+            return "\(incomSum)\(String(localized: "summary_earned_suffix"))"
         }
         if taskType == .time {
             var amountTime = 0.0
             monthEvents.forEach { amountTime += $0.amount }
-            return "\(amountTime) time spend"
+            return "\(amountTime)\(String(localized: "summary_time_spent_suffix"))"
         }
         return ""
     }

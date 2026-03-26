@@ -17,7 +17,7 @@ struct CloseModalView: View {
                 } label: {
                     HStack(spacing: 4) {
                         Image("close").tint(colorScheme == .light ? .black : .white)
-                        Text("Cancel").foregroundStyle(colorScheme == .light ? .black : .white)
+                        Text("cancel_button_title").foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                 }
                 Spacer()

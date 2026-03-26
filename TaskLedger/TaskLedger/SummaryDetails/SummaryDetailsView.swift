@@ -77,7 +77,7 @@ struct SummaryDetailsView: View {
                 .padding(.horizontal)
 
                 if dailyCounts.isEmpty {
-                    Text("No data available")
+                    Text("no_data_available")
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -136,7 +136,7 @@ struct SummaryDetailsView: View {
     
     private var summaryFooter: some View {
         HStack {
-            Text("Total")
+            Text("total_label")
                 .font(.headline)
             Spacer()
             
