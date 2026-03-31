@@ -14,7 +14,7 @@ struct DaysCalculator {
     static let hourFormatter = dateFormatterFactory("HH")
     static let minuteFormatter = dateFormatterFactory("mm")
     static let compDateFormatter = dateFormatterFactory("yyyy-MM-dd")
-    static let monthYearFormatter = dateFormatterFactory("MMMM yyyy")
+    static let monthYearFormatter = dateFormatterFactory("LLLL yyyy")
     
     @DInjected(\.calendar) private static var calendar: Calendar
     
@@ -47,4 +47,3 @@ struct DaysCalculator {
         return calendar.date(from: components) ?? date
     }
 }
-

@@ -4,11 +4,11 @@ import SwiftUI
 final class SummaryViewModel: ObservableObject {
     @Published var currentMonthDate: Date = DaysCalculator.dateAtStartOfMonth(from: Date()) {
         didSet {
-            currentMonthDateString = DaysCalculator.monthYearFormatter.string(from: currentMonthDate)
+            currentMonthDateString = DaysCalculator.monthYearFormatter.string(from: currentMonthDate).capitalized
             
         }
     }
-    @Published var currentMonthDateString: String = DaysCalculator.monthYearFormatter.string(from: Date())
+    @Published var currentMonthDateString: String = DaysCalculator.monthYearFormatter.string(from: Date()).capitalized
     @Published var eventsDict: [EventTask: EventMartSummary] = [:]
     @DInjected(\.fetcher) private var fetcher: Fetcher
 
