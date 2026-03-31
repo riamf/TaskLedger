@@ -11,19 +11,19 @@ import SwiftUI
 
 @Model
 class EventTask: Identifiable {
-    @Attribute(.unique) var id: String = UUID().uuidString
-    var timestamp: Date
-    var name: String
-    var taskFixedDate: Date?
-    var amount: Double
-    var repeatingPatternData: Data?
-    var days: [Int]
-    var notes: String
+    var id: String = UUID().uuidString
+    var timestamp: Date = Date()
+    var name: String = ""
+    var taskFixedDate: Date? = nil
+    var amount: Double = 0.0
+    var repeatingPatternData: Data? = nil
+    var days: [Int] = []
+    var notes: String = ""
     @Relationship(deleteRule: .cascade)
-    var events: [EventMark]
-    var taskType: TaskType
-    var archivedAt: Date?
-    var snoozedUntil: Date?
+    var events: [EventMark]? = nil
+    var taskType: TaskType = TaskType.counter
+    var archivedAt: Date? = nil
+    var snoozedUntil: Date? = nil
     
     @Transient
     var repeatingPattern: RepeatingPattern? {
@@ -46,14 +46,14 @@ class EventTask: Identifiable {
     // need to performance check this!
     var isExistingToday: Bool {
         let today = DaysCalculator.compDateFormatter.string(from: Date())
-        return events.contains(where: { event in
+        return events?.contains(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
-        })
+        }) ?? false
     }
     
     var todayEvent: EventMark? {
         let today = DaysCalculator.compDateFormatter.string(from: Date())
-        return events.first(where: { event in
+        return events?.first(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
         })
     }
@@ -75,7 +75,7 @@ class EventTask: Identifiable {
         repeatingPattern: RepeatingPattern? = nil,
         days: [Weekdays] = [],
         notes: String = "",
-        events: [EventMark] = [],
+        events: [EventMark]? = nil,
         archivedAt: Date? = nil,
         snoozedUntil: Date? = nil
     ) {
@@ -85,7 +85,7 @@ class EventTask: Identifiable {
         self.amount = amount
         self.days = days.map { $0.rawValue }
         self.notes = notes
-        self.events = events
+        self.events = events ?? []
         self.taskFixedDate = taskFixedDate
         self.repeatingPatternData = try? JSONEncoder().encode(repeatingPattern)
         self.archivedAt = archivedAt
@@ -101,7 +101,7 @@ class EventTask: Identifiable {
         repeatingPattern: RepeatingPattern? = nil,
         days: [Int],
         notes: String = "",
-        events: [EventMark] = [],
+        events: [EventMark]? = nil,
         archivedAt: Date? = nil,
         snoozedUntil: Date? = nil
     ) {
@@ -129,7 +129,7 @@ class EventTask: Identifiable {
         repeatingPattern: RepeatingPattern? = nil,
         days: ClosedRange<Int>,
         notes: String = "",
-        events: [EventMark] = [],
+        events: [EventMark]? = nil,
         archivedAt: Date? = nil,
         snoozedUntil: Date? = nil
     ) {
@@ -161,7 +161,7 @@ class EventTask: Identifiable {
     
     func dayEvent(_ date: Date = Date()) -> EventMark? {
         let givenDate = DaysCalculator.compDateFormatter.string(from: date)
-        return events.first(where: { event in
+        return events?.first(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == givenDate
         })
     }
@@ -174,7 +174,7 @@ class EventTask: Identifiable {
     func removeEventForDate(_ date: Date) -> EventMark? {
         let today = DaysCalculator.compDateFormatter.string(from: date)
         let toReturn = dayEvent(date)
-        events.removeAll(where: { event in
+        events?.removeAll(where: { event in
             DaysCalculator.compDateFormatter.string(from: event.date) == today
         })
         return toReturn
@@ -183,7 +183,10 @@ class EventTask: Identifiable {
     @discardableResult
     func addTodayEvent(amount: Double? = nil) -> EventMark {
         let event = EventMark(date: Date(), amount: amount ?? self.amount, task: self)
-        events.append(event)
+        if events == nil {
+            events = []
+        }
+        events?.append(event)
         return event
     }
 
@@ -331,9 +334,9 @@ enum TaskType: String, CaseIterable, Codable, CustomCaseIterable {
 
 extension EventTask {
     func getMonthSummaryTasks(month: String, year: String) -> String {
-        let monthEvents = events.filter {
+        let monthEvents = events?.filter {
             $0.year == year && $0.month == month
-        }
+        } ?? []
         if taskType == .counter {
             let counterSum = monthEvents.count
             return "\(counterSum)\(String(localized: "summary_times_suffix"))"

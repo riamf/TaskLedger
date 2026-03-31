@@ -9,15 +9,15 @@ import SwiftUI
 
 @Model
 class EventMark {
-  @Attribute(.unique) var id: String = UUID().uuidString
-  var amount: Double
+  var id: String = UUID().uuidString
+  var amount: Double = 0.0
   
-  var date: Date
-  var year: String
-  var month: String
-  var day: String
-  var hour: String
-  var minute: String
+  var date: Date = Date()
+  var year: String = ""
+  var month: String = ""
+  var day: String = ""
+  var hour: String = ""
+  var minute: String = ""
 
   @Relationship(inverse: \EventTask.events)
   var task: EventTask?
