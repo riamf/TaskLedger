@@ -43,19 +43,12 @@ class EventTask: Identifiable {
         set { days = newValue.map { $0.rawValue } }
     }
     
-    // need to performance check this!
     var isExistingToday: Bool {
-        let today = DaysCalculator.compDateFormatter.string(from: Date())
-        return events?.contains(where: { event in
-            DaysCalculator.compDateFormatter.string(from: event.date) == today
-        }) ?? false
+        todayEvent != nil
     }
     
     var todayEvent: EventMark? {
-        let today = DaysCalculator.compDateFormatter.string(from: Date())
-        return events?.first(where: { event in
-            DaysCalculator.compDateFormatter.string(from: event.date) == today
-        })
+        dayEvent()
     }
     
     var isTodayDone: Bool {
@@ -160,10 +153,7 @@ class EventTask: Identifiable {
     }
     
     func dayEvent(_ date: Date = Date()) -> EventMark? {
-        let givenDate = DaysCalculator.compDateFormatter.string(from: date)
-        return events?.first(where: { event in
-            DaysCalculator.compDateFormatter.string(from: event.date) == givenDate
-        })
+        events?.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) })
     }
     
     func isCheck(_ date: Date = Date()) -> Bool {
@@ -172,11 +162,8 @@ class EventTask: Identifiable {
     
     @discardableResult
     func removeEventForDate(_ date: Date) -> EventMark? {
-        let today = DaysCalculator.compDateFormatter.string(from: date)
         let toReturn = dayEvent(date)
-        events?.removeAll(where: { event in
-            DaysCalculator.compDateFormatter.string(from: event.date) == today
-        })
+        events?.removeAll(where: { Calendar.current.isDate($0.date, inSameDayAs: date) })
         return toReturn
     }
     

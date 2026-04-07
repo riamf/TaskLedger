@@ -14,6 +14,7 @@ class DayViewViewModel: ObservableObject {
     @Published var showCalendar: Bool = false
     @Published var showAddTaskView: Bool = false
     @Published var tasks: [EventTask] = []
+    @Published var errorMessage: String?
     
     @DInjected(\.fetcher) private var fetcher: Fetcher
     @DInjected(\.modelContext) private var modelContext: ModelContext
@@ -51,7 +52,7 @@ class DayViewViewModel: ObservableObject {
             try modelContext.save()
             fetchTasks()
         } catch {
-            print("Error deleting task: \(error.localizedDescription)")
+            errorMessage = String(localized: "error_delete_task")
         }
     }
     
@@ -68,7 +69,7 @@ class DayViewViewModel: ObservableObject {
             try modelContext.save()
             fetchTasks()
         } catch {
-            
+            errorMessage = String(localized: "error_mark_task")
         }
     }
     
@@ -80,7 +81,7 @@ class DayViewViewModel: ObservableObject {
             try modelContext.save()
             fetchTasks()
         } catch {
-            print("Error snoozing task: \(error.localizedDescription)")
+            errorMessage = String(localized: "error_snooze_task")
         }
     }
     
@@ -90,7 +91,7 @@ class DayViewViewModel: ObservableObject {
             try modelContext.save()
             fetchTasks()
         } catch {
-            print("Error archiving task: \(error.localizedDescription)")
+            errorMessage = String(localized: "error_archive_task")
         }
     }
     
@@ -100,7 +101,7 @@ class DayViewViewModel: ObservableObject {
             try modelContext.save()
             fetchTasks()
         } catch {
-            print("Error deleting task: \(error.localizedDescription)")
+            errorMessage = String(localized: "error_delete_task")
         }
     }
 }

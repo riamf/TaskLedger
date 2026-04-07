@@ -12,7 +12,7 @@ struct SummaryView: View {
                         .padding()
                 } else {
                     List {
-                        ForEach(viewModel.eventsDict.keys.sorted(by: { $0.name < $1.name }), id: \.self) { eventTask in
+                        ForEach(viewModel.sortedTasks, id: \.self) { eventTask in
                             NavigationLink {
                                 SummaryDetailsView(
                                     eventSummary: viewModel.eventsDict[eventTask]!,

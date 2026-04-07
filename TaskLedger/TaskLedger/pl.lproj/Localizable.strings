@@ -129,6 +129,10 @@
 "all_available_tasks_header" = "Wszystkie dostępne zadania";
 "edit_button_title" = "Edytuj";
 "delete_task_error_message" = "Nie udało się usunąć zadania. Spróbuj ponownie.";
+"error_delete_task" = "Nie udało się usunąć zadania. Spróbuj ponownie.";
+"error_mark_task" = "Nie udało się zaktualizować zadania. Spróbuj ponownie.";
+"error_snooze_task" = "Nie udało się odłożyć zadania. Spróbuj ponownie.";
+"error_archive_task" = "Nie udało się zarchiwizować zadania. Spróbuj ponownie.";
 
 /* MainView */
 "tab_day_title" = "Dzień";

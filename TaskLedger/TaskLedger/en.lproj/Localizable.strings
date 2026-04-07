@@ -129,6 +129,10 @@
 "all_available_tasks_header" = "All available Tasks";
 "edit_button_title" = "Edit";
 "delete_task_error_message" = "Failed to delete task. Please try again.";
+"error_delete_task" = "Failed to delete task. Please try again.";
+"error_mark_task" = "Failed to update task. Please try again.";
+"error_snooze_task" = "Failed to snooze task. Please try again.";
+"error_archive_task" = "Failed to archive task. Please try again.";
 
 /* MainView */
 "tab_day_title" = "Day";

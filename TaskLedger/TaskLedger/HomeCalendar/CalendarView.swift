@@ -14,6 +14,18 @@ struct CalendarView: View {
     private var year: String {
         DaysCalculator.yearFormatter.string(from: viewModel.selectedDate)
     }
+
+    private static let dayFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "d"
+        return df
+    }()
+
+    private static let monthYearFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "MMMM yyyy"
+        return df
+    }()
     
     init(selectedDate: Binding<Date>) {
         _viewModel = StateObject(
@@ -45,10 +57,6 @@ struct CalendarView: View {
     
     var body: some View {
         let today = Date()
-        let dayFormatter = DateFormatter()
-        dayFormatter.dateFormat = "d"
-        let monthFormatter = DateFormatter()
-        monthFormatter.dateFormat = "MMMM yyyy"
         
         return ScrollView {
             VStack(spacing: 16) {
@@ -58,10 +66,10 @@ struct CalendarView: View {
                         Spacer()
                     }
                 }
-                Text(monthFormatter.string(from: today))
+                Text(CalendarView.monthYearFormatter.string(from: today))
                     .font(.title2)
                     .bold()
-                Text("\(String(localized: "calendar_today_prefix")) \(dayFormatter.string(from: today))")
+                Text("\(String(localized: "calendar_today_prefix")) \(CalendarView.dayFormatter.string(from: today))")
                     .font(.headline)
                     .padding(.bottom, 8)
                 // Day names row
@@ -79,7 +87,7 @@ struct CalendarView: View {
                             Color.clear.frame(height: 40)
                         } else {
                             let isToday = calendar.isDate(date, inSameDayAs: today)
-                            Text(dayFormatter.string(from: date))
+                            Text(CalendarView.dayFormatter.string(from: date))
                                 .frame(width: 40, height: 40)
                                 .background(isToday ? Color.blue : Color.gray.opacity(0.2))
                                 .foregroundColor(isToday ? .white : .primary)

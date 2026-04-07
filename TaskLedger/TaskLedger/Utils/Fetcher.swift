@@ -7,10 +7,10 @@ final class Fetcher {
     
     func fetchTasks(for date: Date) -> [EventTask] {
         let startOfDay = Calendar.current.startOfDay(for: date)
-        
-        let weekdayIndex = Calendar.current.component(.weekday, from: date)
-        let day = Calendar.current.component(.day, from: date)
-        let month = Calendar.current.component(.month, from: date)
+        let components = Calendar.current.dateComponents([.weekday, .day, .month], from: date)
+        let weekdayIndex = components.weekday ?? 1
+        let day = components.day ?? 1
+        let month = components.month ?? 1
         let legacyDayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
 
         let distantFuture = Date.distantFuture

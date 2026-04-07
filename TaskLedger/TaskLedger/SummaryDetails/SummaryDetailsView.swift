@@ -1,20 +1,13 @@
 import SwiftUI
 
 struct SummaryDetailsView: View {
-    @State private var eventSummary: EventMartSummary
-    @State private var visibleMonth: Date
-    @DInjected(\.fetcher) private var fetcher: Fetcher
+    @StateObject private var viewModel: SummaryDetailsViewModel
 
     init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
-        self.eventSummary = eventSummary
-        self.visibleMonth = visibleMonth
-    }
-
-    private struct PointData: Identifiable {
-        let id = UUID()
-        let date: Date
-        let count: Int
-        let color: Color
+        _viewModel = StateObject(wrappedValue: SummaryDetailsViewModel(
+            eventSummary: eventSummary,
+            visibleMonth: visibleMonth
+        ))
     }
 
     private struct DayParams: Identifiable {
@@ -24,32 +17,13 @@ struct SummaryDetailsView: View {
 
     @State private var selectedDayParams: DayParams?
 
-    private var filteredEvents: [EventMark] {
-        let calendar = Calendar.current
-        return eventSummary.events.filter { event in
-            calendar.isDate(event.date, equalTo: visibleMonth, toGranularity: .month)
-        }
-    }
-
-    private var dailyCounts: [PointData] {
-        let grouped = Dictionary(grouping: filteredEvents) { Calendar.current.startOfDay(for: $0.date) }
-        return grouped.map { key, values in
-            return PointData(date: key, count: values.count, color: eventSummary.task.taskType.color)
-        }
-        .sorted { $0.date < $1.date }
-    }
-    
-    private var dailyCountsDict: [Date: PointData] {
-        Dictionary(uniqueKeysWithValues: dailyCounts.map { ($0.date, $0) })
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 12) {
                 
                 // Calendar with bordered background
-                CalendarMonthView(visibleMonth: $visibleMonth) { date in
-                    let data = dailyCountsDict[Calendar.current.startOfDay(for: date)]
+                CalendarMonthView(visibleMonth: $viewModel.visibleMonth) { date in
+                    let data = viewModel.dailyCountsDict[Calendar.current.startOfDay(for: date)]
                     
                     // Day Cell
                     Button {
@@ -76,7 +50,7 @@ struct SummaryDetailsView: View {
                 )
                 .padding(.horizontal)
 
-                if dailyCounts.isEmpty {
+                if viewModel.dailyCounts.isEmpty {
                     Text("no_data_available")
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
@@ -84,7 +58,7 @@ struct SummaryDetailsView: View {
                 } else {
                     ScrollView(.vertical, showsIndicators: true) {
                         LazyVStack(alignment: .leading, spacing: 8) {
-                            ForEach(dailyCounts) { point in
+                            ForEach(viewModel.dailyCounts) { point in
                                 HStack(spacing: 12) {
                                     Circle()
                                         .fill(point.color)
@@ -121,14 +95,14 @@ struct SummaryDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                CustomToolbarView(task: eventSummary.task)
+                CustomToolbarView(task: viewModel.eventSummary.task)
             }
         }
-        .onChange(of: visibleMonth) { newDate in
-            refreshData(for: newDate)
+        .onChange(of: viewModel.visibleMonth) { _ in
+            viewModel.onVisibleMonthChanged()
         }
         .sheet(item: $selectedDayParams, onDismiss: {
-            refreshData()
+            viewModel.refreshData()
         }) { params in
              DayView(viewModel: .init(currentDate: params.date), showAddButton: false)
         }
@@ -140,19 +114,16 @@ struct SummaryDetailsView: View {
                 .font(.headline)
             Spacer()
             
-            let currentEvents = filteredEvents
-            
-            switch eventSummary.task.taskType {
+            switch viewModel.eventSummary.task.taskType {
             case .counter:
-                let count = currentEvents.count
-                Text("\(count)")
+                Text("\(viewModel.filteredEvents.count)")
                     .font(.headline)
             case .cost, .income:
-                let amount = currentEvents.reduce(0.0) { $0 + $1.amount }
+                let amount = viewModel.filteredEvents.reduce(0.0) { $0 + $1.amount }
                 Text(MoneyFormatter.formatter.string(from: NSNumber(value: amount)) ?? "")
                     .font(.headline)
             case .time:
-                let seconds = currentEvents.reduce(0) { $0 + Int($1.amount) }
+                let seconds = viewModel.filteredEvents.reduce(0) { $0 + Int($1.amount) }
                 let duration = Duration.seconds(seconds)
                 Text(duration.formatted(.time(pattern: .hourMinuteSecond)))
                     .font(.headline)
@@ -167,12 +138,6 @@ struct SummaryDetailsView: View {
         .padding(.horizontal)
         .padding(.bottom)
     }
-    
-    private func refreshData(for date: Date? = nil) {
-        let dateToFetch = date ?? visibleMonth
-        let newSummary = fetcher.fetchSummary(for: dateToFetch)
-        eventSummary = newSummary[eventSummary.task] ?? eventSummary
-    }
 
 }
 
@@ -186,3 +151,4 @@ struct CustomToolbarView: View {
         }
     }
 }
+

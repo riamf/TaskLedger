@@ -3,7 +3,7 @@ import SwiftUI
 class AddTaskViewModel: ObservableObject {
     
     @Published var inputTaskName: String = ""
-    @Published private var daysSelected: [String] = []
+    @Published private var daysSelected: Set<Weekdays> = []
     @Published var taskType: TaskType = .counter
     @Published var amount: Double = 0.0
     @Published var timeHours: Int = 0
@@ -25,22 +25,32 @@ class AddTaskViewModel: ObservableObject {
     }
     
     func isDaySelected(_ day: Weekdays) -> Bool {
-        daysSelected.contains { str in
-            str == day.stringName
-        }
+        daysSelected.contains(day)
     }
     
     func deselectDay(_ day: Weekdays) {
-        daysSelected.removeAll { dayName in
-            day.stringName == dayName
-        }
+        daysSelected.remove(day)
     }
     
     func selectDay(_ day: Weekdays) {
-        daysSelected.append(day.stringName)
+        daysSelected.insert(day)
     }
     
     
+    var isFormValid: Bool {
+        guard !inputTaskName.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
+
+        if taskFrequency == .weekly {
+            guard Weekdays.allCases.contains(where: { isDaySelected($0) }) else { return false }
+        }
+
+        if taskType == .cost || taskType == .income {
+            guard amount > 0 else { return false }
+        }
+
+        return true
+    }
+
     func saveTask() {
         // calculate amount base on time spend
         var customAmount: Double?
@@ -54,24 +64,16 @@ class AddTaskViewModel: ObservableObject {
         
         switch taskFrequency {
         case .daily:
-            // Daily means every day (Mon-Sun)
-            // Assuming 'days' stores 1-7 for weekdays. If empty, maybe interpreted as daily?
-            // Or we explicitly fill 1...7
-            frequencyDays = Weekdays.from(0...6)
+            frequencyDays = Weekdays.allCases
             repeatingPattern = .daily(weekdays: Weekdays.allCases)
             
         case .weekly:
-            frequencyDays = Weekdays.from(daysSelected.compactMap { DaysCalculator.dayNumberForName($0) })
-            // Map string names back to Weekdays enum for repeatingPattern if needed
-            let selectedWeekdays = daysSelected.compactMap { name in
-                Weekdays.allCases.first(where: { $0.stringName == name })
-            }
+            let selectedWeekdays = Array(daysSelected)
+            frequencyDays = selectedWeekdays
             repeatingPattern = .daily(weekdays: selectedWeekdays)
             
         case .monthly:
-            // Monthly recurrence
-            // Assuming we store day of month in 'repeatingPattern'
-            frequencyDays = [] // Clear days as it's not weekly
+            frequencyDays = []
             repeatingPattern = .monthly(day: selectedDayOfMonth)
             
         case .oneTime:

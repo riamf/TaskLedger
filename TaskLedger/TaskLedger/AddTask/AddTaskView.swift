@@ -95,6 +95,7 @@ struct AddTaskView: View {
                         onAddAction?()
                         dismiss()
                     }
+                    .disabled(!viewModel.isFormValid)
                 }
             }
             Spacer()
