@@ -7,6 +7,7 @@ final class DI {
     private(set) var modelContext: ModelContext!
     private(set) var fetcher = Fetcher()
     private(set) var haptics: HapticFeedbackService = HapticFeedbackManager()
+    private(set) var notifications: NotificationService = NotificationManager()
     private(set) var calendar: Calendar = .current
     private init() {}
     

@@ -36,6 +36,7 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 | 18 | **Haptic Feedback** | Medium haptic triggered when checking/unchecking a task |
 | 19 | **Localization** | English and Polish language support |
 | 20 | **Form Validation** | Save button disabled until task name is filled and required fields are valid |
+| 21 | **Task Notifications** | Optional local notification reminder at a user-selected time, scheduled per task frequency |
 
 ---
 
@@ -523,6 +524,175 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 
 ---
 
+### MODULE 9 — Task Notifications
+
+#### TC-41: Notification toggle appears in Add Task
+**Steps:**
+1. Open Add Task sheet
+2. Scroll down below the frequency selector
+
+**Expected:**
+- A "Reminder" toggle is visible with a bell icon
+- Toggle is OFF by default
+- No time picker is visible
+
+---
+
+#### TC-42: Enable notification — permission prompt (first time)
+**Preconditions:** App has never requested notification permission  
+**Steps:**
+1. Open Add Task sheet
+2. Toggle the **Reminder** switch ON
+
+**Expected:**
+- iOS system permission dialog appears: "TaskLedger Would Like to Send You Notifications"
+- After tapping **Allow**, the toggle stays ON and a time picker appears
+
+---
+
+#### TC-43: Enable notification — permission denied
+**Preconditions:** Notification permission was previously denied (or deny when prompted)  
+**Steps:**
+1. Open Add Task sheet
+2. Toggle the **Reminder** switch ON
+
+**Expected:**
+- An alert appears: "Notifications Disabled — Please enable notifications in Settings to receive task reminders."
+- Toggle remains OFF
+- No time picker appears
+
+---
+
+#### TC-44: Select notification time
+**Steps:**
+1. Open Add Task, toggle **Reminder** ON (permission granted)
+2. The time picker defaults to **09:00**
+3. Change the time to **07:30**
+
+**Expected:**
+- Time picker displays and allows hour/minute selection
+- Selected time (07:30) is shown in the picker
+
+---
+
+#### TC-45: Toggle notification OFF hides time picker
+**Steps:**
+1. Open Add Task, toggle **Reminder** ON
+2. Change time to any value
+3. Toggle **Reminder** OFF
+
+**Expected:**
+- Time picker disappears with a smooth animation
+- Toggle shows the bell-slash icon
+
+---
+
+#### TC-46: Save daily task with notification
+**Steps:**
+1. Create a Counter task "Drink Water"
+2. Select frequency **Daily**
+3. Toggle **Reminder** ON, set time to **08:00**
+4. Tap **Save**
+
+**Expected:**
+- Task is saved successfully
+- A local notification is scheduled for 08:00 every day
+- **Verification:** Go to Settings → TaskLedger → Notifications, or wait until 08:00 to see the notification with title "Task Reminder" and body "Drink Water"
+
+---
+
+#### TC-47: Save weekly task with notification
+**Steps:**
+1. Create a task with frequency **Weekly**, select **Mon**, **Wed**, **Fri**
+2. Toggle **Reminder** ON, set time to **09:30**
+3. Tap **Save**
+
+**Expected:**
+- Notifications are scheduled for Monday, Wednesday, and Friday at 09:30
+- No notification fires on other days
+
+---
+
+#### TC-48: Save monthly task with notification
+**Steps:**
+1. Create a task with frequency **Monthly**, day **15**
+2. Toggle **Reminder** ON, set time to **10:00**
+3. Tap **Save**
+
+**Expected:**
+- Notification fires on the 15th of each month at 10:00
+
+---
+
+#### TC-49: Save one-time task with notification
+**Steps:**
+1. Create a task with frequency **One-Time**, pick a date 2 days from now
+2. Toggle **Reminder** ON, set time to **14:00**
+3. Tap **Save**
+
+**Expected:**
+- A single notification fires on the selected date at 14:00
+- Notification does NOT repeat
+
+---
+
+#### TC-50: Delete task removes pending notifications
+**Steps:**
+1. Create a daily task with a notification enabled
+2. In Day View, swipe the task → Delete → "Delete task & history"
+
+**Expected:**
+- Task is deleted
+- The pending notification is also removed (no notification fires after deletion)
+
+---
+
+#### TC-51: Archive task removes pending notifications
+**Steps:**
+1. Create a daily task with a notification enabled
+2. In Day View, swipe the task → Delete → "Delete task schedule"
+
+**Expected:**
+- Task is archived (no longer appears in Day View)
+- The pending notification is removed
+
+---
+
+#### TC-52: Save task without notification (toggle OFF)
+**Steps:**
+1. Create a task with **Reminder** toggle OFF
+2. Tap **Save**
+
+**Expected:**
+- Task is saved without any notification scheduled
+- No notification fires
+
+---
+
+#### TC-53: Notification content is correct
+**Steps:**
+1. Create a task named "Evening Walk" with notification at a time 1 minute from now
+2. Wait for the notification to fire
+
+**Expected:**
+- Notification title: "Task Reminder" (or "Przypomnienie o zadaniu" in Polish)
+- Notification body: "Evening Walk"
+- Notification includes a sound
+
+---
+
+#### TC-54: Notification localisation (Polish)
+**Preconditions:** Device language set to Polish  
+**Steps:**
+1. Open Add Task sheet
+
+**Expected:**
+- Toggle label shows "Przypomnienie"
+- Time label shows "Powiadom o:"
+- If permission denied, alert shows Polish text
+
+---
+
 ## Regression Checklist
 
 After any code change, verify these core flows still work:
@@ -535,6 +705,8 @@ After any code change, verify these core flows still work:
 - [ ] Summary tab shows the correct month totals
 - [ ] Summary Details heatmap renders without blank screen
 - [ ] No crash on fresh install with empty state
+- [ ] Create a task with notification enabled and verify it fires
+- [ ] Delete a task with notification and verify notification is removed
 
 ---
 

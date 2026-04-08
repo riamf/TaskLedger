@@ -24,6 +24,8 @@ class EventTask: Identifiable {
     var taskType: TaskType = TaskType.counter
     var archivedAt: Date? = nil
     var snoozedUntil: Date? = nil
+    var notificationEnabled: Bool = false
+    var notificationTime: Date? = nil
     
     @Transient
     var repeatingPattern: RepeatingPattern? {
@@ -70,7 +72,9 @@ class EventTask: Identifiable {
         notes: String = "",
         events: [EventMark]? = nil,
         archivedAt: Date? = nil,
-        snoozedUntil: Date? = nil
+        snoozedUntil: Date? = nil,
+        notificationEnabled: Bool = false,
+        notificationTime: Date? = nil
     ) {
         self.timestamp = timestamp
         self.name = name
@@ -83,6 +87,8 @@ class EventTask: Identifiable {
         self.repeatingPatternData = try? JSONEncoder().encode(repeatingPattern)
         self.archivedAt = archivedAt
         self.snoozedUntil = snoozedUntil
+        self.notificationEnabled = notificationEnabled
+        self.notificationTime = notificationTime
     }
     
     convenience init(
@@ -207,6 +213,19 @@ enum Weekdays: Int, Codable, CaseIterable, Identifiable {
         }
     }
     
+    /// Maps to Apple's Calendar weekday (1=Sunday, 2=Monday, … 7=Saturday)
+    var calendarWeekday: Int {
+        switch self {
+        case .sunday:    return 1
+        case .monday:    return 2
+        case .tuesday:   return 3
+        case .wednesday: return 4
+        case .thursday:  return 5
+        case .friday:    return 6
+        case .saturday:  return 7
+        }
+    }
+
     static func from(_ numbers: [Int]) -> [Weekdays] {
         return numbers.compactMap { Weekdays(rawValue: $0) }
     }

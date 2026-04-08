@@ -137,3 +137,10 @@
 /* MainView */
 "tab_day_title" = "Dzień";
 "tab_summary_title" = "Podsumowanie";
+
+/* Notifications */
+"notification_toggle_label" = "Przypomnienie";
+"notification_time_label" = "Powiadom o:";
+"notification_title" = "Przypomnienie o zadaniu";
+"notification_permission_denied_title" = "Powiadomienia wyłączone";
+"notification_permission_denied_message" = "Włącz powiadomienia w Ustawieniach, aby otrzymywać przypomnienia o zadaniach.";

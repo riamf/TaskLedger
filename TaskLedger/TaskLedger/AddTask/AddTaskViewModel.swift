@@ -16,9 +16,19 @@ class AddTaskViewModel: ObservableObject {
     @Published var selectedDayOfMonth: Int = Calendar.current.component(.day, from: Date())
     @Published var selectedDate: Date = Date()
     
+    @Published var notificationEnabled: Bool = false
+    @Published var notificationTime: Date = {
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        components.hour = 9
+        components.minute = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }()
+    @Published var notificationPermissionDenied: Bool = false
+    
     @Published var saveAlert = false
     
     @DInjected(\.modelContext) private var modelContext
+    @DInjected(\.notifications) private var notifications: NotificationService
     
     var dayNames: [String] {
         Calendar.current.weekdaySymbols
@@ -36,6 +46,19 @@ class AddTaskViewModel: ObservableObject {
         daysSelected.insert(day)
     }
     
+    func toggleNotification() {
+        if !notificationEnabled {
+            notifications.requestAuthorization { [weak self] granted in
+                if granted {
+                    self?.notificationEnabled = true
+                } else {
+                    self?.notificationPermissionDenied = true
+                }
+            }
+        } else {
+            notificationEnabled = false
+        }
+    }
     
     var isFormValid: Bool {
         guard !inputTaskName.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
@@ -91,11 +114,24 @@ class AddTaskViewModel: ObservableObject {
             repeatingPattern: repeatingPattern,
             days: frequencyDays,
             notes: notes,
-            events: []
+            events: [],
+            notificationEnabled: notificationEnabled,
+            notificationTime: notificationEnabled ? notificationTime : nil
         )
         do {
             modelContext?.insert(event)
             try modelContext?.save()
+
+            if notificationEnabled {
+                notifications.scheduleTaskNotification(
+                    taskId: event.id,
+                    taskName: event.name,
+                    time: notificationTime,
+                    repeatingPattern: repeatingPattern,
+                    fixedDate: fixedDate,
+                    weekdays: frequencyDays
+                )
+            }
         } catch {
             saveAlert.toggle()
         }

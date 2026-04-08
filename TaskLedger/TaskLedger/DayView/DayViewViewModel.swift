@@ -18,6 +18,7 @@ class DayViewViewModel: ObservableObject {
     
     @DInjected(\.fetcher) private var fetcher: Fetcher
     @DInjected(\.modelContext) private var modelContext: ModelContext
+    @DInjected(\.notifications) private var notifications: NotificationService
     
     init(currentDate: Date, tasks: [EventTask] = []) {
         self.tasks = tasks
@@ -87,6 +88,9 @@ class DayViewViewModel: ObservableObject {
     
     func archiveTask(_ task: EventTask) {
         task.archivedAt = Date()
+        if task.notificationEnabled {
+            notifications.removeNotification(for: task.id)
+        }
         do {
             try modelContext.save()
             fetchTasks()
@@ -96,6 +100,9 @@ class DayViewViewModel: ObservableObject {
     }
     
     func deleteTask(_ task: EventTask) {
+        if task.notificationEnabled {
+            notifications.removeNotification(for: task.id)
+        }
         modelContext.delete(task)
         do {
             try modelContext.save()

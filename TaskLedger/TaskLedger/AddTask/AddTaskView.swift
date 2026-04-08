@@ -80,6 +80,14 @@ struct AddTaskView: View {
                                 }
                             }
                                 
+                            // Notification option
+                            NotificationToggleView(
+                                isEnabled: $viewModel.notificationEnabled,
+                                notificationTime: $viewModel.notificationTime,
+                                onToggle: { viewModel.toggleNotification() }
+                            )
+                            .padding(.horizontal, 16)
+                            .padding(.top, .spacingSmall)
                         }
                     }
                     .scrollTargetBehavior(.paging)
@@ -107,6 +115,11 @@ struct AddTaskView: View {
                 message: Text("save_task_error_message"),
                 dismissButton: .default(Text("ok_button"))
             )
+        }
+        .alert("notification_permission_denied_title", isPresented: $viewModel.notificationPermissionDenied) {
+            Button("ok_button", role: .cancel) { }
+        } message: {
+            Text("notification_permission_denied_message")
         }
     }
 }
