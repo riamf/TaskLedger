@@ -112,6 +112,8 @@ struct DayView: View {
                 }
             }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .refreshable {
             viewModel.fetchTasks()
         }
