@@ -26,9 +26,13 @@ class AddTaskViewModel: ObservableObject {
     @Published var notificationPermissionDenied: Bool = false
     
     @Published var saveAlert = false
+    @Published var showHistorySheet = false
+    @Published var taskTemplates: [EventTask] = []
     
     @DInjected(\.modelContext) private var modelContext
     @DInjected(\.notifications) private var notifications: NotificationService
+    @DInjected(\.fetcher) private var fetcher: Fetcher
+    @DInjected(\.haptics) private var haptics: HapticFeedbackService
     
     var dayNames: [String] {
         Calendar.current.weekdaySymbols
@@ -72,6 +76,35 @@ class AddTaskViewModel: ObservableObject {
         }
 
         return true
+    }
+
+    // MARK: - Task History / Templates
+
+    var hasTemplates: Bool {
+        !taskTemplates.isEmpty
+    }
+
+    func loadTemplates() {
+        taskTemplates = fetcher.fetchUniqueTaskTemplates()
+    }
+
+    func applyTemplate(_ task: EventTask) {
+        inputTaskName = task.name
+        taskType = task.taskType
+
+        switch task.taskType {
+        case .cost, .income:
+            amount = task.amount
+        case .time:
+            let total = Int(task.amount)
+            timeHours = total / 3600
+            timeMinutes = (total % 3600) / 60
+            timeSeconds = total % 60
+        case .counter:
+            break
+        }
+
+        haptics.trigger(.light)
     }
 
     func saveTask() {

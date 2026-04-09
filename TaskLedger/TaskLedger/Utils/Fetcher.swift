@@ -67,6 +67,28 @@ final class Fetcher {
         }
     }
     
+    /// Returns unique tasks grouped by name + type, sorted by most recently created.
+    func fetchUniqueTaskTemplates() -> [EventTask] {
+        do {
+            let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
+            
+            var seen = Set<String>()
+            var unique = [EventTask]()
+            
+            // Sort by newest first so we keep the most recent instance
+            let sorted = tasks.sorted { $0.timestamp > $1.timestamp }
+            for task in sorted {
+                let key = "\(task.name.lowercased().trimmingCharacters(in: .whitespaces))|\(task.taskType.rawValue)"
+                if seen.insert(key).inserted {
+                    unique.append(task)
+                }
+            }
+            return unique
+        } catch {
+            return []
+        }
+    }
+    
     func fetchSummary(for date: Date) -> [EventTask: EventMartSummary] {
         let searchedMonth = DaysCalculator.monthFormatter.string(from: date)
         let searchedYear = DaysCalculator.yearFormatter.string(from: date)

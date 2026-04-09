@@ -144,3 +144,8 @@
 "notification_title" = "Task Reminder";
 "notification_permission_denied_title" = "Notifications Disabled";
 "notification_permission_denied_message" = "Please enable notifications in Settings to receive task reminders.";
+
+/* Task History */
+"history_button_title" = "History";
+"history_title" = "Task History";
+"history_empty_state" = "No task history";

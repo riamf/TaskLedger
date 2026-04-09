@@ -15,6 +15,20 @@ struct AddTaskView: View {
                     HStack(spacing: .spacing) {
                         CloseModalButton()
                         Spacer()
+                        if viewModel.hasTemplates {
+                            Button {
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                                                to: nil, from: nil, for: nil)
+                                viewModel.showHistorySheet = true
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "clock.arrow.circlepath")
+                                    Text("history_button_title")
+                                }
+                                .foregroundStyle(colorScheme == .light ? .black : .white)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                 }.padding(.top, .bigSpacing).padding(.horizontal, .spacing)
                 VStack(spacing: .spacingSmall) {
@@ -120,6 +134,15 @@ struct AddTaskView: View {
             Button("ok_button", role: .cancel) { }
         } message: {
             Text("notification_permission_denied_message")
+        }
+        .sheet(isPresented: $viewModel.showHistorySheet) {
+            TaskHistoryListView(tasks: viewModel.taskTemplates) { task in
+                viewModel.applyTemplate(task)
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .onAppear {
+            viewModel.loadTemplates()
         }
     }
 }

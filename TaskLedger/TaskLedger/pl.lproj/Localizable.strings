@@ -144,3 +144,8 @@
 "notification_title" = "Przypomnienie o zadaniu";
 "notification_permission_denied_title" = "Powiadomienia wyłączone";
 "notification_permission_denied_message" = "Włącz powiadomienia w Ustawieniach, aby otrzymywać przypomnienia o zadaniach.";
+
+/* Task History */
+"history_button_title" = "Historia";
+"history_title" = "Historia zadań";
+"history_empty_state" = "Brak historii zadań";
