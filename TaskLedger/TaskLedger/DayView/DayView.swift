@@ -22,8 +22,21 @@ struct DayView: View {
     var body: some View {
         NavigationStack {
             mainContent
-                .navigationBarTitle(viewModel.dayString, displayMode: .inline)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        HStack(spacing: 6) {
+                            if viewModel.isToday {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 8, height: 8)
+                            }
+                            Text(viewModel.dayString)
+                                .font(.headline)
+                                .fontWeight(viewModel.isToday ? .bold : .regular)
+                                .foregroundStyle(viewModel.isToday ? .blue : .primary)
+                        }
+                    }
                     toolbarItems
                 }
             

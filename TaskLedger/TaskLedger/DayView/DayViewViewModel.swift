@@ -26,6 +26,10 @@ class DayViewViewModel: ObservableObject {
         dayString = dayDateFormatter.string(from: currentDate)
     }
     
+    var isToday: Bool {
+        Calendar.current.isDateInToday(currentDate)
+    }
+    
     let dayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
