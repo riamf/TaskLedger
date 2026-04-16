@@ -25,6 +25,12 @@ final class Fetcher {
             let tasks = try modelContext.fetch(FetchDescriptor(predicate: predicate))
             
             return tasks.filter { task in
+                // Repeating tasks should not appear on days before they were created
+                if task.taskFixedDate == nil {
+                    let createdDay = Calendar.current.startOfDay(for: task.timestamp)
+                    guard startOfDay >= createdDay else { return false }
+                }
+                
                 if let pattern = task.repeatingPattern {
                     switch pattern {
                     case .daily(let weekdays):
