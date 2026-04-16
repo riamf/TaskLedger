@@ -98,17 +98,35 @@ final class Fetcher {
             }
             let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
             
-            // Group events by their associated task (skip events without a task)
-            var grouped = [EventTask: [EventMark]]()
+            // First pass: find which groupIds have multiple distinct tasks (true template groups)
+            var taskIdsByGroupId = [String: Set<String>]()
             for event in events {
                 guard let task = event.task else { continue }
-                grouped[task, default: []].append(event)
+                taskIdsByGroupId[task.groupId, default: []].insert(task.id)
             }
             
-            // Map grouped events into summaries
+            // Second pass: group events. Use groupId only when it links multiple tasks;
+            // otherwise fall back to task.id so unrelated tasks stay separate.
+            var grouped = [String: (representative: EventTask, events: [EventMark])]()
+            for event in events {
+                guard let task = event.task else { continue }
+                let isTemplateGroup = (taskIdsByGroupId[task.groupId]?.count ?? 0) > 1
+                let key = isTemplateGroup ? task.groupId : task.id
+                
+                if var existing = grouped[key] {
+                    existing.events.append(event)
+                    if task.timestamp > existing.representative.timestamp {
+                        existing.representative = task
+                    }
+                    grouped[key] = existing
+                } else {
+                    grouped[key] = (representative: task, events: [event])
+                }
+            }
+            
             var eventsDict = [EventTask: EventMartSummary]()
-            for (task, eventsForTask) in grouped {
-                eventsDict[task] = EventMartSummary(task: task, events: eventsForTask)
+            for (_, group) in grouped {
+                eventsDict[group.representative] = EventMartSummary(task: group.representative, events: group.events)
             }
             
             return eventsDict

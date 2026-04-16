@@ -26,6 +26,7 @@ class EventTask: Identifiable {
     var snoozedUntil: Date? = nil
     var notificationEnabled: Bool = false
     var notificationTime: Date? = nil
+    var groupId: String = UUID().uuidString
     
     @Transient
     var repeatingPattern: RepeatingPattern? {
@@ -74,7 +75,8 @@ class EventTask: Identifiable {
         archivedAt: Date? = nil,
         snoozedUntil: Date? = nil,
         notificationEnabled: Bool = false,
-        notificationTime: Date? = nil
+        notificationTime: Date? = nil,
+        groupId: String = UUID().uuidString
     ) {
         self.timestamp = timestamp
         self.name = name
@@ -89,6 +91,7 @@ class EventTask: Identifiable {
         self.snoozedUntil = snoozedUntil
         self.notificationEnabled = notificationEnabled
         self.notificationTime = notificationTime
+        self.groupId = groupId
     }
     
     convenience init(

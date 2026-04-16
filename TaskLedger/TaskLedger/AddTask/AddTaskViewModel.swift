@@ -28,6 +28,7 @@ class AddTaskViewModel: ObservableObject {
     @Published var saveAlert = false
     @Published var showHistorySheet = false
     @Published var taskTemplates: [EventTask] = []
+    private var templateGroupId: String?
     
     @DInjected(\.modelContext) private var modelContext
     @DInjected(\.notifications) private var notifications: NotificationService
@@ -91,6 +92,7 @@ class AddTaskViewModel: ObservableObject {
     func applyTemplate(_ task: EventTask) {
         inputTaskName = task.name
         taskType = task.taskType
+        templateGroupId = task.groupId
 
         switch task.taskType {
         case .cost, .income:
@@ -149,7 +151,8 @@ class AddTaskViewModel: ObservableObject {
             notes: notes,
             events: [],
             notificationEnabled: notificationEnabled,
-            notificationTime: notificationEnabled ? notificationTime : nil
+            notificationTime: notificationEnabled ? notificationTime : nil,
+            groupId: templateGroupId ?? UUID().uuidString
         )
         do {
             modelContext?.insert(event)
