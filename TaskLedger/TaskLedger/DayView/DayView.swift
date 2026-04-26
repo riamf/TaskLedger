@@ -273,6 +273,16 @@ struct TaskPatternLabel: View {
     var body: some View {
         HStack {
             patternText
+            if task.notificationEnabled, let time = task.notificationTime {
+                HStack(spacing: 2) {
+                    Image(systemName: "bell.fill")
+                        .font(.caption2)
+                    Text(time.formatted(date: .omitted, time: .shortened))
+                        .font(.caption)
+                }
+                .foregroundColor(.blue)
+                .padding(.leading, 4)
+            }
             Spacer()
         }
     }
