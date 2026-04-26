@@ -158,3 +158,5 @@
 "history_button_title" = "History";
 "history_title" = "Task History";
 "history_empty_state" = "No task history";
+"add_task_template_group_notice_title" = "Connected in Summary";
+"add_task_template_group_notice_message" = "This task uses a history template. After saving, it will be grouped in Summary with other tasks from the same template.";

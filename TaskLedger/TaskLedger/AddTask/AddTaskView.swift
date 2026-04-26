@@ -41,6 +41,11 @@ struct AddTaskView: View {
                         .buttonStyle(.plain)
                     }
                 }.padding(.top, .bigSpacing).padding(.horizontal, .spacing)
+                if viewModel.showsTemplateGroupingNotice {
+                    AddTaskTemplateGroupingNotice()
+                        .padding(.horizontal, 16)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
                 VStack(spacing: .spacingSmall) {
                     VStack(spacing: 8) {
                         ScrollViewReader { proxy in
@@ -164,4 +169,36 @@ struct AddTaskView: View {
 
 #Preview {
     AddTaskView()
+}
+
+private struct AddTaskTemplateGroupingNotice: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "link.circle.fill")
+                .font(.title3)
+                .foregroundStyle(.blue)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("add_task_template_group_notice_title")
+                    .font(.subheadline.weight(.semibold))
+
+                Text("add_task_template_group_notice_message")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.blue.opacity(colorScheme == .light ? 0.08 : 0.14))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.blue.opacity(colorScheme == .light ? 0.18 : 0.3), lineWidth: 1)
+        )
+    }
 }

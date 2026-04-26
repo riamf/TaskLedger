@@ -28,6 +28,7 @@ class AddTaskViewModel: ObservableObject {
     @Published var saveAlert = false
     @Published var showHistorySheet = false
     @Published var taskTemplates: [EventTask] = []
+    @Published private(set) var showsTemplateGroupingNotice = false
     private var templateGroupId: String?
     
     @DInjected(\.modelContext) private var modelContext
@@ -93,6 +94,7 @@ class AddTaskViewModel: ObservableObject {
         inputTaskName = task.name
         taskType = task.taskType
         templateGroupId = task.groupId
+        showsTemplateGroupingNotice = true
 
         switch task.taskType {
         case .cost, .income:

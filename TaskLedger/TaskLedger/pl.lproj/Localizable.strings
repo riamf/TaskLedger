@@ -158,3 +158,5 @@
 "history_button_title" = "Historia";
 "history_title" = "Historia zadań";
 "history_empty_state" = "Brak historii zadań";
+"add_task_template_group_notice_title" = "Połączone w Podsumowaniu";
+"add_task_template_group_notice_message" = "To zadanie korzysta z szablonu z historii. Po zapisaniu będzie grupowane w Podsumowaniu razem z innymi zadaniami z tego samego szablonu.";
