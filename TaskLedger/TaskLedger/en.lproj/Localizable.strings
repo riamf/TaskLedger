@@ -119,6 +119,15 @@
 
 /* Summary */
 "no_events_for_month" = "No events for this month.";
+"summary_sample_badge" = "Sample";
+"summary_sample_headline" = "Your month will look like this.";
+"summary_sample_body" = "Start tracking to fill your glass.";
+"summary_sample_task_focus_name" = "Focus time";
+"summary_sample_task_focus_value" = "12:40:00";
+"summary_sample_task_habit_name" = "Daily habits";
+"summary_sample_task_habit_value" = "18 times";
+"summary_sample_task_income_name" = "Side income";
+"summary_sample_task_income_value" = "420 earned";
 
 /* SummaryDetails */
 "no_data_available" = "No data available";

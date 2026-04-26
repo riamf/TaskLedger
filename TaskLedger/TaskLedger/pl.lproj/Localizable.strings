@@ -119,6 +119,15 @@
 
 /* Summary */
 "no_events_for_month" = "Brak wydarzeń w tym miesiącu.";
+"summary_sample_badge" = "Przykład";
+"summary_sample_headline" = "Tak może wyglądać Twój miesiąc.";
+"summary_sample_body" = "Zacznij śledzić, aby wypełnić swoje szkło.";
+"summary_sample_task_focus_name" = "Czas skupienia";
+"summary_sample_task_focus_value" = "12:40:00";
+"summary_sample_task_habit_name" = "Codzienne nawyki";
+"summary_sample_task_habit_value" = "18 razy";
+"summary_sample_task_income_name" = "Dodatkowy przychód";
+"summary_sample_task_income_value" = "420 zarobiono";
 
 /* SummaryDetails */
 "no_data_available" = "Brak danych";

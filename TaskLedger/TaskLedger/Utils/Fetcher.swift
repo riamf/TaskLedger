@@ -140,6 +140,16 @@ final class Fetcher {
             return [:]
         }
     }
+
+    func hasRecordedEvents() -> Bool {
+        do {
+            var descriptor = FetchDescriptor<EventMark>()
+            descriptor.fetchLimit = 1
+            return try !modelContext.fetch(descriptor).isEmpty
+        } catch {
+            return false
+        }
+    }
 }
 
 struct EventMartSummary {

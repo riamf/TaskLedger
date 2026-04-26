@@ -8,6 +8,7 @@ final class SummaryViewModel: ObservableObject {
         }
     }
     @Published var currentMonthDateString: String = DaysCalculator.monthYearFormatter.string(from: Date()).capitalized
+    @Published private(set) var isBrandNewUser = false
     @Published private(set) var eventsDict: [EventTask: EventMartSummary] = [:]
     @Published private(set) var sortedTasks: [EventTask] = []
     @DInjected(\.fetcher) private var fetcher: Fetcher
@@ -15,8 +16,13 @@ final class SummaryViewModel: ObservableObject {
     init() {}
 
     func fetchData() {
+        isBrandNewUser = !fetcher.hasRecordedEvents()
         eventsDict = fetcher.fetchSummary(for: currentMonthDate)
         sortedTasks = eventsDict.keys.sorted { $0.name < $1.name }
+    }
+
+    var showsSampleSummary: Bool {
+        isBrandNewUser && eventsDict.isEmpty
     }
     
     func previousMonth() {
