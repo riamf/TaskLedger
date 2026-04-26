@@ -154,7 +154,18 @@ class EventTask: Identifiable {
         if taskType == .counter, let counterSummary = summary?.counterSummary {
             return "\(counterSummary)"
         } else if taskType == .time, let timerSummary = summary?.amountSummary {
-            return "\(timerSummary)"
+            let totalSeconds = Int(timerSummary)
+            let hours = totalSeconds / 3600
+            let minutes = (totalSeconds % 3600) / 60
+            let seconds = totalSeconds % 60
+            
+            if hours > 0 {
+                return String(format: "%dh %02dm %02ds", hours, minutes, seconds)
+            } else if minutes > 0 {
+                return String(format: "%dm %02ds", minutes, seconds)
+            } else {
+                return "\(seconds)s"
+            }
         } else if taskType == .cost || taskType == .income, let summary = summary?.amountSummary {
             return MoneyFormatter.formatter.string(from: NSNumber(value: summary)) ?? "\(summary)"
         }
@@ -363,7 +374,19 @@ extension EventTask {
         if taskType == .time {
             var amountTime = 0.0
             monthEvents.forEach { amountTime += $0.amount }
-            return "\(amountTime)\(String(localized: "summary_time_spent_suffix"))"
+            let totalSeconds = Int(amountTime)
+            let hours = totalSeconds / 3600
+            let minutes = (totalSeconds % 3600) / 60
+            let seconds = totalSeconds % 60
+            let formattedTime: String
+            if hours > 0 {
+                formattedTime = String(format: "%dh %02dm %02ds", hours, minutes, seconds)
+            } else if minutes > 0 {
+                formattedTime = String(format: "%dm %02ds", minutes, seconds)
+            } else {
+                formattedTime = "\(seconds)s"
+            }
+            return "\(formattedTime) \(String(localized: "summary_time_spent_suffix"))"
         }
         return ""
     }
