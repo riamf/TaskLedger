@@ -8,6 +8,7 @@ final class DI {
     private(set) var fetcher = Fetcher()
     private(set) var haptics: HapticFeedbackService = HapticFeedbackManager()
     private(set) var notifications: NotificationService = NotificationManager()
+    private(set) var onboarding = OnboardingProgressStore()
     private(set) var calendar: Calendar = .current
     private init() {}
     

@@ -109,7 +109,8 @@ class AddTaskViewModel: ObservableObject {
         haptics.trigger(.light)
     }
 
-    func saveTask() {
+    @discardableResult
+    func saveTask() -> Bool {
         // calculate amount base on time spend
         var customAmount: Double?
         if taskType == .time {
@@ -168,8 +169,10 @@ class AddTaskViewModel: ObservableObject {
                     weekdays: frequencyDays
                 )
             }
+            return true
         } catch {
             saveAlert.toggle()
+            return false
         }
     }
 }

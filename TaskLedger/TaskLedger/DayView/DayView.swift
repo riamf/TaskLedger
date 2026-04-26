@@ -4,6 +4,7 @@ import SwiftData
 struct DayView: View {
     
     @ObservedObject var viewModel: DayViewViewModel
+    @ObservedObject private var onboarding = DI.instance.onboarding
     @State private var taskToDelete: EventTask?
     @State private var showDeleteConfirmation = false
     @State private var taskToSnooze: EventTask?
@@ -52,6 +53,7 @@ struct DayView: View {
         }
         .sheet(isPresented: $viewModel.showAddTaskView) {
             AddTaskView {
+                onboarding.recordTaskCreated()
                 viewModel.fetchTasks()
             }
             .interactiveDismissDisabled()
@@ -111,18 +113,27 @@ struct DayView: View {
     
     private var tasksListView: some View {
         List {
-            ForEach(viewModel.tasks) { task in
-                DayViewTaskRow(task: task, currentDate: viewModel.currentDate) { taskToMark in
-                    haptics.trigger(.medium)
-                    viewModel.markTask(taskToMark)
-                } onDelete: { taskToArchive in
-                    taskToDelete = taskToArchive
-                    showDeleteConfirmation = true
-                } onSnooze: { taskToDelay in
-                    taskToSnooze = taskToDelay
-                    snoozeDays = 1
-                    showSnoozeSheet = true
-                }
+            ForEach(Array(viewModel.tasks.enumerated()), id: \.element.id) { index, task in
+                DayViewTaskRow(
+                    task: task,
+                    currentDate: viewModel.currentDate,
+                    onMark: { taskToMark in
+                        haptics.trigger(.medium)
+                        viewModel.markTask(taskToMark)
+                    },
+                    onDelete: { taskToArchive in
+                        onboarding.completeDayViewSwipeHint()
+                        taskToDelete = taskToArchive
+                        showDeleteConfirmation = true
+                    },
+                    onSnooze: { taskToDelay in
+                        onboarding.completeDayViewSwipeHint()
+                        taskToSnooze = taskToDelay
+                        snoozeDays = 1
+                        showSnoozeSheet = true
+                    },
+                    showsSwipeHint: index == 0 && onboarding.shouldShowDayViewSwipeHint
+                )
             }
         }
         .listStyle(.plain)
@@ -161,7 +172,7 @@ struct DayView: View {
     private var floatingActionButton: some View {
         HStack {
             Spacer()
-            AddTaskButton {
+            AddTaskButton(showsOnboardingPulse: onboarding.shouldPulseAddTaskButton) {
                 viewModel.showAddTaskView.toggle()
             }
             .padding(.trailing, 32)
@@ -235,18 +246,49 @@ struct DayViewTaskRow: View {
     let onMark: (EventTask) -> Void
     let onDelete: (EventTask) -> Void
     let onSnooze: (EventTask) -> Void
+    let showsSwipeHint: Bool
+
+    @State private var hintOffset: CGFloat = 0
+    @State private var hintIndicatorOpacity: Double = 0
+    @State private var hintAnimationTask: Task<Void, Never>?
+
+    init(
+        task: EventTask,
+        currentDate: Date,
+        onMark: @escaping (EventTask) -> Void,
+        onDelete: @escaping (EventTask) -> Void,
+        onSnooze: @escaping (EventTask) -> Void,
+        showsSwipeHint: Bool = false
+    ) {
+        self.task = task
+        self.currentDate = currentDate
+        self.onMark = onMark
+        self.onDelete = onDelete
+        self.onSnooze = onSnooze
+        self.showsSwipeHint = showsSwipeHint
+    }
 
     var body: some View {
-        HStack {
-            TaskTypeCircleIcon(task: task)
-            VStack(alignment: .leading, spacing: .spacingSmall) {
-                CheckButton(
-                    title: task.name,
-                    isChecked: task.isCheck(currentDate),
-                    value: task, action: onMark)
-                TaskPatternLabel(task: task)
-            }.padding(.horizontal, .spacingSmall)
+        ZStack(alignment: .trailing) {
+            HStack {
+                TaskTypeCircleIcon(task: task)
+                VStack(alignment: .leading, spacing: .spacingSmall) {
+                    CheckButton(
+                        title: task.name,
+                        isChecked: task.isCheck(currentDate),
+                        value: task, action: onMark)
+                    TaskPatternLabel(task: task)
+                }
+                .padding(.horizontal, .spacingSmall)
+            }
+            .offset(x: hintOffset)
+
+            if showsSwipeHint {
+                SwipeHintIndicator(opacity: hintIndicatorOpacity)
+                    .padding(.trailing, 12)
+            }
         }
+        .contentShape(Rectangle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button {
                 onDelete(task)
@@ -262,6 +304,73 @@ struct DayViewTaskRow: View {
             }
             .tint(.orange)
         }
+        .onAppear {
+            restartSwipeHintAnimationIfNeeded()
+        }
+        .onDisappear {
+            hintAnimationTask?.cancel()
+        }
+        .onChange(of: showsSwipeHint) { _, _ in
+            restartSwipeHintAnimationIfNeeded()
+        }
+    }
+
+    private func restartSwipeHintAnimationIfNeeded() {
+        hintAnimationTask?.cancel()
+
+        guard showsSwipeHint else {
+            hintOffset = 0
+            hintIndicatorOpacity = 0
+            return
+        }
+
+        hintAnimationTask = Task { @MainActor in
+            hintOffset = 0
+            hintIndicatorOpacity = 0
+
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            guard !Task.isCancelled else { return }
+
+            for cycle in 0..<2 {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    hintOffset = -18
+                    hintIndicatorOpacity = 0.95
+                }
+
+                try? await Task.sleep(nanoseconds: 320_000_000)
+                guard !Task.isCancelled else { return }
+
+                withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
+                    hintOffset = 0
+                }
+                withAnimation(.easeOut(duration: 0.24)) {
+                    hintIndicatorOpacity = cycle == 0 ? 0.28 : 0
+                }
+
+                try? await Task.sleep(nanoseconds: cycle == 0 ? 650_000_000 : 240_000_000)
+                guard !Task.isCancelled else { return }
+            }
+
+            hintIndicatorOpacity = 0
+        }
+    }
+}
+
+private struct SwipeHintIndicator: View {
+    let opacity: Double
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "chevron.left")
+            Image(systemName: "chevron.left")
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.orange.opacity(0.92))
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial, in: Capsule())
+        .opacity(opacity)
+        .allowsHitTesting(false)
     }
 }
 
@@ -365,4 +474,3 @@ struct TaskPatternLabel: View {
 }
 
 #endif
-

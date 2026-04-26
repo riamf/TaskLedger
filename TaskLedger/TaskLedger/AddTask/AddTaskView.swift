@@ -31,9 +31,7 @@ struct AddTaskView: View {
                         }
                         
                         Button {
-                            viewModel.saveTask()
-                            onAddAction?()
-                            dismiss()
+                            handleSave()
                         } label: {
                             HStack(spacing: 4) {
                                 Text("save_button_title")
@@ -146,9 +144,7 @@ struct AddTaskView: View {
                 VStack {
                     Spacer()
                     SaveTaskButton {
-                        viewModel.saveTask()
-                        onAddAction?()
-                        dismiss()
+                        handleSave()
                     }
                     .disabled(!viewModel.isFormValid)
                 }
@@ -177,6 +173,13 @@ struct AddTaskView: View {
         .onAppear {
             viewModel.loadTemplates()
         }
+    }
+
+    private func handleSave() {
+        guard viewModel.saveTask() else { return }
+
+        onAddAction?()
+        dismiss()
     }
 }
 
