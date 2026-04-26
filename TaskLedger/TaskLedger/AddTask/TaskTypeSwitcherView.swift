@@ -2,7 +2,6 @@ import SwiftUI
 
 struct TaskTypeSwitcherView: View {
     @Binding var taskType: TaskType
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack {
@@ -15,14 +14,14 @@ struct TaskTypeSwitcherView: View {
                         self.taskType = type
                     } label: {
                         TaskTypeButtonLabel(
-                            systemImageName: type == taskType ? type.imageNameMarked: type.imageName,
-                            title: type.taskName,
-                            summary: type.summary,
-                            color: taskType == type ? type.color : type.color.opacity(0.5)
+                            taskType: type,
+                            isSelected: taskType == type
                         )
                     }
                     .buttonStyle(.plain)
                     .frame(maxWidth: .infinity)
+                    .contentShape(RoundedRectangle(cornerRadius: 18))
+                    .accessibilityAddTraits(taskType == type ? [.isSelected] : [])
                 }
             }
         }

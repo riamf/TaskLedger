@@ -120,7 +120,12 @@ private struct SummarySampleListView: View {
             List {
                 ForEach(sampleItems) { item in
                     SummaryRowContent(title: Text(item.titleKey), summary: Text(item.summaryKey)) {
-                        SampleTaskTypeCircleIcon(taskType: item.taskType, opacity: item.opacity)
+                        TaskTypeCircleIcon(
+                            taskType: item.taskType,
+                            iconColor: item.taskType.color.opacity(min(item.opacity + 0.4, 1)),
+                            strokeOpacity: min(item.opacity + 0.2, 0.8),
+                            lineWidth: 4
+                        )
                     }
                     .allowsHitTesting(false)
                 }
@@ -160,23 +165,6 @@ private struct SummaryRowContent<Leading: View, Summary: View>: View {
             }
             .padding(.leading, 0)
         }
-    }
-}
-
-private struct SampleTaskTypeCircleIcon: View {
-    let taskType: TaskType
-    let opacity: Double
-
-    var body: some View {
-        Image(systemName: taskType.imageName)
-            .foregroundStyle(Color.blue.opacity(min(opacity + 0.4, 1)))
-            .frame(width: 44, height: 44)
-            .background(Circle().fill(Color.blue.opacity(opacity * 0.24)))
-            .clipShape(Circle())
-            .overlay(
-                Circle()
-                    .stroke(Color.blue.opacity(min(opacity + 0.2, 0.8)), lineWidth: 5)
-            )
     }
 }
 
