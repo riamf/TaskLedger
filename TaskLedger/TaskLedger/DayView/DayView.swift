@@ -164,7 +164,7 @@ struct DayView: View {
             AddTaskButton {
                 viewModel.showAddTaskView.toggle()
             }
-            .padding(.trailing, 44)
+            .padding(.trailing, 32)
             .padding(.bottom, 32)
         }
     }
