@@ -11,18 +11,32 @@ struct SaveTaskButton: View {
             HStack {
                 Spacer()
                 Text("save_button_title")
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
                 Spacer()
             }
-            .tint(colorScheme == .light ? .black : .white)
-            .frame(height: 44)
+            .foregroundStyle(colorScheme == .light ? .black : .white)
+            .frame(height: 50)
+            .background(.ultraThinMaterial)
+            .cornerRadius(25)
+            .overlay(
+                RoundedRectangle(cornerRadius: 25)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(colorScheme == .light ? 0.6 : 0.3),
+                                Color.white.opacity(colorScheme == .light ? 0.2 : 0.05),
+                                Color.blue.opacity(0.3)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1.5
+                    )
+            )
+            .shadow(color: .black.opacity(colorScheme == .light ? 0.08 : 0.2), radius: 8, x: 0, y: 4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .cornerRadius(8)
-        .overlay( /// apply a rounded border
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(colorScheme == .light ? .black : .white, lineWidth: 2)
-        )
         .padding(.horizontal, 16)
     }
 }
