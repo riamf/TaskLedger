@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct DayView: View {
-    
     @ObservedObject var viewModel: DayViewViewModel
     @ObservedObject private var onboarding = DI.instance.onboarding
     @State private var taskToDelete: EventTask?
@@ -162,9 +161,14 @@ struct DayView: View {
             }
         } else {
             ToolbarItem(placement: .confirmationAction) {
-                Button("done_button_title") {
+                Button {
                     dismiss()
+                } label: {
+                    Text("done_button_title")
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .glassPillButtonChrome()
                 }
+                .buttonStyle(.plain)
             }
         }
     }
