@@ -160,3 +160,7 @@
 "history_empty_state" = "No task history";
 "add_task_template_group_notice_title" = "Connected in Summary";
 "add_task_template_group_notice_message" = "This task uses a history template. After saving, it will be grouped in Summary with other tasks from the same template.";
+
+/* First Run Onboarding */
+"onboarding_next_button_title" = "Next";
+"onboarding_get_started_button_title" = "Get started";

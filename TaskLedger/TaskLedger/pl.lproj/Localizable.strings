@@ -160,3 +160,7 @@
 "history_empty_state" = "Brak historii zadań";
 "add_task_template_group_notice_title" = "Połączone w Podsumowaniu";
 "add_task_template_group_notice_message" = "To zadanie korzysta z szablonu z historii. Po zapisaniu będzie grupowane w Podsumowaniu razem z innymi zadaniami z tego samego szablonu.";
+
+/* First Run Onboarding */
+"onboarding_next_button_title" = "Dalej";
+"onboarding_get_started_button_title" = "Zaczynajmy";
