@@ -19,7 +19,7 @@ final class OnboardingProgressStore: ObservableObject {
         self.userDefaults = userDefaults
         self.addTaskGoal = addTaskGoal
         
-        didCompleteAppIntroduction = false //userDefaults.bool(forKey: Keys.didCompleteAppIntroduction)
+        didCompleteAppIntroduction = userDefaults.bool(forKey: Keys.didCompleteAppIntroduction)
         createdTaskCount = min(userDefaults.integer(forKey: Keys.createdTaskCount), addTaskGoal)
         didCompleteDayViewSwipeHint = userDefaults.bool(forKey: Keys.didCompleteDayViewSwipeHint)
     }
