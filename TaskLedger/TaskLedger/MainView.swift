@@ -1,5 +1,6 @@
 import SwiftUI
 
+
 struct MainView: View {
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var onboarding = DI.instance.onboarding

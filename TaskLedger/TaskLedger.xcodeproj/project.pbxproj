@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		723447442FA6137E00F376E7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 723447432FA6137E00F376E7 /* FirebaseAnalytics */; };
+		723447462FA6137E00F376E7 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 723447452FA6137E00F376E7 /* FirebaseCrashlytics */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		729D341A2E8C5EE200A723CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				723447442FA6137E00F376E7 /* FirebaseAnalytics in Frameworks */,
+				723447462FA6137E00F376E7 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +110,7 @@
 				729D34072E8C5EDE00A723CD /* Frameworks */,
 				729D34082E8C5EDE00A723CD /* Resources */,
 				72B8FAAF2F2E5F2000645724 /* Increment Build Number */,
+				723447472FA614DA00F376E7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -113,6 +121,8 @@
 			);
 			name = TaskLedger;
 			packageProductDependencies = (
+				723447432FA6137E00F376E7 /* FirebaseAnalytics */,
+				723447452FA6137E00F376E7 /* FirebaseCrashlytics */,
 			);
 			productName = TaskLedger;
 			productReference = 729D340A2E8C5EDE00A723CD /* TaskLedger.app */;
@@ -197,6 +207,9 @@
 			);
 			mainGroup = 729D34012E8C5EDE00A723CD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				723447422FA6137E00F376E7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 729D340B2E8C5EDE00A723CD /* Products */;
 			projectDirPath = "";
@@ -234,6 +247,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		723447472FA614DA00F376E7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+				"$(SRCROOT)/GoogleService-Info.plist",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
 		72B8FAAF2F2E5F2000645724 /* Increment Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -250,7 +282,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n# Sprawdzenie czy agvtool jest dostępny\nif ! command -v agvtool &> /dev/null\nthen\n    echo \"BŁĄD: agvtool nie został znaleziony.\"\n    exit 1\nfi\n\n# Automatyczne zwiększenie numeru buildu (CFBundleVersion)\nagvtool next-version -bump\n\necho \"Build number został zaktualizowany!\"\n";
+			shellScript = "#!/bin/bash\nset -euo pipefail\n\napp_info_plist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nif [ ! -f \"$app_info_plist\" ]; then\n    echo \"ERROR: Built Info.plist not found at ${app_info_plist}\"\n    exit 1\nfi\n\ndate_stamp=\"$(date '+%d%m%Y')\"\nrandom_suffix=\"$(printf '%03d' \"$((RANDOM % 1000))\")\"\nbuild_number=\"${date_stamp}${random_suffix}\"\n\nif ! /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion ${build_number}\" \"$app_info_plist\"; then\n    /usr/libexec/PlistBuddy -c \"Add :CFBundleVersion string ${build_number}\" \"$app_info_plist\"\nfi\n\necho \"Build number updated to ${build_number}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -422,8 +454,10 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1.5.2;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = EUR9M2AGH3;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -461,6 +495,7 @@
 				CURRENT_PROJECT_VERSION = 1.5.2;
 				DEVELOPMENT_TEAM = EUR9M2AGH3;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -599,6 +634,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		723447422FA6137E00F376E7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		723447432FA6137E00F376E7 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 723447422FA6137E00F376E7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		723447452FA6137E00F376E7 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 723447422FA6137E00F376E7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 729D34022E8C5EDE00A723CD /* Project object */;
 }

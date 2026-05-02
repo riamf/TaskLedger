@@ -2,6 +2,7 @@ import SwiftData
 import SwiftUI
 
 struct AddTaskView: View {
+    @Environment(\.colorScheme) var colorScheme
     var onAddAction: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
     
@@ -10,42 +11,9 @@ struct AddTaskView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: .spacing) {
-                HStack(spacing: .spacing) {
-                    HStack(spacing: .spacing) {
-                        CloseModalButton()
-                        Spacer()
-                        if viewModel.hasTemplates {
-                            Button {
-                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                                                to: nil, from: nil, for: nil)
-                                viewModel.showHistorySheet = true
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "clock.arrow.circlepath")
-                                    Text("history_button_title")
-                                }
-                                .glassPillButtonChrome()
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        
-                        Button {
-                            handleSave()
-                        } label: {
-                            HStack(spacing: 4) {
-                                Text("save_button_title")
-                            }
-                            .glassPillButtonChrome()
-                        }
-                        .disabled(!viewModel.isFormValid)
-                        .buttonStyle(.plain)
-                    }
-                }.padding(.top, .bigSpacing).padding(.horizontal, .spacing)
-                if viewModel.showsTemplateGroupingNotice {
-                    AddTaskTemplateGroupingNotice()
-                        .padding(.horizontal, 16)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                }
+                headerView
+                    .padding(.top, .bigSpacing)
+                    .padding(.horizontal, .spacing)
                 VStack(spacing: .spacingSmall) {
                     VStack(spacing: 8) {
                         ScrollViewReader { proxy in
@@ -128,7 +96,9 @@ struct AddTaskView: View {
                 VStack {
                     Spacer()
                     SaveTaskButton {
-                        handleSave()
+                        viewModel.saveTask()
+                        onAddAction?()
+                        dismiss()
                     }
                     .disabled(!viewModel.isFormValid)
                 }
@@ -159,9 +129,107 @@ struct AddTaskView: View {
         }
     }
 
-    private func handleSave() {
-        guard viewModel.saveTask() else { return }
+    @ViewBuilder
+    private var headerView: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: .spacingSmall) {
+                CloseModalButton()
+                    .layoutPriority(2)
 
+                Spacer(minLength: .spacingSmall)
+
+                trailingHeaderActions
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            VStack(alignment: .leading, spacing: .spacingSmall) {
+                HStack(alignment: .center, spacing: .spacingSmall) {
+                    CloseModalButton()
+                        .layoutPriority(2)
+
+                    Spacer(minLength: .spacingSmall)
+
+                    topSaveButton
+                }
+
+                if viewModel.hasTemplates {
+                    HStack {
+                        Spacer(minLength: 0)
+                        historyButton
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private var trailingHeaderActions: some View {
+        HStack(alignment: .center, spacing: .spacingSmall) {
+            if viewModel.hasTemplates {
+                historyButton
+            }
+
+            topSaveButton
+        }
+    }
+
+    private var historyButton: some View {
+        Button {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                            to: nil, from: nil, for: nil)
+            viewModel.showHistorySheet = true
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "clock.arrow.circlepath")
+                Text("history_button_title")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .foregroundStyle(colorScheme == .light ? .black : .white)
+            .fixedSize(horizontal: true, vertical: false)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var topSaveButton: some View {
+        Button {
+            saveTaskAndDismiss()
+        } label: {
+            HStack(spacing: 4) {
+                Text("save_button_title")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .foregroundStyle(colorScheme == .light ? .black : .white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(.ultraThinMaterial)
+            .cornerRadius(20)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(colorScheme == .light ? 0.6 : 0.3),
+                                Color.white.opacity(colorScheme == .light ? 0.2 : 0.05),
+                                Color.blue.opacity(0.3)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1.5
+                    )
+            )
+            .shadow(color: .black.opacity(colorScheme == .light ? 0.08 : 0.2), radius: 8, x: 0, y: 4)
+            .fixedSize(horizontal: true, vertical: false)
+        }
+        .disabled(!viewModel.isFormValid)
+        .buttonStyle(.plain)
+    }
+
+    private func saveTaskAndDismiss() {
+        viewModel.saveTask()
         onAddAction?()
         dismiss()
     }
@@ -169,36 +237,4 @@ struct AddTaskView: View {
 
 #Preview {
     AddTaskView()
-}
-
-private struct AddTaskTemplateGroupingNotice: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "link.circle.fill")
-                .font(.title3)
-                .foregroundStyle(.blue)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("add_task_template_group_notice_title")
-                    .font(.subheadline.weight(.semibold))
-
-                Text("add_task_template_group_notice_message")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer(minLength: 0)
-        }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.blue.opacity(colorScheme == .light ? 0.08 : 0.14))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.blue.opacity(colorScheme == .light ? 0.18 : 0.3), lineWidth: 1)
-        )
-    }
 }

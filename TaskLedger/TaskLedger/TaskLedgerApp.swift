@@ -1,9 +1,15 @@
 import SwiftUI
 import SwiftData
+import FirebaseCore
 
 @main
 struct TaskLedgerApp: App {
     @Environment(\.modelContext) private var modelContext
+    
+    init() {
+        FirebaseApp.configure()
+        print("Firebase skonfigurowany!")
+    }
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
