@@ -19,6 +19,7 @@ class DayViewViewModel: ObservableObject {
     @DInjected(\.fetcher) private var fetcher: Fetcher
     @DInjected(\.modelContext) private var modelContext: ModelContext
     @DInjected(\.notifications) private var notifications: NotificationService
+    @DInjected(\.analytics) private var analytics: AnalyticsService
     
     init(currentDate: Date, tasks: [EventTask] = []) {
         self.tasks = tasks
@@ -41,11 +42,29 @@ class DayViewViewModel: ObservableObject {
     }
     
     func nextDate() {
+        analytics.logDayNavigation(method: .arrow, direction: .next)
         currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? currentDate
     }
     
     func previousDate() {
+        analytics.logDayNavigation(method: .arrow, direction: .previous)
         currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? currentDate
+    }
+
+    func selectDateFromCalendar(_ date: Date) {
+        let startOfCurrent = Calendar.current.startOfDay(for: currentDate)
+        let startOfNew = Calendar.current.startOfDay(for: date)
+
+        guard startOfCurrent != startOfNew else {
+            currentDate = date
+            return
+        }
+
+        analytics.logDayNavigation(
+            method: .calendarPicker,
+            direction: startOfNew > startOfCurrent ? .next : .previous
+        )
+        currentDate = date
     }
     
     func deleteTask(at indexSet: IndexSet) {
@@ -63,7 +82,9 @@ class DayViewViewModel: ObservableObject {
     
     func markTask(_ task: EventTask) {
         do {
-            if task.isCheck(currentDate), let event = task.removeEventForDate(currentDate) {
+            let wasDone = task.isCheck(currentDate)
+
+            if wasDone, let event = task.removeEventForDate(currentDate) {
                 modelContext.delete(event)
             } else {
                 let eventMerk = EventMark(date: currentDate,
@@ -73,6 +94,10 @@ class DayViewViewModel: ObservableObject {
             }
             try modelContext.save()
             fetchTasks()
+            analytics.logTaskToggle(task: task, isNowDone: !wasDone)
+            if !wasDone {
+                analytics.logFinancialCompletion(for: task)
+            }
         } catch {
             errorMessage = String(localized: "error_mark_task")
         }
@@ -85,6 +110,7 @@ class DayViewViewModel: ObservableObject {
         do {
             try modelContext.save()
             fetchTasks()
+            analytics.logTaskSnoozed(days: days)
         } catch {
             errorMessage = String(localized: "error_snooze_task")
         }
@@ -98,6 +124,8 @@ class DayViewViewModel: ObservableObject {
         do {
             try modelContext.save()
             fetchTasks()
+            analytics.logTaskArchived(taskType: task.taskType)
+            analytics.updateTotalTasksCount(fetcher.fetchActiveTaskCount())
         } catch {
             errorMessage = String(localized: "error_archive_task")
         }
@@ -111,6 +139,8 @@ class DayViewViewModel: ObservableObject {
         do {
             try modelContext.save()
             fetchTasks()
+            analytics.logTaskFullyDeleted(taskType: task.taskType)
+            analytics.updateTotalTasksCount(fetcher.fetchActiveTaskCount())
         } catch {
             errorMessage = String(localized: "error_delete_task")
         }

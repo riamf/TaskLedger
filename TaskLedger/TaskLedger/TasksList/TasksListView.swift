@@ -12,6 +12,8 @@ import SwiftData
 struct TasksListView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @DInjected(\.analytics) private var analytics: AnalyticsService
+    @DInjected(\.fetcher) private var fetcher: Fetcher
     @State var showAlertView = false
     
     @Query var tasks: [EventTask]
@@ -58,6 +60,8 @@ struct TasksListView: View {
                             modelContext.delete(task)
                             do {
                                 try modelContext.save()
+                                analytics.logTaskFullyDeleted(taskType: task.taskType)
+                                analytics.updateTotalTasksCount(fetcher.fetchActiveTaskCount())
                             } catch {
                                 showAlertView.toggle()
                             }

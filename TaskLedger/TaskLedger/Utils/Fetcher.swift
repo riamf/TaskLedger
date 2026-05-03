@@ -150,6 +150,17 @@ final class Fetcher {
             return false
         }
     }
+
+    func fetchActiveTaskCount() -> Int {
+        do {
+            let predicate = #Predicate<EventTask> { task in
+                task.archivedAt == nil
+            }
+            return try modelContext.fetch(FetchDescriptor<EventTask>(predicate: predicate)).count
+        } catch {
+            return 0
+        }
+    }
 }
 
 struct EventMartSummary {

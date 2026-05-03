@@ -34,6 +34,7 @@ class AddTaskViewModel: ObservableObject {
     @DInjected(\.modelContext) private var modelContext
     @DInjected(\.notifications) private var notifications: NotificationService
     @DInjected(\.fetcher) private var fetcher: Fetcher
+    @DInjected(\.analytics) private var analytics: AnalyticsService
     @DInjected(\.haptics) private var haptics: HapticFeedbackService
     
     var dayNames: [String] {
@@ -57,8 +58,14 @@ class AddTaskViewModel: ObservableObject {
             notifications.requestAuthorization { [weak self] granted in
                 if granted {
                     self?.notificationEnabled = true
+                    guard let self else { return }
+                    self.analytics.logNotificationEnabled(
+                        timeOfDay: self.notificationTime,
+                        frequency: self.taskFrequency
+                    )
                 } else {
                     self?.notificationPermissionDenied = true
+                    self?.analytics.logNotificationDenied()
                 }
             }
         } else {
@@ -171,10 +178,62 @@ class AddTaskViewModel: ObservableObject {
                     weekdays: frequencyDays
                 )
             }
+            analytics.logTaskCreated(taskType: taskType, frequency: taskFrequency)
+            analytics.updateTotalTasksCount(fetcher.fetchActiveTaskCount())
             return true
         } catch {
             saveAlert.toggle()
             return false
         }
+    }
+
+    func trackValidationFailure() {
+        guard let error = currentValidationError else { return }
+        analytics.logValidationError(error)
+    }
+
+    func trackCreationCancelled() {
+        analytics.logTaskCreationCancelled(stepReached: currentStepReached)
+    }
+
+    private var currentValidationError: TaskCreationValidationError? {
+        if inputTaskName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return .missingName
+        }
+
+        if (taskType == .cost || taskType == .income) && amount <= 0 {
+            return .zeroAmount
+        }
+
+        if taskFrequency == .weekly && daysSelected.isEmpty {
+            return .noDaysSelected
+        }
+
+        return nil
+    }
+
+    private var currentStepReached: TaskCreationStep {
+        let currentDay = Calendar.current.component(.day, from: Date())
+        let touchedFrequency = taskFrequency != .weekly
+            || !daysSelected.isEmpty
+            || selectedDayOfMonth != currentDay
+            || !Calendar.current.isDate(selectedDate, inSameDayAs: Date())
+            || notificationEnabled
+
+        if touchedFrequency {
+            return .frequency
+        }
+
+        let touchedType = taskType != .counter
+            || amount > 0
+            || timeHours > 0
+            || timeMinutes > 0
+            || timeSeconds > 0
+
+        if touchedType {
+            return .type
+        }
+
+        return .name
     }
 }

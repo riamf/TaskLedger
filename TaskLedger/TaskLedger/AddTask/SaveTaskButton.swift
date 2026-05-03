@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SaveTaskButton: View {
+    var isEnabled: Bool = true
     var onSave: () -> Void
     
     var body: some View {
@@ -18,6 +19,7 @@ struct SaveTaskButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .opacity(isEnabled ? 1 : 0.45)
         .padding(.horizontal, 16)
     }
 }

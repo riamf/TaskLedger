@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SummaryView: View {
     @StateObject private var viewModel = SummaryViewModel()
+    @DInjected(\.analytics) private var analytics: AnalyticsService
 
     var body: some View {
         NavigationStack {
@@ -30,17 +31,22 @@ struct SummaryView: View {
                                     TaskTypeCircleIcon(task: eventTask)
                                 }
                             }
+                            .simultaneousGesture(TapGesture().onEnded {
+                                analytics.logHeatmapDrillDown(taskType: eventTask.taskType)
+                            })
                         }
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
                     .refreshable {
                         viewModel.fetchData()
+                        analytics.logListRefreshed(view: .summary)
                     }
                 }
             }
             .onAppear {
                 viewModel.fetchData()
+                analytics.logViewSummaryTab(month: viewModel.currentMonthDate)
             }
             .navigationBarTitle(viewModel.currentMonthDateString, displayMode: .inline)
             .toolbar {

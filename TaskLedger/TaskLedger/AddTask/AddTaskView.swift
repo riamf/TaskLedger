@@ -7,6 +7,7 @@ struct AddTaskView: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel = AddTaskViewModel()
+    @State private var didPersistTask = false
     
     var body: some View {
         ScrollView {
@@ -95,12 +96,9 @@ struct AddTaskView: View {
                 
                 VStack {
                     Spacer()
-                    SaveTaskButton {
-                        viewModel.saveTask()
-                        onAddAction?()
-                        dismiss()
+                    SaveTaskButton(isEnabled: viewModel.isFormValid) {
+                        handleSave()
                     }
-                    .disabled(!viewModel.isFormValid)
                 }
             }
             Spacer()
@@ -123,6 +121,11 @@ struct AddTaskView: View {
                 viewModel.applyTemplate(task)
             }
             .presentationDetents([.medium, .large])
+        }
+        .onDisappear {
+            if !didPersistTask {
+                viewModel.trackCreationCancelled()
+            }
         }
         .onAppear {
             viewModel.loadTemplates()
@@ -194,7 +197,7 @@ struct AddTaskView: View {
 
     private var topSaveButton: some View {
         Button {
-            saveTaskAndDismiss()
+            handleSave()
         } label: {
             HStack(spacing: 4) {
                 Text("save_button_title")
@@ -224,12 +227,19 @@ struct AddTaskView: View {
             .shadow(color: .black.opacity(colorScheme == .light ? 0.08 : 0.2), radius: 8, x: 0, y: 4)
             .fixedSize(horizontal: true, vertical: false)
         }
-        .disabled(!viewModel.isFormValid)
+        .opacity(viewModel.isFormValid ? 1 : 0.45)
         .buttonStyle(.plain)
     }
 
-    private func saveTaskAndDismiss() {
-        viewModel.saveTask()
+    private func handleSave() {
+        guard viewModel.isFormValid else {
+            viewModel.trackValidationFailure()
+            return
+        }
+
+        guard viewModel.saveTask() else { return }
+
+        didPersistTask = true
         onAddAction?()
         dismiss()
     }

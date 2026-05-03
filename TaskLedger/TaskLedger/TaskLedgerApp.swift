@@ -1,14 +1,12 @@
 import SwiftUI
 import SwiftData
-import FirebaseCore
 
 @main
 struct TaskLedgerApp: App {
     @Environment(\.modelContext) private var modelContext
     
     init() {
-        FirebaseApp.configure()
-        print("Firebase skonfigurowany!")
+        DI.instance.analytics.configure()
     }
     
     var sharedModelContainer: ModelContainer = {
@@ -21,6 +19,7 @@ struct TaskLedgerApp: App {
         do {
             let container =  try ModelContainer(for: schema, configurations: [modelConfiguration])
             DI.instance.initalize(modelContext: container.mainContext)
+            DI.instance.analytics.updateTotalTasksCount(DI.instance.fetcher.fetchActiveTaskCount())
             return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")

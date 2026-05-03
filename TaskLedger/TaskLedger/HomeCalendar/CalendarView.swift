@@ -3,6 +3,7 @@ import SwiftData
 
 struct CalendarView: View {
     @Environment(\.dismiss) private var dismiss
+    @Binding private var selectedDate: Date
     
     @StateObject private var viewModel: CalendarViewModel
     
@@ -28,6 +29,7 @@ struct CalendarView: View {
     }()
     
     init(selectedDate: Binding<Date>) {
+        _selectedDate = selectedDate
         _viewModel = StateObject(
             wrappedValue: CalendarViewModel(selectedDate: selectedDate.wrappedValue)
         )
@@ -66,7 +68,7 @@ struct CalendarView: View {
                         Spacer()
                     }
                 }
-                Text(CalendarView.monthYearFormatter.string(from: today))
+                Text(CalendarView.monthYearFormatter.string(from: viewModel.selectedDate))
                     .font(.title2)
                     .bold()
                 Text("\(String(localized: "calendar_today_prefix")) \(CalendarView.dayFormatter.string(from: today))")
@@ -87,14 +89,22 @@ struct CalendarView: View {
                             Color.clear.frame(height: 40)
                         } else {
                             let isToday = calendar.isDate(date, inSameDayAs: today)
-                            Text(CalendarView.dayFormatter.string(from: date))
-                                .frame(width: 40, height: 40)
-                                .background(isToday ? Color.blue : Color.gray.opacity(0.2))
-                                .foregroundColor(isToday ? .white : .primary)
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle().stroke(Color.blue, lineWidth: 2)
-                                )
+                            let isSelected = calendar.isDate(date, inSameDayAs: viewModel.selectedDate)
+                            Button {
+                                selectedDate = date
+                                viewModel.selectedDate = date
+                                dismiss()
+                            } label: {
+                                Text(CalendarView.dayFormatter.string(from: date))
+                                    .frame(width: 40, height: 40)
+                                    .background(isSelected ? Color.blue : Color.gray.opacity(0.2))
+                                    .foregroundColor(isSelected ? .white : .primary)
+                                    .clipShape(Circle())
+                                    .overlay(
+                                        Circle().stroke(isToday ? Color.blue : .clear, lineWidth: 2)
+                                    )
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -116,6 +126,16 @@ struct CalendarView: View {
             .padding(.top, 32)
             .padding(.leading, 16)
             .padding(.trailing, 16)
+        }
+        .onAppear {
+            viewModel.selectedDate = selectedDate
+            viewModel.refresh()
+        }
+        .onChange(of: selectedDate) { _, newValue in
+            viewModel.selectedDate = newValue
+        }
+        .onChange(of: viewModel.selectedDate) { _, _ in
+            viewModel.refresh()
         }
     }
 }

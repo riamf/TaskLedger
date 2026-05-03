@@ -4,6 +4,7 @@ import SwiftData
 struct DayView: View {
     @ObservedObject var viewModel: DayViewViewModel
     @ObservedObject private var onboarding = DI.instance.onboarding
+    @DInjected(\.analytics) private var analytics: AnalyticsService
     @State private var taskToDelete: EventTask?
     @State private var showDeleteConfirmation = false
     @State private var taskToSnooze: EventTask?
@@ -58,7 +59,10 @@ struct DayView: View {
             .interactiveDismissDisabled()
         }
         .sheet(isPresented: $viewModel.showCalendar) {
-            CalendarView(selectedDate: $viewModel.currentDate)
+            CalendarView(selectedDate: Binding(
+                get: { viewModel.currentDate },
+                set: { viewModel.selectDateFromCalendar($0) }
+            ))
         }
         .sheet(isPresented: $showSnoozeSheet) {
             SnoozeSheetView(snoozeDays: $snoozeDays) {
@@ -139,6 +143,7 @@ struct DayView: View {
         .scrollContentBackground(.hidden)
         .refreshable {
             viewModel.fetchTasks()
+            analytics.logListRefreshed(view: .dayView)
         }
     }
 

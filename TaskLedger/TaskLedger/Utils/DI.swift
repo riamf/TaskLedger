@@ -6,6 +6,7 @@ final class DI {
     static let instance = DI()
     private(set) var modelContext: ModelContext!
     private(set) var fetcher = Fetcher()
+    private(set) var analytics: AnalyticsService = FirebaseAnalyticsService()
     private(set) var haptics: HapticFeedbackService = HapticFeedbackManager()
     private(set) var notifications: NotificationService = NotificationManager()
     private(set) var onboarding = OnboardingProgressStore()

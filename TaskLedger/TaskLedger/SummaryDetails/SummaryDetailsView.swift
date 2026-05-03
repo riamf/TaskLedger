@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SummaryDetailsView: View {
     @StateObject private var viewModel: SummaryDetailsViewModel
+    @DInjected(\.analytics) private var analytics: AnalyticsService
 
     init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
         _viewModel = StateObject(wrappedValue: SummaryDetailsViewModel(
@@ -27,6 +28,7 @@ struct SummaryDetailsView: View {
                     
                     // Day Cell
                     Button {
+                        analytics.logHeatmapDayTap(hasActivity: data != nil)
                         selectedDayParams = DayParams(date: date)
                     } label: {
                         ZStack {
@@ -98,7 +100,7 @@ struct SummaryDetailsView: View {
                 CustomToolbarView(task: viewModel.eventSummary.task)
             }
         }
-        .onChange(of: viewModel.visibleMonth) { _ in
+        .onChange(of: viewModel.visibleMonth) { _, _ in
             viewModel.onVisibleMonthChanged()
         }
         .sheet(item: $selectedDayParams, onDismiss: {
@@ -151,4 +153,3 @@ struct CustomToolbarView: View {
         }
     }
 }
-

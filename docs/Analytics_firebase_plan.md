@@ -73,3 +73,12 @@ This document outlines the events and parameters required to track user behavior
 ## Implementation Notes
 - **Privacy Manifest:** Ensure `FirebaseAnalytics` is declared in `PrivacyInfo.xcprivacy` under "Product Interaction" and "Device Identifiers."
 - **User Properties:** Recommended to set `total_tasks_count` as a User Property to segment "Power Users" from "Casual Users."
+
+## Firebase Console Setup Notes
+- Enable **Google Analytics** for the Firebase project and keep the iOS app linked to the same `GoogleService-Info.plist` already bundled in the app target.
+- In **Analytics -> Events**, verify the custom events above begin appearing after a local run. Use DebugView during development for immediate validation.
+- In **Analytics -> Custom definitions**, register these event-scoped custom dimensions/metrics so the parameters are queryable in reports:
+  - Dimensions: `task_type`, `frequency`, `step_reached`, `error_type`, `new_status`, `method`, `direction`, `view`, `task_name`, `month_year`, `has_activity`, `time_of_day`, `language`
+  - Metrics: `amount`, `duration_minutes`, `days_snoozed`
+- Register the user property `total_tasks_count` if you want to build audiences and comparisons around task volume.
+- The app logs analytics through the DI-backed `AnalyticsService`, so future analytics additions should go through that abstraction instead of calling Firebase APIs directly from views.

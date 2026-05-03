@@ -3,7 +3,7 @@ import SwiftData
 import SwiftUI
 
 final class CalendarViewModel: ObservableObject {
-    var tasks: [EventTask] = []
+    @Published private(set) var tasks: [EventTask] = []
     @Published var selectedDate: Date
     
     @DInjected(\.modelContext) private var modelContext: ModelContext
@@ -20,6 +20,10 @@ final class CalendarViewModel: ObservableObject {
         } catch {
             return []
         }
+    }
+
+    func refresh() {
+        tasks = fetchData()
     }
 }
 
@@ -38,4 +42,3 @@ final class CalendarTaskSummaryViewModel: ObservableObject {
         }
     }
 }
-
