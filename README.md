@@ -518,6 +518,24 @@ End state: [What has been accomplished?]
 
 ---
 
+## GitHub Pages
+
+TaskLedger now includes a GitHub Pages landing site for the repository.
+
+- **Site source:** `site/`
+- **Deployment workflow:** `.github/workflows/pages.yml`
+- **Target URL:** `https://riamf.github.io/TaskLedger/`
+- **Hosted legal pages:** `privacy-policy.html` and `terms-of-service.html`
+- **Trigger:** Pushes to `main` that change the site, the Pages workflow, or this README, plus manual workflow dispatch
+
+### Repository setup note
+
+In the GitHub repository settings, make sure **Pages** is configured to use **GitHub Actions** as the build and deployment source.
+
+The existing `docs/` folder remains for project documentation and is intentionally separate from the public landing page assets.
+
+---
+
 ## Next Steps After Completing This Template
 
 1. **Share for Feedback**: Review with stakeholders and gather input

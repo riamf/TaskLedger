@@ -170,9 +170,10 @@ private enum InfoMetadata {
 }
 
 private enum AppInfoLinks {
-    // Fill these URLs with your public documents and App Store destination before release.
-    static let privacyPolicyURL: URL? = nil
-    static let termsOfUseURL: URL? = nil
+    private static let siteBaseURL = URL(string: "https://riamf.github.io/TaskLedger/")!
+
+    static let privacyPolicyURL = siteBaseURL.appending(path: "privacy-policy.html")
+    static let termsOfUseURL = siteBaseURL.appending(path: "terms-of-service.html")
     static let appStoreReviewURL: URL? = nil
 }
 

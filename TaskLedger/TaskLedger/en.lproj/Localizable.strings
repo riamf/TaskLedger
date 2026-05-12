@@ -167,7 +167,7 @@
 "info_privacy_policy_title" = "Privacy Policy";
 "info_terms_of_use_title" = "Terms of Use";
 "info_link_unavailable" = "Not configured";
-"info_legal_footer" = "Add your public Privacy Policy URL and Terms of Use URL in AppInfoLinks before release.";
+"info_legal_footer" = "These legal documents are hosted on the public TaskLedger website.";
 "info_third_party_footer" = "Tap a library to view its upstream repository and license source.";
 "info_rate_app_title" = "Rate TaskLedger";
 "info_rate_footer" = "If no App Store URL is configured yet, the system review prompt will be used instead.";

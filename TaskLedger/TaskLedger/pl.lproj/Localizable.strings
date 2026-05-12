@@ -167,7 +167,7 @@
 "info_privacy_policy_title" = "Polityka prywatności";
 "info_terms_of_use_title" = "Regulamin";
 "info_link_unavailable" = "Brak konfiguracji";
-"info_legal_footer" = "Przed publikacją uzupełnij publiczne adresy URL polityki prywatności i regulaminu w AppInfoLinks.";
+"info_legal_footer" = "Te dokumenty prawne są hostowane na publicznej stronie TaskLedger.";
 "info_third_party_footer" = "Stuknij bibliotekę, aby otworzyć jej repozytorium i źródło licencji.";
 "info_rate_app_title" = "Oceń TaskLedger";
 "info_rate_footer" = "Jeśli adres App Store nie jest jeszcze skonfigurowany, użyty zostanie systemowy monit o ocenę.";
