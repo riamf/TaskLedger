@@ -146,6 +146,31 @@
 /* MainView */
 "tab_day_title" = "Day";
 "tab_summary_title" = "Summary";
+"tab_info_title" = "Info";
+
+/* Info */
+"info_navigation_title" = "Info";
+"info_section_app" = "App Info";
+"info_section_privacy" = "Privacy Info";
+"info_section_legal" = "Privacy Policy & Terms";
+"info_section_third_party" = "Third-Party Licenses";
+"info_section_rate" = "Rate the App";
+"info_app_name_label" = "Name";
+"info_version_label" = "Version";
+"info_build_label" = "Build";
+"info_privacy_storage_title" = "Local task data";
+"info_privacy_storage_body" = "Your tasks and completion history are stored on your device and synced through your Apple account when iCloud is available.";
+"info_privacy_analytics_title" = "Usage analytics and crash diagnostics";
+"info_privacy_analytics_body" = "The app uses Firebase Analytics and Crashlytics to understand feature usage, detect crashes, and improve reliability. Analytics events are aggregated and are not used for advertising.";
+"info_privacy_notifications_title" = "Notifications";
+"info_privacy_notifications_body" = "Reminder notifications are optional and are only scheduled when you enable them for a task.";
+"info_privacy_policy_title" = "Privacy Policy";
+"info_terms_of_use_title" = "Terms of Use";
+"info_link_unavailable" = "Not configured";
+"info_legal_footer" = "Add your public Privacy Policy URL and Terms of Use URL in AppInfoLinks before release.";
+"info_third_party_footer" = "Tap a library to view its upstream repository and license source.";
+"info_rate_app_title" = "Rate TaskLedger";
+"info_rate_footer" = "If no App Store URL is configured yet, the system review prompt will be used instead.";
 
 /* Notifications */
 "notification_toggle_label" = "Reminder";

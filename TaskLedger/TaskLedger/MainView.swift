@@ -28,6 +28,11 @@ struct MainView: View {
                 .tabItem {
                     Label("tab_summary_title", systemImage: "chart.bar.fill")
                 }
+
+            InfoView()
+                .tabItem {
+                    Label("tab_info_title", systemImage: "info.circle")
+                }
         }
         .tint(colorScheme == .light ? .black : .white)
     }

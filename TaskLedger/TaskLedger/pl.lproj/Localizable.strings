@@ -146,6 +146,31 @@
 /* MainView */
 "tab_day_title" = "Dzień";
 "tab_summary_title" = "Podsumowanie";
+"tab_info_title" = "Info";
+
+/* Info */
+"info_navigation_title" = "Info";
+"info_section_app" = "Informacje o aplikacji";
+"info_section_privacy" = "Informacje o prywatności";
+"info_section_legal" = "Polityka prywatności i regulamin";
+"info_section_third_party" = "Licencje stron trzecich";
+"info_section_rate" = "Oceń aplikację";
+"info_app_name_label" = "Nazwa";
+"info_version_label" = "Wersja";
+"info_build_label" = "Build";
+"info_privacy_storage_title" = "Dane zadań";
+"info_privacy_storage_body" = "Twoje zadania i historia ich wykonania są przechowywane na urządzeniu i synchronizowane przez konto Apple, gdy iCloud jest dostępny.";
+"info_privacy_analytics_title" = "Analityka użycia i diagnostyka awarii";
+"info_privacy_analytics_body" = "Aplikacja korzysta z Firebase Analytics i Crashlytics, aby rozumieć użycie funkcji, wykrywać awarie i poprawiać niezawodność. Zdarzenia analityczne są agregowane i nie służą do reklam.";
+"info_privacy_notifications_title" = "Powiadomienia";
+"info_privacy_notifications_body" = "Powiadomienia przypominające są opcjonalne i są planowane tylko wtedy, gdy włączysz je dla zadania.";
+"info_privacy_policy_title" = "Polityka prywatności";
+"info_terms_of_use_title" = "Regulamin";
+"info_link_unavailable" = "Brak konfiguracji";
+"info_legal_footer" = "Przed publikacją uzupełnij publiczne adresy URL polityki prywatności i regulaminu w AppInfoLinks.";
+"info_third_party_footer" = "Stuknij bibliotekę, aby otworzyć jej repozytorium i źródło licencji.";
+"info_rate_app_title" = "Oceń TaskLedger";
+"info_rate_footer" = "Jeśli adres App Store nie jest jeszcze skonfigurowany, użyty zostanie systemowy monit o ocenę.";
 
 /* Notifications */
 "notification_toggle_label" = "Przypomnienie";
