@@ -106,7 +106,7 @@ struct SummaryDetailsView: View {
         .sheet(item: $selectedDayParams, onDismiss: {
             viewModel.refreshData()
         }) { params in
-             DayView(viewModel: .init(currentDate: params.date), showAddButton: false)
+             DayView(currentDate: params.date, showAddButton: false)
         }
     }
     

@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct DayView: View {
-    @ObservedObject var viewModel: DayViewViewModel
+    @StateObject private var viewModel: DayViewViewModel
     @ObservedObject private var onboarding = DI.instance.onboarding
     @DInjected(\.analytics) private var analytics: AnalyticsService
     @State private var taskToDelete: EventTask?
@@ -10,13 +10,14 @@ struct DayView: View {
     @State private var taskToSnooze: EventTask?
     @State private var showSnoozeSheet = false
     @State private var snoozeDays = 1
+    @State private var didAddTask = false
     private let showAddButton: Bool
 
     @DInjected(\.haptics) var haptics
     @Environment(\.dismiss) private var dismiss
     
-    init(viewModel: DayViewViewModel = .init(currentDate: Date()), showAddButton: Bool = true) {
-        self.viewModel = viewModel
+    init(currentDate: Date = Date(), showAddButton: Bool = true) {
+        _viewModel = StateObject(wrappedValue: DayViewViewModel(currentDate: currentDate))
         self.showAddButton = showAddButton
     }
     
@@ -51,10 +52,15 @@ struct DayView: View {
         .sheet(isPresented: $viewModel.showTasksList) {
             TasksListView()
         }
-        .sheet(isPresented: $viewModel.showAddTaskView) {
-            AddTaskView {
+        .sheet(isPresented: $viewModel.showAddTaskView, onDismiss: {
+            viewModel.fetchTasks()
+            if didAddTask {
                 onboarding.recordTaskCreated()
-                viewModel.fetchTasks()
+                didAddTask = false
+            }
+        }) {
+            AddTaskView {
+                didAddTask = true
             }
             .interactiveDismissDisabled()
         }
@@ -474,11 +480,7 @@ struct TaskPatternLabel: View {
 #if DEBUG
 
 #Preview {
-    let vm = DayViewViewModel(
-        currentDate: Date(),
-        tasks: [EventTask.example(), EventTask.example()]
-    )
-    return DayView(viewModel: vm)
+    return DayView(currentDate: Date())
         .modelContainer(previewContainer)
 }
 
