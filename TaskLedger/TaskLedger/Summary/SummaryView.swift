@@ -17,23 +17,25 @@ struct SummaryView: View {
                     }
                 } else {
                     List {
-                        ForEach(viewModel.sortedTasks, id: \.self) { eventTask in
-                            NavigationLink {
-                                SummaryDetailsView(
-                                    eventSummary: viewModel.eventsDict[eventTask]!,
-                                    visibleMonth: viewModel.currentMonthDate
-                                )
-                            } label: {
-                                SummaryRowContent(
-                                    title: Text(eventTask.name),
-                                    summary: Text(eventTask.summaryShortText(viewModel.eventsDict[eventTask]))
-                                ) {
-                                    TaskTypeCircleIcon(task: eventTask)
+                        ForEach(viewModel.sortedTasks, id: \.id) { eventTask in
+                            if let eventSummary = viewModel.eventsDict[eventTask] {
+                                NavigationLink {
+                                    SummaryDetailsView(
+                                        eventSummary: eventSummary,
+                                        visibleMonth: viewModel.currentMonthDate
+                                    )
+                                    .onAppear {
+                                        analytics.logHeatmapDrillDown(taskType: eventTask.taskType)
+                                    }
+                                } label: {
+                                    SummaryRowContent(
+                                        title: Text(eventTask.name),
+                                        summary: Text(eventTask.summaryShortText(eventSummary))
+                                    ) {
+                                        TaskTypeCircleIcon(task: eventTask)
+                                    }
                                 }
                             }
-                            .simultaneousGesture(TapGesture().onEnded {
-                                analytics.logHeatmapDrillDown(taskType: eventTask.taskType)
-                            })
                         }
                     }
                     .listStyle(.plain)
@@ -160,17 +162,16 @@ private struct SummaryRowContent<Leading: View, Summary: View>: View {
     }
 
     var body: some View {
-        VStack {
-            HStack {
-                leading
-                title
-                HStack {
-                    Spacer()
-                    summary
-                }
-            }
-            .padding(.leading, 0)
+        HStack(spacing: 12) {
+            leading
+
+            title
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            summary
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 }
 
