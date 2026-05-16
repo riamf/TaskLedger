@@ -179,6 +179,36 @@ class EventTask: Identifiable {
     func isCheck(_ date: Date = Date()) -> Bool {
         return dayEvent(date) != nil
     }
+
+    func occurs(on date: Date, calendar: Calendar = .current) -> Bool {
+        let startOfDay = calendar.startOfDay(for: date)
+        let createdDay = calendar.startOfDay(for: timestamp)
+
+        guard startOfDay >= createdDay else { return false }
+        guard (archivedAt ?? .distantFuture) >= startOfDay else { return false }
+        guard (snoozedUntil ?? .distantPast) <= startOfDay else { return false }
+
+        if let pattern = repeatingPattern {
+            switch pattern {
+            case .daily(let weekdays):
+                let weekday = calendar.component(.weekday, from: startOfDay)
+                return weekdays.contains { $0.calendarWeekday == weekday }
+            case .monthly(let dayOfMonth):
+                return calendar.component(.day, from: startOfDay) == dayOfMonth
+            case .yearly(let dayOfMonth, let monthOfYear):
+                return calendar.component(.day, from: startOfDay) == dayOfMonth
+                    && calendar.component(.month, from: startOfDay) == monthOfYear
+            }
+        }
+
+        if let fixedDate = taskFixedDate {
+            return calendar.isDate(fixedDate, inSameDayAs: startOfDay)
+        }
+
+        return !days.isEmpty && weekdays.contains {
+            $0.calendarWeekday == calendar.component(.weekday, from: startOfDay)
+        }
+    }
     
     @discardableResult
     func removeEventForDate(_ date: Date) -> EventMark? {

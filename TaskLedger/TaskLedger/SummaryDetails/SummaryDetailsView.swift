@@ -24,7 +24,9 @@ struct SummaryDetailsView: View {
                 
                 // Calendar with bordered background
                 CalendarMonthView(visibleMonth: $viewModel.visibleMonth) { date in
-                    let data = viewModel.dailyCountsDict[Calendar.current.startOfDay(for: date)]
+                    let startOfDay = Calendar.current.startOfDay(for: date)
+                    let data = viewModel.dailyCountsDict[startOfDay]
+                    let isScheduled = viewModel.scheduledDays.contains(startOfDay)
                     
                     // Day Cell
                     Button {
@@ -35,6 +37,9 @@ struct SummaryDetailsView: View {
                             if let color = data?.color {
                                 Circle()
                                     .fill(color)
+                            } else if isScheduled {
+                                Circle()
+                                    .stroke(viewModel.eventSummary.task.taskType.color, lineWidth: 2)
                             }
                             
                             Text(date, format: .dateTime.day())

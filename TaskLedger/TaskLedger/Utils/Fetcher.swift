@@ -6,12 +6,8 @@ final class Fetcher {
     @DInjected(\.modelContext) private var modelContext: ModelContext
     
     func fetchTasks(for date: Date) -> [EventTask] {
-        let startOfDay = Calendar.current.startOfDay(for: date)
-        let components = Calendar.current.dateComponents([.weekday, .day, .month], from: date)
-        let weekdayIndex = components.weekday ?? 1
-        let day = components.day ?? 1
-        let month = components.month ?? 1
-        let legacyDayNumber = DaysCalculator.dayNumberInWeekFrom(startOfDay)
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
 
         let distantFuture = Date.distantFuture
         let distantPast = Date.distantPast
@@ -23,53 +19,10 @@ final class Fetcher {
         
         do {
             let tasks = try modelContext.fetch(FetchDescriptor(predicate: predicate))
-            
-            return tasks.filter { task in
-                // Repeating tasks should not appear on days before they were created
-                if task.taskFixedDate == nil {
-                    let createdDay = Calendar.current.startOfDay(for: task.timestamp)
-                    guard startOfDay >= createdDay else { return false }
-                }
-                
-                if let pattern = task.repeatingPattern {
-                    switch pattern {
-                    case .daily(let weekdays):
-                        if let currentWeekday = self.weekdayFromCalendar(weekdayIndex) {
-                            return weekdays.contains(currentWeekday)
-                        }
-                        return false
-                    case .monthly(let dayOfMonth):
-                        return day == dayOfMonth
-                    case .yearly(let dayOfMonth, let monthOfYear):
-                        return day == dayOfMonth && month == monthOfYear
-                    }
-                }
-                
-                if let fixedDate = task.taskFixedDate {
-                    return Calendar.current.isDate(fixedDate, inSameDayAs: date)
-                }
-                
-                if !task.days.isEmpty, let weekday = Weekdays(rawValue: legacyDayNumber) {
-                    return task.weekdays.contains(weekday)
-                }
-                
-                return false
-            }
+
+            return tasks.filter { $0.occurs(on: date, calendar: calendar) }
         } catch {
             return []
-        }
-    }
-    
-    private func weekdayFromCalendar(_ component: Int) -> Weekdays? {
-        switch component {
-        case 1: return .sunday
-        case 2: return .monday
-        case 3: return .tuesday
-        case 4: return .wednesday
-        case 5: return .thursday
-        case 6: return .friday
-        case 7: return .saturday
-        default: return nil
         }
     }
     

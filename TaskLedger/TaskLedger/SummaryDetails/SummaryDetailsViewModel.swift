@@ -18,6 +18,7 @@ class SummaryDetailsViewModel: ObservableObject {
     @Published private(set) var filteredEvents: [EventMark] = []
     @Published private(set) var dailyCounts: [PointData] = []
     @Published private(set) var dailyCountsDict: [Date: PointData] = [:]
+    @Published private(set) var scheduledDays: Set<Date> = []
 
     init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
         self.eventSummary = eventSummary
@@ -50,6 +51,33 @@ class SummaryDetailsViewModel: ObservableObject {
 
         dailyCounts = counts
         dailyCountsDict = Dictionary(uniqueKeysWithValues: counts.map { ($0.date, $0) })
+
+        scheduledDays = scheduledDaysForVisibleMonth(calendar: calendar)
+    }
+
+    private func scheduledDaysForVisibleMonth(calendar: Calendar) -> Set<Date> {
+        guard let monthRange = calendar.range(of: .day, in: .month, for: visibleMonth),
+              let monthStart = calendar.dateInterval(of: .month, for: visibleMonth)?.start
+        else {
+            return []
+        }
+
+        let today = calendar.startOfDay(for: Date())
+
+        return Set(monthRange.compactMap { day in
+            guard let date = calendar.date(byAdding: .day, value: day - 1, to: monthStart) else {
+                return nil
+            }
+
+            let startOfDay = calendar.startOfDay(for: date)
+            guard startOfDay <= today else {
+                return nil
+            }
+            guard eventSummary.task.occurs(on: startOfDay, calendar: calendar) else {
+                return nil
+            }
+
+            return startOfDay
+        })
     }
 }
-
