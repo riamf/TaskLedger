@@ -20,9 +20,14 @@ class SummaryDetailsViewModel: ObservableObject {
     @Published private(set) var dailyCountsDict: [Date: PointData] = [:]
     @Published private(set) var scheduledDays: Set<Date> = []
 
+    private let trackedTaskID: String
+    private let trackedGroupID: String
+
     init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
         self.eventSummary = eventSummary
         self.visibleMonth = visibleMonth
+        trackedTaskID = eventSummary.task.id
+        trackedGroupID = eventSummary.task.groupId
         recomputeDerived()
     }
 
@@ -32,9 +37,18 @@ class SummaryDetailsViewModel: ObservableObject {
 
     func refreshData(for date: Date? = nil) {
         let dateToFetch = date ?? visibleMonth
-        let newSummary = fetcher.fetchSummary(for: dateToFetch)
-        eventSummary = newSummary[eventSummary.task] ?? eventSummary
+        let newSummaries = fetcher.fetchSummary(for: dateToFetch)
+        eventSummary = matchingSummary(in: newSummaries)
+            ?? EventMartSummary(task: eventSummary.task, events: [])
         recomputeDerived()
+    }
+
+    private func matchingSummary(in summaries: [EventTask: EventMartSummary]) -> EventMartSummary? {
+        if let exactTaskMatch = summaries.values.first(where: { $0.task.id == trackedTaskID }) {
+            return exactTaskMatch
+        }
+
+        return summaries.values.first(where: { $0.task.groupId == trackedGroupID })
     }
 
     private func recomputeDerived() {

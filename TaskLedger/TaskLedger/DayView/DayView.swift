@@ -12,13 +12,19 @@ struct DayView: View {
     @State private var snoozeDays = 1
     @State private var didAddTask = false
     private let showAddButton: Bool
+    private let allowsTaskRowActions: Bool
 
     @DInjected(\.haptics) var haptics
     @Environment(\.dismiss) private var dismiss
     
-    init(currentDate: Date = Date(), showAddButton: Bool = true) {
+    init(
+        currentDate: Date = Date(),
+        showAddButton: Bool = true,
+        allowsTaskRowActions: Bool = true
+    ) {
         _viewModel = StateObject(wrappedValue: DayViewViewModel(currentDate: currentDate))
         self.showAddButton = showAddButton
+        self.allowsTaskRowActions = allowsTaskRowActions
     }
     
     var body: some View {
@@ -141,7 +147,8 @@ struct DayView: View {
                         snoozeDays = 1
                         showSnoozeSheet = true
                     },
-                    showsSwipeHint: index == 0 && onboarding.shouldShowDayViewSwipeHint
+                    showsSwipeHint: allowsTaskRowActions && index == 0 && onboarding.shouldShowDayViewSwipeHint,
+                    allowsSwipeActions: allowsTaskRowActions
                 )
             }
         }
@@ -199,7 +206,7 @@ struct DayView: View {
     private var deleteConfirmationButtons: some View {
         Button("delete_task_schedule_button", role: .destructive) {
             if let task = taskToDelete {
-                viewModel.archiveTask(task)
+                viewModel.archiveTask(task, effectiveFrom: viewModel.currentDate)
             }
         }
         Button("delete_task_history_button", role: .destructive) {
@@ -262,6 +269,7 @@ struct DayViewTaskRow: View {
     let onDelete: (EventTask) -> Void
     let onSnooze: (EventTask) -> Void
     let showsSwipeHint: Bool
+    let allowsSwipeActions: Bool
 
     @State private var hintOffset: CGFloat = 0
     @State private var hintIndicatorOpacity: Double = 0
@@ -273,7 +281,8 @@ struct DayViewTaskRow: View {
         onMark: @escaping (EventTask) -> Void,
         onDelete: @escaping (EventTask) -> Void,
         onSnooze: @escaping (EventTask) -> Void,
-        showsSwipeHint: Bool = false
+        showsSwipeHint: Bool = false,
+        allowsSwipeActions: Bool = true
     ) {
         self.task = task
         self.currentDate = currentDate
@@ -281,9 +290,30 @@ struct DayViewTaskRow: View {
         self.onDelete = onDelete
         self.onSnooze = onSnooze
         self.showsSwipeHint = showsSwipeHint
+        self.allowsSwipeActions = allowsSwipeActions
     }
 
     var body: some View {
+        rowContent
+            .contentShape(Rectangle())
+            .modifier(TaskRowSwipeActionsModifier(
+                enabled: allowsSwipeActions,
+                task: task,
+                onDelete: onDelete,
+                onSnooze: onSnooze
+            ))
+            .onAppear {
+                restartSwipeHintAnimationIfNeeded()
+            }
+            .onDisappear {
+                hintAnimationTask?.cancel()
+            }
+            .onChange(of: showsSwipeHint) { _, _ in
+                restartSwipeHintAnimationIfNeeded()
+            }
+    }
+
+    private var rowContent: some View {
         ZStack(alignment: .trailing) {
             HStack {
                 TaskTypeCircleIcon(task: task)
@@ -302,31 +332,6 @@ struct DayViewTaskRow: View {
                 SwipeHintIndicator(opacity: hintIndicatorOpacity)
                     .padding(.trailing, 12)
             }
-        }
-        .contentShape(Rectangle())
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button {
-                onDelete(task)
-            } label: {
-                Label("delete_action_title", systemImage: "trash")
-            }
-            .tint(.red)
-
-            Button {
-                onSnooze(task)
-            } label: {
-                Label("snooze_button_title", systemImage: "clock")
-            }
-            .tint(.orange)
-        }
-        .onAppear {
-            restartSwipeHintAnimationIfNeeded()
-        }
-        .onDisappear {
-            hintAnimationTask?.cancel()
-        }
-        .onChange(of: showsSwipeHint) { _, _ in
-            restartSwipeHintAnimationIfNeeded()
         }
     }
 
@@ -367,6 +372,37 @@ struct DayViewTaskRow: View {
             }
 
             hintIndicatorOpacity = 0
+        }
+    }
+}
+
+private struct TaskRowSwipeActionsModifier: ViewModifier {
+    let enabled: Bool
+    let task: EventTask
+    let onDelete: (EventTask) -> Void
+    let onSnooze: (EventTask) -> Void
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if enabled {
+            content
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button {
+                        onDelete(task)
+                    } label: {
+                        Label("delete_action_title", systemImage: "trash")
+                    }
+                    .tint(.red)
+
+                    Button {
+                        onSnooze(task)
+                    } label: {
+                        Label("snooze_button_title", systemImage: "clock")
+                    }
+                    .tint(.orange)
+                }
+        } else {
+            content
         }
     }
 }

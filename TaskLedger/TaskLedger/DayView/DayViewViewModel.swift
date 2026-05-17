@@ -116,8 +116,8 @@ class DayViewViewModel: ObservableObject {
         }
     }
     
-    func archiveTask(_ task: EventTask) {
-        task.archivedAt = Date()
+    func archiveTask(_ task: EventTask, effectiveFrom visibleDate: Date) {
+        task.archivedAt = Calendar.current.startOfDay(for: visibleDate).addingTimeInterval(-1)
         if task.notificationEnabled {
             notifications.removeNotification(for: task.id)
         }

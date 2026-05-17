@@ -233,7 +233,8 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 3. Confirm the dialog with "Archive Schedule"
 
 **Expected:**
-- Task disappears from Day View going forward
+- Task disappears from the current Day View immediately
+- Task remains absent on future days
 - Historical completion data is preserved (visible in Summary)
 
 ---
@@ -387,6 +388,7 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 **Expected:**
 - A DayView sheet opens for that date
 - The task appears in the list for that day
+- Swipe actions are unavailable in this drill-down sheet
 
 ---
 
