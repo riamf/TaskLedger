@@ -57,6 +57,7 @@ struct AddTaskButton: View {
             }
         }
         .accessibilityLabel("Add task")
+        .accessibilityIdentifier("day-view-add-task-button")
         .buttonStyle(ModernAddTaskButtonStyle())
         .onAppear {
             updatePulseAnimation()

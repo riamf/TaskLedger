@@ -103,6 +103,7 @@ struct AddTaskView: View {
             }
             Spacer()
         }
+        .accessibilityIdentifier("add-task-screen")
         .scrollDismissesKeyboard(.immediately)
         .alert(isPresented: $viewModel.saveAlert) {
             Alert(
@@ -229,6 +230,7 @@ struct AddTaskView: View {
         }
         .opacity(viewModel.isFormValid ? 1 : 0.45)
         .buttonStyle(.plain)
+        .accessibilityIdentifier("add-task-save-top")
     }
 
     private func handleSave() {

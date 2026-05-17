@@ -46,6 +46,7 @@ struct FrequencySwitcher: View {
                         .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("add-task-frequency-\(frequency.rawValue)")
             }
         }
         .padding(.horizontal)

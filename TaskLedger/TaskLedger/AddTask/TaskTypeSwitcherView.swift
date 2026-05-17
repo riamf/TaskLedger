@@ -22,6 +22,7 @@ struct TaskTypeSwitcherView: View {
                     .frame(maxWidth: .infinity)
                     .contentShape(RoundedRectangle(cornerRadius: 18))
                     .accessibilityAddTraits(taskType == type ? [.isSelected] : [])
+                    .accessibilityIdentifier("add-task-type-\(type.rawValue)")
                 }
             }
         }

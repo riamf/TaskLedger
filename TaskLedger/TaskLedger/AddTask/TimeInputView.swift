@@ -13,6 +13,7 @@ struct TimeInputView: View {
             TextField("", text: $inputTaskName, prompt: Text("enter_task_name_prompt"))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 16)
+                .accessibilityIdentifier("add-task-name-time")
             Text("enter_time_spent_label")
                 .font(.headline)
                 .padding(.leading, 16)
@@ -20,15 +21,21 @@ struct TimeInputView: View {
             HStack(spacing: .spacingSmall) {
                 VStack{
                     Text("time_hours_label")
-                    TextField("time_hours_prompt", value: $hours, format: .number, prompt: Text("time_hours_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    TextField("time_hours_prompt", value: $hours, format: .number, prompt: Text("time_hours_prompt"))
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .accessibilityIdentifier("add-task-time-hours")
                 }
                 VStack {
                     Text("time_minutes_label")
-                    TextField("time_minutes_prompt", value: $minutes, format: .number, prompt: Text("time_minutes_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    TextField("time_minutes_prompt", value: $minutes, format: .number, prompt: Text("time_minutes_prompt"))
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .accessibilityIdentifier("add-task-time-minutes")
                 }
                 VStack {
                     Text("time_seconds_label")
-                    TextField("time_seconds_prompt", value: $seconds, format: .number, prompt: Text("time_seconds_prompt")).textFieldStyle(RoundedBorderTextFieldStyle())
+                    TextField("time_seconds_prompt", value: $seconds, format: .number, prompt: Text("time_seconds_prompt"))
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .accessibilityIdentifier("add-task-time-seconds")
                 }
             }.padding(.horizontal, .bigSpacing)
         }

@@ -21,6 +21,7 @@ struct SaveTaskButton: View {
         .buttonStyle(.plain)
         .opacity(isEnabled ? 1 : 0.45)
         .padding(.horizontal, 16)
+        .accessibilityIdentifier("add-task-save-bottom")
     }
 }
 

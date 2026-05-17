@@ -8,7 +8,9 @@ struct CostInputView: View {
         MoneyInputView(
             inputTaskName: $inputTaskName,
             amount: $amount,
-            amountLabel: "enter_cost_amount_label"
+            amountLabel: "enter_cost_amount_label",
+            nameIdentifier: "add-task-name-cost",
+            amountIdentifier: "add-task-amount-cost"
         )
     }
 }

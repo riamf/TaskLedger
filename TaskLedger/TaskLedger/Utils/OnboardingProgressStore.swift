@@ -18,6 +18,13 @@ final class OnboardingProgressStore: ObservableObject {
     init(userDefaults: UserDefaults = .standard, addTaskGoal: Int = 3) {
         self.userDefaults = userDefaults
         self.addTaskGoal = addTaskGoal
+
+        if UITestingConfiguration.skipOnboarding {
+            didCompleteAppIntroduction = true
+            createdTaskCount = addTaskGoal
+            didCompleteDayViewSwipeHint = true
+            return
+        }
         
         didCompleteAppIntroduction = userDefaults.bool(forKey: Keys.didCompleteAppIntroduction)
         createdTaskCount = min(userDefaults.integer(forKey: Keys.createdTaskCount), addTaskGoal)

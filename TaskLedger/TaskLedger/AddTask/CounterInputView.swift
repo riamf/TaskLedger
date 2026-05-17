@@ -9,6 +9,7 @@ struct CounterInputView: View {
             TextField("", text: $inputTaskName, prompt: Text("enter_task_name_prompt"))
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 16)
+                .accessibilityIdentifier("add-task-name-counter")
         }
     }
 }

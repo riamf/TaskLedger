@@ -2,7 +2,7 @@
 
 **App:** TaskLedger  
 **Platform:** iOS  
-**Last updated:** April 2026
+**Last updated:** May 2026
 
 ---
 
@@ -37,12 +37,17 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 | 19 | **Localization** | English and Polish language support |
 | 20 | **Form Validation** | Save button disabled until task name is filled and required fields are valid |
 | 21 | **Task Notifications** | Optional local notification reminder at a user-selected time, scheduled per task frequency |
+| 22 | **First-Run Onboarding** | Four-screen onboarding carousel appears on first launch and stays dismissed after completion |
+| 23 | **Task History Templates** | Add Task can reuse previously created tasks as templates via the History sheet |
+| 24 | **Summary Sample State** | Brand-new users see sample summary content before any events exist |
+| 25 | **Info Tab** | Shows app metadata, privacy details, legal links, third-party licenses, and rate-app action |
+| 26 | **Reminder Badge** | Reminder-enabled tasks show a bell icon and scheduled time in Day View |
 
 ---
 
 ## Test Environment
 
-- **Devices:** iPhone (any modern model running iOS 17+)
+- **Devices:** iPhone (any model supported by iOS 18.5+)
 - **Accounts:** iCloud account required for CloudKit sync tests
 - **Language:** Test in both English and Polish where noted
 
@@ -693,6 +698,189 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 
 ---
 
+### MODULE 10 — Onboarding
+
+#### TC-55: First-run onboarding flow
+**Preconditions:** Fresh install or app data cleared  
+**Steps:**
+1. Launch the app
+2. Verify the onboarding carousel appears instead of the main tabs
+3. Tap **Next** until the last onboarding page
+4. Tap **Get started**
+
+**Expected:**
+- A four-page onboarding flow is shown full-screen on first launch
+- The page indicator advances as the user taps **Next**
+- The final CTA changes to **Get started**
+- After finishing, the main tab interface opens
+
+---
+
+#### TC-56: Onboarding stays dismissed after completion
+**Steps:**
+1. Complete the onboarding flow
+2. Force-quit the app
+3. Reopen the app
+
+**Expected:**
+- App opens directly to the main tab interface
+- Onboarding is not shown again
+
+---
+
+### MODULE 11 — Task History & Templates
+
+#### TC-57: History sheet lists reusable task templates
+**Preconditions:** At least two tasks already exist, including one task name/type that was created more than once  
+**Steps:**
+1. Open the **Add Task** sheet
+2. Tap **History**
+
+**Expected:**
+- The **History** button is visible once prior tasks exist
+- A history sheet opens with reusable task templates
+- Duplicate task name/type combinations appear only once in the list
+
+---
+
+#### TC-58: Selecting a history item prefills the Add Task form
+**Preconditions:** At least one Cost, Income, or Time task exists in History  
+**Steps:**
+1. Open the **Add Task** sheet
+2. Tap **History**
+3. Select an existing task template
+
+**Expected:**
+- History sheet dismisses
+- Task name is prefilled
+- Task type switches to the selected template type
+- Type-specific value (amount or duration) is prefilled from the template
+
+---
+
+### MODULE 12 — Tasks List
+
+#### TC-59: Open Tasks List and review all saved tasks
+**Preconditions:** At least one task exists that is not scheduled for today  
+**Steps:**
+1. Open the **Tasks List** view from Day View
+2. Review the list contents
+3. Close the sheet
+
+**Expected:**
+- The view lists all saved tasks, not only tasks due on the selected day
+- Task names are visible in a scrollable list
+- Close action dismisses the sheet and returns to Day View
+
+---
+
+#### TC-60: Tasks List empty state
+**Preconditions:** No saved tasks exist  
+**Steps:**
+1. Open the **Tasks List** view
+
+**Expected:**
+- An empty-state message is shown instead of a task list
+- App remains responsive and does not crash
+
+---
+
+#### TC-61: Delete a task from Tasks List
+**Preconditions:** At least one task exists in the Tasks List  
+**Steps:**
+1. Open **Tasks List**
+2. Delete a task using the list delete gesture
+3. Return to Day View and Summary
+
+**Expected:**
+- The task is removed from the Tasks List
+- The task no longer appears in Day View or Summary
+- If the deleted task had a reminder enabled, its pending notification is also removed
+
+---
+
+### MODULE 13 — Summary Empty State
+
+#### TC-62: Summary sample state for brand-new user
+**Preconditions:** Fresh install with no recorded task events  
+**Steps:**
+1. Open the **Summary** tab
+
+**Expected:**
+- A sample badge, headline, and explanatory text are shown
+- Sample summary rows are displayed instead of a blank empty state
+- Sample rows are read-only and do not navigate to details
+
+---
+
+### MODULE 14 — Info Tab
+
+#### TC-63: Info tab shows metadata and privacy content
+**Steps:**
+1. Open the **Info** tab
+
+**Expected:**
+- Sections for **App Info**, **Privacy Info**, **Privacy Policy & Terms**, **Third-Party Licenses**, and **Rate the App** are visible
+- App name, version, and build number are populated
+- Privacy copy renders without truncated localization keys
+
+---
+
+#### TC-64: Info tab links open the correct destinations
+**Steps:**
+1. Open the **Info** tab
+2. Tap **Privacy Policy**
+3. Return to the app and tap **Terms of Use**
+4. Return to the app and tap any third-party license link
+
+**Expected:**
+- **Privacy Policy** opens the hosted `privacy-policy.html` page
+- **Terms of Use** opens the hosted `terms-of-service.html` page
+- Third-party license link opens the corresponding repository URL
+
+---
+
+### MODULE 15 — Additional Reminder & Sync Coverage
+
+#### TC-65: Reminder-enabled task shows bell and time in Day View
+**Steps:**
+1. Create a task with **Reminder** enabled at **07:30**
+2. Return to Day View
+
+**Expected:**
+- The task row shows a bell icon next to its schedule label
+- The selected reminder time is displayed in the row
+
+---
+
+#### TC-66: Snoozing a reminder-enabled task suppresses reminders during snooze
+**Steps:**
+1. Create a daily task with a reminder due soon
+2. Snooze the task for **3 days**
+3. Wait through the original reminder time, or inspect pending notifications
+4. Navigate to the snooze date
+
+**Expected:**
+- No reminder fires during the snooze window
+- The task stays hidden until the snooze date
+- Reminder behavior resumes on the snooze date
+
+---
+
+#### TC-67: CloudKit sync propagates completion-state changes
+**Preconditions:** Two devices signed into the same iCloud account and the same task is visible today on both devices  
+**Steps:**
+1. On Device A, mark the task done
+2. Wait for sync and refresh/open the app on Device B
+3. On Device A, unmark the same task
+4. Refresh/open the app on Device B again
+
+**Expected:**
+- Device B reflects the completed state for the same date after sync
+- Device B reflects the unchecked state after the second sync
+
+---
+
 ## Regression Checklist
 
 After any code change, verify these core flows still work:
@@ -707,6 +895,13 @@ After any code change, verify these core flows still work:
 - [ ] No crash on fresh install with empty state
 - [ ] Create a task with notification enabled and verify it fires
 - [ ] Delete a task with notification and verify notification is removed
+- [ ] Fresh install shows onboarding once and skips it on next launch
+- [ ] Summary shows the sample state for a brand-new user with no events
+- [ ] Add Task history can prefill a new task from a prior template
+- [ ] Tasks List opens, shows all tasks, and can delete one cleanly
+- [ ] Info tab renders app metadata, legal links, and third-party licenses
+- [ ] Reminder-enabled task shows bell/time and does not notify while snoozed
+- [ ] Completion state syncs across devices via CloudKit
 
 ---
 
