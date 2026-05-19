@@ -48,7 +48,7 @@ final class Fetcher {
         }
     }
     
-    func fetchSummary(for date: Date) -> [EventTask: EventMartSummary] {
+    func fetchSummary(for date: Date, mode: SummaryGroupingMode = .individual) -> [EventMartSummary] {
         let searchedMonth = DaysCalculator.monthFormatter.string(from: date)
         let searchedYear = DaysCalculator.yearFormatter.string(from: date)
         do {
@@ -56,41 +56,49 @@ final class Fetcher {
                 $0.month == searchedMonth && $0.year == searchedYear
             }
             let events = try modelContext.fetch(FetchDescriptor<EventMark>(predicate: predicate))
-            
-            // First pass: find which groupIds have multiple distinct tasks (true template groups)
-            var taskIdsByGroupId = [String: Set<String>]()
+
+            var grouped = [String: (representative: EventTask, tasksByID: [String: EventTask], events: [EventMark])]()
             for event in events {
                 guard let task = event.task else { continue }
-                taskIdsByGroupId[task.groupId, default: []].insert(task.id)
-            }
-            
-            // Second pass: group events. Use groupId only when it links multiple tasks;
-            // otherwise fall back to task.id so unrelated tasks stay separate.
-            var grouped = [String: (representative: EventTask, events: [EventMark])]()
-            for event in events {
-                guard let task = event.task else { continue }
-                let isTemplateGroup = (taskIdsByGroupId[task.groupId]?.count ?? 0) > 1
-                let key = isTemplateGroup ? task.groupId : task.id
-                
+
+                let key: String
+                switch mode {
+                case .individual:
+                    key = task.id
+                case .templateGroup:
+                    key = task.groupId
+                }
+
                 if var existing = grouped[key] {
                     existing.events.append(event)
+                    existing.tasksByID[task.id] = task
                     if task.timestamp > existing.representative.timestamp {
                         existing.representative = task
                     }
                     grouped[key] = existing
                 } else {
-                    grouped[key] = (representative: task, events: [event])
+                    grouped[key] = (
+                        representative: task,
+                        tasksByID: [task.id: task],
+                        events: [event]
+                    )
                 }
             }
-            
-            var eventsDict = [EventTask: EventMartSummary]()
-            for (_, group) in grouped {
-                eventsDict[group.representative] = EventMartSummary(task: group.representative, events: group.events)
+
+            return grouped.map { key, group in
+                EventMartSummary(
+                    summaryKey: key,
+                    task: group.representative,
+                    tasks: Array(group.tasksByID.values),
+                    events: group.events,
+                    groupingMode: mode
+                )
             }
-            
-            return eventsDict
+            .sorted {
+                $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
+            }
         } catch {
-            return [:]
+            return []
         }
     }
 
@@ -116,19 +124,78 @@ final class Fetcher {
     }
 }
 
-struct EventMartSummary {
+enum SummaryGroupingMode: String, CaseIterable, Identifiable {
+    case individual
+    case templateGroup
+
+    var id: String { rawValue }
+}
+
+struct EventMartSummary: Identifiable {
+    let summaryKey: String
     let amountSummary: Double
     let counterSummary: Int
     let timeSummary: Int
     let events: [EventMark]
     let task: EventTask
-    
-    init(task: EventTask, events: [EventMark]) {
+    let tasks: [EventTask]
+    let groupingMode: SummaryGroupingMode
+
+    var id: String {
+        "\(groupingMode.rawValue):\(summaryKey)"
+    }
+
+    var displayName: String {
+        switch groupingMode {
+        case .individual:
+            return task.name
+        case .templateGroup:
+            let names = orderedUniqueTaskNames
+            guard !names.isEmpty else { return task.name }
+            return names.joined(separator: " + ")
+        }
+    }
+
+    private var orderedUniqueTaskNames: [String] {
+        var seen = Set<String>()
+        return tasks
+            .sorted {
+                if $0.timestamp != $1.timestamp {
+                    return $0.timestamp < $1.timestamp
+                }
+                return $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+            .compactMap { task in
+                guard seen.insert(task.name).inserted else { return nil }
+                return task.name
+            }
+    }
+
+    init(
+        summaryKey: String,
+        task: EventTask,
+        tasks: [EventTask],
+        events: [EventMark],
+        groupingMode: SummaryGroupingMode
+    ) {
+        self.summaryKey = summaryKey
         self.task = task
+        self.tasks = tasks
         self.events = events
+        self.groupingMode = groupingMode
         amountSummary = events.reduce(0.0, { $0 + $1.amount })
         counterSummary = events.filter { $0.task?.taskType == .counter }.count
         timeSummary = events.filter { $0.task?.taskType == .time }.reduce(0, { $0 + Int($1.amount) } )
+    }
+
+    func replacingEvents(_ updatedEvents: [EventMark]) -> EventMartSummary {
+        EventMartSummary(
+            summaryKey: summaryKey,
+            task: task,
+            tasks: tasks,
+            events: updatedEvents,
+            groupingMode: groupingMode
+        )
     }
 }
 

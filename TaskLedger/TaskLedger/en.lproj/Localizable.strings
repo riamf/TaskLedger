@@ -119,6 +119,9 @@
 
 /* Summary */
 "no_events_for_month" = "No events for this month.";
+"summary_mode_picker_label" = "Summary mode";
+"summary_mode_individual" = "Individual";
+"summary_mode_grouped" = "Grouped";
 "summary_sample_badge" = "Sample";
 "summary_sample_headline" = "Your month will look like this.";
 "summary_sample_body" = "Start tracking to fill your glass.";
@@ -184,7 +187,7 @@
 "history_title" = "Task History";
 "history_empty_state" = "No task history";
 "add_task_template_group_notice_title" = "Connected in Summary";
-"add_task_template_group_notice_message" = "This task uses a history template. After saving, it will be grouped in Summary with other tasks from the same template.";
+"add_task_template_group_notice_message" = "This task uses a history template. You can review it together with related tasks in the grouped Summary mode.";
 
 /* First Run Onboarding */
 "onboarding_next_button_title" = "Next";

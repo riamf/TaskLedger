@@ -7,7 +7,7 @@ struct SummaryView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if viewModel.eventsDict.isEmpty {
+                if viewModel.summaries.isEmpty {
                     if viewModel.showsSampleSummary {
                         SummarySampleListView()
                     } else {
@@ -16,24 +16,25 @@ struct SummaryView: View {
                             .padding()
                     }
                 } else {
+                    if viewModel.showsGroupingModePicker {
+                        summaryModePicker
+                    }
                     List {
-                        ForEach(viewModel.sortedTasks, id: \.id) { eventTask in
-                            if let eventSummary = viewModel.eventsDict[eventTask] {
-                                NavigationLink {
-                                    SummaryDetailsView(
-                                        eventSummary: eventSummary,
-                                        visibleMonth: viewModel.currentMonthDate
-                                    )
-                                    .onAppear {
-                                        analytics.logHeatmapDrillDown(taskType: eventTask.taskType)
-                                    }
-                                } label: {
-                                    SummaryRowContent(
-                                        title: Text(eventTask.name),
-                                        summary: Text(eventTask.summaryShortText(eventSummary))
-                                    ) {
-                                        TaskTypeCircleIcon(task: eventTask)
-                                    }
+                        ForEach(viewModel.summaries) { eventSummary in
+                            NavigationLink {
+                                SummaryDetailsView(
+                                    eventSummary: eventSummary,
+                                    visibleMonth: viewModel.currentMonthDate
+                                )
+                                .onAppear {
+                                    analytics.logHeatmapDrillDown(taskType: eventSummary.task.taskType)
+                                }
+                            } label: {
+                                SummaryRowContent(
+                                    title: Text(eventSummary.displayName),
+                                    summary: Text(eventSummary.task.summaryShortText(eventSummary))
+                                ) {
+                                    TaskTypeCircleIcon(task: eventSummary.task)
                                 }
                             }
                         }
@@ -66,6 +67,16 @@ struct SummaryView: View {
                 }
             }
         }
+    }
+
+    private var summaryModePicker: some View {
+        Picker("summary_mode_picker_label", selection: $viewModel.groupingMode) {
+            Text("summary_mode_individual").tag(SummaryGroupingMode.individual)
+            Text("summary_mode_grouped").tag(SummaryGroupingMode.templateGroup)
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+        .padding(.top, 8)
     }
 }
 

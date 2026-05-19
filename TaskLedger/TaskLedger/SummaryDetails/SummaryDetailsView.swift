@@ -102,7 +102,7 @@ struct SummaryDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                CustomToolbarView(task: viewModel.eventSummary.task)
+                CustomToolbarView(title: viewModel.eventSummary.displayName, taskType: viewModel.eventSummary.task.taskType)
             }
         }
         .onChange(of: viewModel.visibleMonth) { _, _ in
@@ -150,11 +150,12 @@ struct SummaryDetailsView: View {
 
 
 struct CustomToolbarView: View {
-    let task: EventTask
+    let title: String
+    let taskType: TaskType
     var body: some View {
         HStack {
-            TaskTypeCircleIcon(task: task)
-            Text(task.name)
+            TaskTypeCircleIcon(taskType: taskType)
+            Text(title)
         }
     }
 }

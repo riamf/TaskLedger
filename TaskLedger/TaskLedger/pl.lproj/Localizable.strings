@@ -119,6 +119,9 @@
 
 /* Summary */
 "no_events_for_month" = "Brak wydarzeń w tym miesiącu.";
+"summary_mode_picker_label" = "Tryb podsumowania";
+"summary_mode_individual" = "Osobno";
+"summary_mode_grouped" = "Grupowo";
 "summary_sample_badge" = "Przykład";
 "summary_sample_headline" = "Tak może wyglądać Twój miesiąc.";
 "summary_sample_body" = "Zacznij śledzić, aby wypełnić swoje szkło.";
@@ -184,7 +187,7 @@
 "history_title" = "Historia zadań";
 "history_empty_state" = "Brak historii zadań";
 "add_task_template_group_notice_title" = "Połączone w Podsumowaniu";
-"add_task_template_group_notice_message" = "To zadanie korzysta z szablonu z historii. Po zapisaniu będzie grupowane w Podsumowaniu razem z innymi zadaniami z tego samego szablonu.";
+"add_task_template_group_notice_message" = "To zadanie korzysta z szablonu z historii. Możesz przeglądać je razem z powiązanymi zadaniami w grupowym trybie Podsumowania.";
 
 /* First Run Onboarding */
 "onboarding_next_button_title" = "Dalej";

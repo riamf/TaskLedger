@@ -20,14 +20,14 @@ class SummaryDetailsViewModel: ObservableObject {
     @Published private(set) var dailyCountsDict: [Date: PointData] = [:]
     @Published private(set) var scheduledDays: Set<Date> = []
 
-    private let trackedTaskID: String
-    private let trackedGroupID: String
+    private let trackedSummaryKey: String
+    private let trackedGroupingMode: SummaryGroupingMode
 
     init(eventSummary: EventMartSummary, visibleMonth: Date = Date()) {
         self.eventSummary = eventSummary
         self.visibleMonth = visibleMonth
-        trackedTaskID = eventSummary.task.id
-        trackedGroupID = eventSummary.task.groupId
+        trackedSummaryKey = eventSummary.summaryKey
+        trackedGroupingMode = eventSummary.groupingMode
         recomputeDerived()
     }
 
@@ -37,18 +37,16 @@ class SummaryDetailsViewModel: ObservableObject {
 
     func refreshData(for date: Date? = nil) {
         let dateToFetch = date ?? visibleMonth
-        let newSummaries = fetcher.fetchSummary(for: dateToFetch)
+        let newSummaries = fetcher.fetchSummary(for: dateToFetch, mode: trackedGroupingMode)
         eventSummary = matchingSummary(in: newSummaries)
-            ?? EventMartSummary(task: eventSummary.task, events: [])
+            ?? eventSummary.replacingEvents([])
         recomputeDerived()
     }
 
-    private func matchingSummary(in summaries: [EventTask: EventMartSummary]) -> EventMartSummary? {
-        if let exactTaskMatch = summaries.values.first(where: { $0.task.id == trackedTaskID }) {
-            return exactTaskMatch
-        }
-
-        return summaries.values.first(where: { $0.task.groupId == trackedGroupID })
+    private func matchingSummary(in summaries: [EventMartSummary]) -> EventMartSummary? {
+        summaries.first(where: {
+            $0.groupingMode == trackedGroupingMode && $0.summaryKey == trackedSummaryKey
+        })
     }
 
     private func recomputeDerived() {
@@ -87,7 +85,7 @@ class SummaryDetailsViewModel: ObservableObject {
             guard startOfDay <= today else {
                 return nil
             }
-            guard eventSummary.task.occurs(on: startOfDay, calendar: calendar) else {
+            guard eventSummary.tasks.contains(where: { $0.occurs(on: startOfDay, calendar: calendar) }) else {
                 return nil
             }
 

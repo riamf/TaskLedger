@@ -8,21 +8,36 @@ final class SummaryViewModel: ObservableObject {
         }
     }
     @Published var currentMonthDateString: String = DaysCalculator.monthYearFormatter.string(from: Date()).capitalized
+    @Published var groupingMode: SummaryGroupingMode = .individual {
+        didSet {
+            fetchData()
+        }
+    }
     @Published private(set) var isBrandNewUser = false
-    @Published private(set) var eventsDict: [EventTask: EventMartSummary] = [:]
-    @Published private(set) var sortedTasks: [EventTask] = []
+    @Published private(set) var showsGroupingModePicker = false
+    @Published private(set) var summaries: [EventMartSummary] = []
     @DInjected(\.fetcher) private var fetcher: Fetcher
 
     init() {}
 
     func fetchData() {
         isBrandNewUser = !fetcher.hasRecordedEvents()
-        eventsDict = fetcher.fetchSummary(for: currentMonthDate)
-        sortedTasks = eventsDict.keys.sorted { $0.name < $1.name }
+        let individualSummaries = fetcher.fetchSummary(for: currentMonthDate, mode: .individual)
+        let groupedSummaries = fetcher.fetchSummary(for: currentMonthDate, mode: .templateGroup)
+        let hasCollapsedTemplateGroups = groupedSummaries.contains { $0.tasks.count > 1 }
+
+        showsGroupingModePicker = hasCollapsedTemplateGroups
+
+        if !hasCollapsedTemplateGroups, groupingMode == .templateGroup {
+            groupingMode = .individual
+            return
+        }
+
+        summaries = groupingMode == .templateGroup ? groupedSummaries : individualSummaries
     }
 
     var showsSampleSummary: Bool {
-        isBrandNewUser && eventsDict.isEmpty
+        isBrandNewUser && summaries.isEmpty
     }
     
     func previousMonth() {

@@ -40,8 +40,9 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 | 22 | **First-Run Onboarding** | Four-screen onboarding carousel appears on first launch and stays dismissed after completion |
 | 23 | **Task History Templates** | Add Task can reuse previously created tasks as templates via the History sheet |
 | 24 | **Summary Sample State** | Brand-new users see sample summary content before any events exist |
-| 25 | **Info Tab** | Shows app metadata, privacy details, legal links, third-party licenses, and rate-app action |
-| 26 | **Reminder Badge** | Reminder-enabled tasks show a bell icon and scheduled time in Day View |
+| 25 | **Summary Modes** | Summary supports Individual and Grouped modes for template-derived tasks |
+| 26 | **Info Tab** | Shows app metadata, privacy details, legal links, third-party licenses, and rate-app action |
+| 27 | **Reminder Badge** | Reminder-enabled tasks show a bell icon and scheduled time in Day View |
 
 ---
 
@@ -334,6 +335,24 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 
 **Expected:**
 - List refreshes without crash
+
+---
+
+#### TC-23a: Summary mode switch — individual vs grouped template tasks
+**Preconditions:** Create task **T1**, mark it done this month, then create **T2** from T1 history/template and mark it done this month  
+**Steps:**
+1. Open the **Summary** tab
+2. Leave mode set to **Individual**
+3. Verify the list contents
+4. Switch mode to **Grouped**
+5. Verify the list contents again
+
+**Expected:**
+- The mode switch is visible only when the current month contains template-related tasks that can be collapsed
+- In **Individual** mode, **T1** and **T2** appear as separate rows
+- Each individual row shows only its own completion count/total
+- In **Grouped** mode, the list shows a single combined row for the template family
+- The grouped row total equals the sum of the related tasks
 
 ---
 

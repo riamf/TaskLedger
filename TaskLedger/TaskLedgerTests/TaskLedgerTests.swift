@@ -92,7 +92,7 @@ struct TaskLedgerTests {
         try context.save()
 
         let initialSummary = try #require(
-            DI.instance.fetcher.fetchSummary(for: month).values.first(where: { $0.task.id == task.id })
+            DI.instance.fetcher.fetchSummary(for: month).first(where: { $0.task.id == task.id })
         )
         let viewModel = SummaryDetailsViewModel(eventSummary: initialSummary, visibleMonth: month)
         #expect(viewModel.filteredEvents.count == 1)
@@ -110,6 +110,134 @@ struct TaskLedgerTests {
 
         viewModel.refreshData(for: month)
         #expect(viewModel.filteredEvents.isEmpty)
+    }
+
+    @MainActor
+    @Test func summaryShowsTemplateTasksIndividuallyByDefaultAndGroupedOnDemand() throws {
+        let schema = Schema([EventTask.self, EventMark.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let context = container.mainContext
+        DI.instance.initalize(modelContext: context)
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let month = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 1
+        ).date!
+        let firstDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 8,
+            hour: 9
+        ).date!
+        let secondDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 8,
+            hour: 10
+        ).date!
+
+        let sharedGroupID = "template-group"
+        let task1 = EventTask(
+            timestamp: firstDate,
+            name: "T1",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases,
+            groupId: sharedGroupID
+        )
+        let task2 = EventTask(
+            timestamp: calendar.date(byAdding: .day, value: 1, to: firstDate)!,
+            name: "T2",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases,
+            groupId: sharedGroupID
+        )
+
+        context.insert(task1)
+        context.insert(task2)
+        context.insert(EventMark(date: firstDate, task: task1))
+        context.insert(EventMark(date: secondDate, task: task2))
+        try context.save()
+
+        let individualSummaries = DI.instance.fetcher.fetchSummary(for: month)
+        #expect(individualSummaries.count == 2)
+        #expect(Set(individualSummaries.map(\.displayName)) == Set(["T1", "T2"]))
+        #expect(individualSummaries.allSatisfy { $0.counterSummary == 1 })
+
+        let groupedSummaries = DI.instance.fetcher.fetchSummary(for: month, mode: .templateGroup)
+        #expect(groupedSummaries.count == 1)
+
+        let groupedSummary = try #require(groupedSummaries.first)
+        #expect(groupedSummary.displayName == "T1 + T2")
+        #expect(groupedSummary.counterSummary == 2)
+        #expect(groupedSummary.tasks.count == 2)
+    }
+
+    @MainActor
+    @Test func groupedSummaryModeIsHiddenWhenNothingWouldBeCollapsed() throws {
+        let schema = Schema([EventTask.self, EventMark.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let context = container.mainContext
+        DI.instance.initalize(modelContext: context)
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let month = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 1
+        ).date!
+        let eventDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 8,
+            hour: 9
+        ).date!
+
+        let task = EventTask(
+            timestamp: eventDate,
+            name: "Solo",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases
+        )
+
+        context.insert(task)
+        context.insert(EventMark(date: eventDate, task: task))
+        try context.save()
+
+        let viewModel = SummaryViewModel()
+        viewModel.currentMonthDate = month
+        viewModel.fetchData()
+
+        #expect(!viewModel.showsGroupingModePicker)
+        #expect(viewModel.groupingMode == .individual)
+        #expect(viewModel.summaries.count == 1)
+        #expect(viewModel.summaries.first?.displayName == "Solo")
+
+        viewModel.groupingMode = .templateGroup
+
+        #expect(viewModel.groupingMode == .individual)
+        #expect(!viewModel.showsGroupingModePicker)
+        #expect(viewModel.summaries.count == 1)
+        #expect(viewModel.summaries.first?.displayName == "Solo")
     }
 
 }
