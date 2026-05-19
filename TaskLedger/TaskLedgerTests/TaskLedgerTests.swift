@@ -240,4 +240,77 @@ struct TaskLedgerTests {
         #expect(viewModel.summaries.first?.displayName == "Solo")
     }
 
+    @MainActor
+    @Test func historyTemplatesExcludeTasksCreatedFromHistory() throws {
+        let schema = Schema([EventTask.self, EventMark.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let context = container.mainContext
+        DI.instance.initalize(modelContext: context)
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let rootDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 1,
+            hour: 9
+        ).date!
+        let derivedDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 2,
+            hour: 9
+        ).date!
+        let independentDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 3,
+            hour: 9
+        ).date!
+
+        let sharedGroupID = "history-template-group"
+        let rootTask = EventTask(
+            timestamp: rootDate,
+            name: "T1",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases,
+            groupId: sharedGroupID
+        )
+        let derivedTask = EventTask(
+            timestamp: derivedDate,
+            name: "T2",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases,
+            groupId: sharedGroupID
+        )
+        let independentTask = EventTask(
+            timestamp: independentDate,
+            name: "Independent",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases
+        )
+
+        context.insert(rootTask)
+        context.insert(derivedTask)
+        context.insert(independentTask)
+        try context.save()
+
+        let templates = DI.instance.fetcher.fetchUniqueTaskTemplates()
+
+        #expect(templates.count == 2)
+        #expect(Set(templates.map(\.name)) == Set(["T1", "Independent"]))
+        #expect(!templates.contains(where: { $0.name == "T2" }))
+        #expect(templates.contains(where: { $0.id == rootTask.id }))
+    }
+
 }

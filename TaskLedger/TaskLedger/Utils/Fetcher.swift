@@ -26,17 +26,29 @@ final class Fetcher {
         }
     }
     
-    /// Returns unique tasks grouped by name + type, sorted by most recently created.
+    /// Returns reusable history templates from the root task of each template family, ordered by most recent family usage.
     func fetchUniqueTaskTemplates() -> [EventTask] {
         do {
             let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
-            
+
+            let groupedByTemplate = Dictionary(grouping: tasks, by: \.groupId)
+            let rootTemplates = groupedByTemplate.values.compactMap { templateTasks -> (task: EventTask, latestTimestamp: Date)? in
+                guard let rootTask = templateTasks.min(by: { $0.timestamp < $1.timestamp }),
+                      let latestTimestamp = templateTasks.map(\.timestamp).max()
+                else {
+                    return nil
+                }
+
+                return (task: rootTask, latestTimestamp: latestTimestamp)
+            }
+
             var seen = Set<String>()
             var unique = [EventTask]()
-            
-            // Sort by newest first so we keep the most recent instance
-            let sorted = tasks.sorted { $0.timestamp > $1.timestamp }
-            for task in sorted {
+
+            // Sort families by most recent usage, but always expose the root task as the template source.
+            let sorted = rootTemplates.sorted { $0.latestTimestamp > $1.latestTimestamp }
+            for entry in sorted {
+                let task = entry.task
                 let key = "\(task.name.lowercased().trimmingCharacters(in: .whitespaces))|\(task.taskType.rawValue)"
                 if seen.insert(key).inserted {
                     unique.append(task)

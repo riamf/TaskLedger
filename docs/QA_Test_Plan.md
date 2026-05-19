@@ -761,6 +761,7 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 - The **History** button is visible once prior tasks exist
 - A history sheet opens with reusable task templates
 - Duplicate task name/type combinations appear only once in the list
+- Tasks that were themselves created from History are not listed as selectable templates
 
 ---
 
