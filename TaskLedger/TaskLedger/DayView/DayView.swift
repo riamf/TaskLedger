@@ -47,10 +47,6 @@ struct DayView: View {
                     }
                     toolbarItems
                 }
-            
-            if showAddButton {
-                floatingActionButton
-            }
         }
         .onAppear {
             viewModel.fetchTasks()
@@ -112,6 +108,10 @@ struct DayView: View {
                 } else {
                     tasksListView
                 }
+            }
+
+            if showAddButton {
+                floatingActionButton
             }
         }
     }
@@ -192,14 +192,11 @@ struct DayView: View {
     }
     
     private var floatingActionButton: some View {
-        HStack {
-            Spacer()
-            AddTaskButton(showsOnboardingPulse: onboarding.shouldPulseAddTaskButton) {
-                viewModel.showAddTaskView.toggle()
-            }
-            .padding(.trailing, 32)
-            .padding(.bottom, 32)
+        AddTaskButton(showsOnboardingPulse: onboarding.shouldPulseAddTaskButton) {
+            viewModel.showAddTaskView.toggle()
         }
+        .padding(.bottom, 32)
+        .padding(.trailing, 32)
     }
     
     @ViewBuilder
