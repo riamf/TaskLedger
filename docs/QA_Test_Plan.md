@@ -905,25 +905,49 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 
 ## Regression Checklist
 
-After any code change, verify these core flows still work:
+Use this as the **minimum release validation pass for every new version**.  
+If a release touches a specific module in a risky way, also rerun that module's detailed test cases above.
 
-- [ ] Create a task of each type (Counter, Cost, Income, Time)
-- [ ] Mark a task done and verify it persists
-- [ ] Unmark a task
-- [ ] Snooze a task and verify it disappears then reappears
-- [ ] Archive a task (schedule deleted, history kept)
-- [ ] Summary tab shows the correct month totals
-- [ ] Summary Details heatmap renders without blank screen
-- [ ] No crash on fresh install with empty state
-- [ ] Create a task with notification enabled and verify it fires
-- [ ] Delete a task with notification and verify notification is removed
-- [ ] Fresh install shows onboarding once and skips it on next launch
+### Core launch & empty-state checks
+
+- [ ] Fresh install launches without crash and Day View empty state renders correctly
+- [ ] Fresh install shows onboarding once and opens directly to the main tabs on next launch
 - [ ] Summary shows the sample state for a brand-new user with no events
-- [ ] Add Task history can prefill a new task from a prior template
-- [ ] Tasks List opens, shows all tasks, and can delete one cleanly
-- [ ] Info tab renders app metadata, legal links, and third-party licenses
-- [ ] Reminder-enabled task shows bell/time and does not notify while snoozed
+
+### Task creation & Day View
+
+- [ ] Create one task of each type: Counter, Cost, Income, and Time
+- [ ] Verify at least one Weekly, Monthly, and One-Time task appears only on the expected date(s)
+- [ ] Mark a task done, relaunch the app, and confirm the completed state persists
+- [ ] Unmark the same task and confirm the state updates correctly
+- [ ] Day navigation arrows and calendar picker update the visible day and task list correctly
+- [ ] Pull to refresh in Day View reloads without crash
+- [ ] Snooze a task and verify it disappears until the selected return date, then reappears
+- [ ] Archive a task and verify it disappears from the current Day View immediately, stays hidden on future days, and keeps its history in Summary
+- [ ] Delete a task with history and verify it disappears from Day View and no longer appears in Summary
+
+### Summary & drill-down
+
+- [ ] Summary shows correct monthly totals for counter and amount-based tasks
+- [ ] Summary month navigation and pull to refresh work without crash
+- [ ] Summary Details opens without blank screen and the heatmap matches marked days
+- [ ] Opening Day View from Summary Details disables swipe actions
+- [ ] Marking/unmarking from the Summary Details day drill-down refreshes Summary Details correctly
+- [ ] Grouped mode switch appears only when the month contains collapsible template-related tasks
+- [ ] In Individual mode, template-related tasks appear as separate rows with their own totals
+- [ ] In Grouped mode, the same template family appears as one combined row with the summed total
+
+### History, reminders, and supporting screens
+
+- [ ] Add Task History shows reusable templates only once per name/type and excludes tasks that were themselves created from History
+- [ ] Selecting a History item prefills the task type and value fields correctly
+- [ ] Create a task with reminder enabled, verify the reminder fires, and confirm the bell/time badge appears in Day View
+- [ ] Snoozing a reminder-enabled task suppresses reminders while the task is snoozed
+- [ ] Deleting or archiving a reminder-enabled task removes its scheduled notification
+- [ ] Tasks List opens, shows all saved tasks, and can delete one cleanly
+- [ ] Info tab renders app metadata, legal links, third-party licenses, and Rate App action
 - [ ] Completion state syncs across devices via CloudKit
+- [ ] Quick language spot-check in English and Polish shows no missing or badly truncated strings in Day View, Add Task, Summary, and Info
 
 ---
 
