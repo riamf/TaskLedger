@@ -102,18 +102,20 @@ struct DayView: View {
 
     private var mainContent: some View {
         ZStack(alignment: .bottomTrailing) {
-            VStack {
+            Group {
                 if viewModel.tasks.isEmpty {
                     emptyStateView
                 } else {
                     tasksListView
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             if showAddButton {
                 floatingActionButton
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var emptyStateView: some View {
@@ -124,6 +126,7 @@ struct DayView: View {
                 .foregroundColor(.gray)
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private var tasksListView: some View {
