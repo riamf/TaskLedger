@@ -896,6 +896,7 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 4. Navigate to the snooze date
 
 **Expected:**
+- Any reminder already scheduled for today is removed immediately after snooze
 - No reminder fires during the snooze window
 - The task stays hidden until the snooze date
 - Reminder behavior resumes on the snooze date

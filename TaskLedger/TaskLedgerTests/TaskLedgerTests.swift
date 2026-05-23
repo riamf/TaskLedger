@@ -345,4 +345,68 @@ struct TaskLedgerTests {
         #expect(try context.fetch(FetchDescriptor<EventTask>()).count == 1)
     }
 
+    @Test func snoozedReminderSchedulesResumeNotificationAfterSnoozeWindow() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let now = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 23,
+            hour: 8,
+            minute: 0
+        ).date!
+        let reminderTime = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 23,
+            hour: 9,
+            minute: 30
+        ).date!
+        let snoozeUntil = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 26,
+            hour: 0,
+            minute: 0
+        ).date!
+
+        let task = EventTask(
+            timestamp: now,
+            name: "Snoozed Reminder",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases,
+            snoozedUntil: snoozeUntil,
+            notificationEnabled: true,
+            notificationTime: reminderTime
+        )
+
+        let items = notificationScheduleItems(
+            for: task,
+            notificationTime: reminderTime,
+            referenceDate: now,
+            calendar: calendar
+        )
+
+        #expect(items.count == 1)
+        let item = try #require(items.first)
+        #expect(item.identifier == "\(task.id)-resume")
+        #expect(item.repeats == false)
+
+        let scheduledDate = try #require(calendar.date(from: item.dateComponents))
+        let expectedDate = DateComponents(
+            calendar: calendar,
+            year: 2026,
+            month: 5,
+            day: 26,
+            hour: 9,
+            minute: 30
+        ).date!
+        #expect(scheduledDate == expectedDate)
+    }
+
 }

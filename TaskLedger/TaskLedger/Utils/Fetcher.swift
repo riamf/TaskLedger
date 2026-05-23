@@ -143,6 +143,17 @@ final class Fetcher {
             return 0
         }
     }
+
+    func fetchTasksWithNotifications() -> [EventTask] {
+        do {
+            let predicate = #Predicate<EventTask> { task in
+                task.archivedAt == nil && task.notificationEnabled == true
+            }
+            return try modelContext.fetch(FetchDescriptor<EventTask>(predicate: predicate))
+        } catch {
+            return []
+        }
+    }
 }
 
 enum SummaryGroupingMode: String, CaseIterable, Identifiable {

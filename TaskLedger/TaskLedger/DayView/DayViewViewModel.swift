@@ -109,6 +109,9 @@ class DayViewViewModel: ObservableObject {
         
         do {
             try modelContext.save()
+            if task.notificationEnabled {
+                notifications.scheduleTaskNotification(for: task, referenceDate: Date())
+            }
             fetchTasks()
             analytics.logTaskSnoozed(days: days)
         } catch {

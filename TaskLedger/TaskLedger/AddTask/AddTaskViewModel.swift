@@ -189,14 +189,7 @@ class AddTaskViewModel: ObservableObject {
             try modelContext?.save()
 
             if notificationEnabled {
-                notifications.scheduleTaskNotification(
-                    taskId: event.id,
-                    taskName: event.name,
-                    time: notificationTime,
-                    repeatingPattern: repeatingPattern,
-                    fixedDate: fixedDate,
-                    weekdays: frequencyDays
-                )
+                notifications.scheduleTaskNotification(for: event, referenceDate: Date())
             }
             analytics.logTaskCreated(taskType: taskType, frequency: taskFrequency)
             analytics.updateTotalTasksCount(fetcher.fetchActiveTaskCount())
