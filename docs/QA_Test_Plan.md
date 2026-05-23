@@ -157,6 +157,19 @@ TaskLedger is a personal habit and expense tracker. Users create recurring or on
 
 ---
 
+#### TC-07a: Validation — duplicate task name
+**Preconditions:** A task named "Morning Run" already exists  
+**Steps:**
+1. Open Add Task sheet
+2. Enter the same task name again
+
+**Expected:**
+- Save button is disabled
+- Inline duplicate-name guidance is shown in Add Task
+- A second task with the same name cannot be created
+
+---
+
 #### TC-08: Validation — Cost/Income with zero amount
 **Steps:**
 1. Open Add Task sheet
@@ -917,6 +930,7 @@ If a release touches a specific module in a risky way, also rerun that module's 
 ### Task creation & Day View
 
 - [ ] Create one task of each type: Counter, Cost, Income, and Time
+- [ ] Add Task blocks duplicate names and shows a clear inline indication when the name already exists
 - [ ] Verify at least one Weekly, Monthly, and One-Time task appears only on the expected date(s)
 - [ ] Mark a task done, relaunch the app, and confirm the completed state persists
 - [ ] Unmark the same task and confirm the state updates correctly

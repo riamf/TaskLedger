@@ -313,4 +313,36 @@ struct TaskLedgerTests {
         #expect(templates.contains(where: { $0.id == rootTask.id }))
     }
 
+    @MainActor
+    @Test func addTaskValidationBlocksDuplicateNamesIgnoringCaseAndWhitespace() throws {
+        let schema = Schema([EventTask.self, EventMark.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let context = container.mainContext
+        DI.instance.initalize(modelContext: context)
+
+        let existingTask = EventTask(
+            timestamp: Date(),
+            name: "Morning Run",
+            taskType: .counter,
+            repeatingPattern: .daily(weekdays: Weekdays.allCases),
+            days: Weekdays.allCases
+        )
+        context.insert(existingTask)
+        try context.save()
+
+        let viewModel = AddTaskViewModel()
+        viewModel.loadTemplates()
+        viewModel.taskFrequency = .daily
+        viewModel.inputTaskName = "  morning run  "
+
+        #expect(viewModel.showsDuplicateNameWarning)
+        #expect(viewModel.doesTaskNameAlreadyExist)
+        #expect(!viewModel.isFormValid)
+        #expect(!viewModel.saveTask())
+        #expect(try context.fetch(FetchDescriptor<EventTask>()).count == 1)
+    }
+
 }

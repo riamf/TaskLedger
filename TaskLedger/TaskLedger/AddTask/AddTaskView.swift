@@ -48,6 +48,17 @@ struct AddTaskView: View {
                                     .id(TaskType.time.number)
                                 }
                             }
+                            if viewModel.showsDuplicateNameWarning {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "exclamationmark.circle.fill")
+                                    Text("add_task_duplicate_name_message")
+                                }
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.red)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 16)
+                                .accessibilityIdentifier("add-task-duplicate-name-warning")
+                            }
                             FrequencySwitcher(selection: $viewModel.taskFrequency.animation())
                             Group {
                                 switch viewModel.taskFrequency {

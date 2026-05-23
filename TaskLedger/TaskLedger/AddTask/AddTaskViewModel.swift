@@ -2,7 +2,11 @@ import SwiftUI
 
 class AddTaskViewModel: ObservableObject {
     
-    @Published var inputTaskName: String = ""
+    @Published var inputTaskName: String = "" {
+        didSet {
+            updateDuplicateNameState()
+        }
+    }
     @Published private var daysSelected: Set<Weekdays> = []
     @Published var taskType: TaskType = .counter
     @Published var amount: Double = 0.0
@@ -28,8 +32,10 @@ class AddTaskViewModel: ObservableObject {
     @Published var saveAlert = false
     @Published var showHistorySheet = false
     @Published var taskTemplates: [EventTask] = []
+    @Published private(set) var doesTaskNameAlreadyExist = false
     @Published private(set) var showsTemplateGroupingNotice = false
     private var templateGroupId: String?
+    private var existingTaskNames = Set<String>()
     
     @DInjected(\.modelContext) private var modelContext
     @DInjected(\.notifications) private var notifications: NotificationService
@@ -74,7 +80,8 @@ class AddTaskViewModel: ObservableObject {
     }
     
     var isFormValid: Bool {
-        guard !inputTaskName.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
+        guard !trimmedTaskName(inputTaskName).isEmpty else { return false }
+        guard !doesTaskNameAlreadyExist else { return false }
 
         if taskFrequency == .weekly {
             guard Weekdays.allCases.contains(where: { isDaySelected($0) }) else { return false }
@@ -93,8 +100,14 @@ class AddTaskViewModel: ObservableObject {
         !taskTemplates.isEmpty
     }
 
+    var showsDuplicateNameWarning: Bool {
+        doesTaskNameAlreadyExist && !trimmedTaskName(inputTaskName).isEmpty
+    }
+
     func loadTemplates() {
         taskTemplates = fetcher.fetchUniqueTaskTemplates()
+        existingTaskNames = fetcher.fetchExistingTaskNames()
+        updateDuplicateNameState()
     }
 
     func applyTemplate(_ task: EventTask) {
@@ -120,6 +133,13 @@ class AddTaskViewModel: ObservableObject {
 
     @discardableResult
     func saveTask() -> Bool {
+        existingTaskNames = fetcher.fetchExistingTaskNames()
+        updateDuplicateNameState()
+
+        guard currentValidationError == nil else {
+            return false
+        }
+
         // calculate amount base on time spend
         var customAmount: Double?
         if taskType == .time {
@@ -152,7 +172,7 @@ class AddTaskViewModel: ObservableObject {
         
         let event = EventTask(
             timestamp: Date(),
-            name: inputTaskName,
+            name: trimmedTaskName(inputTaskName),
             taskType: taskType,
             amount: customAmount ?? amount,
             taskFixedDate: fixedDate,
@@ -197,8 +217,12 @@ class AddTaskViewModel: ObservableObject {
     }
 
     private var currentValidationError: TaskCreationValidationError? {
-        if inputTaskName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if trimmedTaskName(inputTaskName).isEmpty {
             return .missingName
+        }
+
+        if doesTaskNameAlreadyExist {
+            return .duplicateName
         }
 
         if (taskType == .cost || taskType == .income) && amount <= 0 {
@@ -235,5 +259,10 @@ class AddTaskViewModel: ObservableObject {
         }
 
         return .name
+    }
+
+    private func updateDuplicateNameState() {
+        let normalizedName = normalizedTaskName(inputTaskName)
+        doesTaskNameAlreadyExist = !normalizedName.isEmpty && existingTaskNames.contains(normalizedName)
     }
 }

@@ -12,6 +12,7 @@
 /* AddTask/Common */
 "task_name_label" = "Nazwa zadania:";
 "enter_task_name_prompt" = "Wprowadź nazwę zadania";
+"add_task_duplicate_name_message" = "Zadanie o tej nazwie już istnieje.";
 
 /* AddTask/CostInputView */
 "enter_cost_amount_label" = "Kwota kosztu:";

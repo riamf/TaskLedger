@@ -222,12 +222,14 @@ enum TaskCreationStep {
 
 enum TaskCreationValidationError {
     case missingName
+    case duplicateName
     case zeroAmount
     case noDaysSelected
 
     var analyticsLabel: String {
         switch self {
         case .missingName: return "Missing Name"
+        case .duplicateName: return "Duplicate Name"
         case .zeroAmount: return "Zero Amount"
         case .noDaysSelected: return "No Days Selected"
         }

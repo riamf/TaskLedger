@@ -59,6 +59,15 @@ final class Fetcher {
             return []
         }
     }
+
+    func fetchExistingTaskNames() -> Set<String> {
+        do {
+            let tasks = try modelContext.fetch(FetchDescriptor<EventTask>())
+            return Set(tasks.map { normalizedTaskName($0.name) }.filter { !$0.isEmpty })
+        } catch {
+            return []
+        }
+    }
     
     func fetchSummary(for date: Date, mode: SummaryGroupingMode = .individual) -> [EventMartSummary] {
         let searchedMonth = DaysCalculator.monthFormatter.string(from: date)
@@ -209,6 +218,14 @@ struct EventMartSummary: Identifiable {
             groupingMode: groupingMode
         )
     }
+}
+
+func trimmedTaskName(_ name: String) -> String {
+    name.trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
+func normalizedTaskName(_ name: String) -> String {
+    trimmedTaskName(name).folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
 }
 
 #if DEBUG
