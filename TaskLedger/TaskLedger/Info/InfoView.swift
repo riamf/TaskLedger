@@ -174,7 +174,7 @@ private enum AppInfoLinks {
 
     static let privacyPolicyURL = siteBaseURL.appending(path: "privacy-policy.html")
     static let termsOfUseURL = siteBaseURL.appending(path: "terms-of-service.html")
-    static let appStoreReviewURL: URL? = nil
+    static let appStoreReviewURL: URL? = URL(string: "https://apps.apple.com/app/id6757359797?action=write-review")
 }
 
 private enum ThirdPartyLibrary: String, CaseIterable, Identifiable {
