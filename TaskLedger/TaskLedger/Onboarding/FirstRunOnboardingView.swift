@@ -59,13 +59,30 @@ struct FirstRunOnboardingView: View {
 
     @ViewBuilder
     private func onboardingImage(named imageName: String, in size: CGSize) -> some View {
+        let cardShape = RoundedRectangle(cornerRadius: 32, style: .continuous)
+
         Image(imageName)
             .resizable()
             .interpolation(.high)
             .scaledToFit()
-            .frame(maxWidth: size.width)
             .frame(maxHeight: size.height * 0.8)
-            .padding(.horizontal, 12)
+            .clipped()
+            .mask(cardShape)
+            .overlay {
+                cardShape.strokeBorder(
+                    Color.white.opacity(colorScheme == .light ? 0.55 : 0.18),
+                    lineWidth: 1.5
+                )
+            }
+            .shadow(
+                color: .black.opacity(colorScheme == .light ? 0.12 : 0.28),
+                radius: 18,
+                x: 0,
+                y: 10
+            )
+            .padding(.horizontal, 20)
+            .padding(.vertical, 8)
+            .frame(maxWidth: size.width)
             .accessibilityHidden(true)
     }
 
