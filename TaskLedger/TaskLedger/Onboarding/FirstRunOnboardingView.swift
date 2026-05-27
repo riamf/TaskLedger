@@ -1,17 +1,16 @@
 import SwiftUI
+import UIKit
 
 struct FirstRunOnboardingView: View {
     private struct Page: Identifiable {
         let id: Int
-        let imageName: String
+
+        var imageName: String {
+            OnboardingImageResolver.imageName(for: id)
+        }
     }
 
-    private let pages: [Page] = [
-        Page(id: 0, imageName: "onboarding_0"),
-        Page(id: 1, imageName: "onboarding_1"),
-        Page(id: 2, imageName: "onboarding_2"),
-        Page(id: 3, imageName: "onboarding_3")
-    ]
+    private let pages = (0...3).map(Page.init(id:))
 
     let onFinish: () -> Void
 
@@ -95,6 +94,41 @@ struct FirstRunOnboardingView: View {
         withAnimation(.easeInOut(duration: 0.25)) {
             currentPage += 1
         }
+    }
+}
+
+enum OnboardingImageResolver {
+    static func imageName(
+        for pageIndex: Int,
+        preferredLocalizations: [String] = Bundle.main.preferredLocalizations,
+        imageExists: (String) -> Bool = { UIImage(named: $0) != nil }
+    ) -> String {
+        let baseName = "onboarding_\(pageIndex)"
+        let primaryLanguage = preferredLocalizations.compactMap(languageCode(from:)).first
+        let candidates: [String]
+
+        switch primaryLanguage {
+        case "pl":
+            candidates = ["\(baseName)_pl", "\(baseName)_en", baseName]
+        default:
+            candidates = ["\(baseName)_en", baseName]
+        }
+
+        return candidates.first(where: imageExists) ?? baseName
+    }
+
+    static func languageCode(from localization: String) -> String? {
+        let normalized = localization.lowercased()
+
+        if normalized.hasPrefix("pl") {
+            return "pl"
+        }
+
+        if normalized.hasPrefix("en") {
+            return "en"
+        }
+
+        return nil
     }
 }
 

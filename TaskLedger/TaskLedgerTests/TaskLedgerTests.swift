@@ -409,4 +409,44 @@ struct TaskLedgerTests {
         #expect(scheduledDate == expectedDate)
     }
 
+    @Test func onboardingImagesUsePolishAssetsWhenPolishLocalizationIsPreferred() {
+        let imageName = OnboardingImageResolver.imageName(
+            for: 1,
+            preferredLocalizations: ["pl-PL"],
+            imageExists: { ["onboarding_1_pl", "onboarding_1_en", "onboarding_1"].contains($0) }
+        )
+
+        #expect(imageName == "onboarding_1_pl")
+    }
+
+    @Test func onboardingImagesFallbackToEnglishAssetsForUnsupportedLocalization() {
+        let imageName = OnboardingImageResolver.imageName(
+            for: 2,
+            preferredLocalizations: ["de-DE"],
+            imageExists: { ["onboarding_2_en", "onboarding_2"].contains($0) }
+        )
+
+        #expect(imageName == "onboarding_2_en")
+    }
+
+    @Test func onboardingImagesDefaultToEnglishAssetsWhenNoPreferredLocalizationIsProvided() {
+        let imageName = OnboardingImageResolver.imageName(
+            for: 0,
+            preferredLocalizations: [],
+            imageExists: { ["onboarding_0_en", "onboarding_0"].contains($0) }
+        )
+
+        #expect(imageName == "onboarding_0_en")
+    }
+
+    @Test func onboardingImagesFallbackToBaseAssetWhenLocalizedVariantIsMissing() {
+        let imageName = OnboardingImageResolver.imageName(
+            for: 3,
+            preferredLocalizations: ["pl-PL"],
+            imageExists: { $0 == "onboarding_3" }
+        )
+
+        #expect(imageName == "onboarding_3")
+    }
+
 }
